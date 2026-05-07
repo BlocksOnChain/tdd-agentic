@@ -1,0 +1,11 @@
+services:
+  backend:
+    command: uvicorn backend.api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/backend
+    environment:
+      RELOAD: "true"
+
+  frontend:
+    command: npm run dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules

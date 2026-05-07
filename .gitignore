@@ -1,0 +1,21 @@
+.env
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+
+node_modules/
+.next/
+dist/
+build/
+out/
+
+postgres_data/
+qdrant_data/
+workspace_data/
+# Per-project agent workspaces (may contain nested .git checkouts).
+workspace/

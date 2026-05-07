@@ -1,0 +1,189 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+export type TicketStatus =
+  | "draft"
+  | "in_review"
+  | "questions_pending"
+  | "todo"
+  | "in_progress"
+  | "done"
+  | "blocked";
+
+export type SubtaskStatus = "pending" | "in_progress" | "done" | "blocked";
+
+export type AgentRole =
+  | "project_manager"
+  | "researcher"
+  | "backend_lead"
+  | "frontend_lead"
+  | "backend_dev"
+  | "frontend_dev"
+  | "devops"
+  | "qa";
+
+export interface TodoT {
+  id: string;
+  subtask_id: string;
+  title: string;
+  detail: string;
+  order_index: number;
+  status: "pending" | "done";
+}
+
+export type TestType = "unit" | "integration" | "functional";
+
+export interface TestCaseSpec {
+  given: string;
+  should: string;
+  expected: string;
+  test_type: TestType;
+  notes: string;
+}
+
+export interface SubtaskT {
+  id: string;
+  ticket_id: string;
+  title: string;
+  description: string;
+  required_functionality: string;
+  test_cases: TestCaseSpec[];
+  assigned_to: AgentRole;
+  order_index: number;
+  status: SubtaskStatus;
+  todos: TodoT[];
+}
+
+export interface TicketQuestion {
+  question: string;
+  answer: string | null;
+  asked_by: string;
+  answered_by: string | null;
+  ts: number | null;
+}
+
+export interface TicketT {
+  id: string;
+  project_id: string;
+  title: string;
+  description: string;
+  business_requirements: string[];
+  technical_requirements: string[];
+  status: TicketStatus;
+  questions: TicketQuestion[];
+  order_index: number;
+  subtasks: SubtaskT[];
+}
+
+export interface ProjectT {
+  id: string;
+  name: string;
+  description: string;
+  goal: string;
+}
+
+/** One line in the Logs panel (live WebSocket or replayed from Postgres). */
+export interface AgentLogEntry {
+  id?: string;
+  ts: number;
+  agent: string;
+  kind: string;
+  detail: string;
+  checkpoint_id?: string | null;
+}
+
+/** Row from ``GET /api/agents/logs/:projectId``. */
+export interface PersistedAgentLog {
+  id: string;
+  created_at: string | null;
+  ts: number | null;
+  agent: string;
+  kind: string;
+  payload: Record<string, unknown>;
+  checkpoint_id: string | null;
+}
+
+export function persistedLogToEntry(row: PersistedAgentLog): AgentLogEntry {
+  const p = row.payload || {};
+  const node = typeof p.node === "string" ? p.node : null;
+  const agentField = typeof p.agent === "string" ? p.agent : null;
+  const ts =
+    typeof row.ts === "number" && !Number.isNaN(row.ts)
+      ? row.ts
+      : row.created_at
+        ? Date.parse(row.created_at) / 1000
+        : Date.now() / 1000;
+  const cp = row.checkpoint_id ?? (typeof p.checkpoint_id === "string" ? p.checkpoint_id : null);
+  return {
+    id: row.id,
+    ts,
+    agent: node ?? agentField ?? row.agent,
+    kind: row.kind || (typeof p.kind === "string" ? p.kind : "log"),
+    detail: JSON.stringify(p).slice(0, 1200),
+    checkpoint_id: cp,
+  };
+}
+
+async function http<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    ...init,
+    headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  return (await res.json()) as T;
+}
+
+export interface CheckpointT {
+  checkpoint_id: string | null;
+  parent_checkpoint_id: string | null;
+  created_at: string | null;
+  source: string | null;
+  step: number | null;
+  wrote_nodes: string[];
+  next: string[];
+}
+
+export const api = {
+  listProjects: () => http<ProjectT[]>("/api/projects"),
+  createProject: (data: Partial<ProjectT>) =>
+    http<ProjectT>("/api/projects", { method: "POST", body: JSON.stringify(data) }),
+  deleteProject: (projectId: string) =>
+    http(`/api/projects/${projectId}`, { method: "DELETE" }),
+  listTickets: (projectId?: string) =>
+    http<TicketT[]>(`/api/tickets${projectId ? `?project_id=${projectId}` : ""}`),
+  getTicket: (id: string) => http<TicketT>(`/api/tickets/${id}`),
+  answerQuestion: (ticketId: string, questionIndex: number, answer: string) =>
+    http<TicketT>(`/api/tickets/${ticketId}/answer`, {
+      method: "POST",
+      body: JSON.stringify({ question_index: questionIndex, answer, answered_by: "human" }),
+    }),
+  startAgent: (projectId: string, goal: string) =>
+    http(`/api/agents/start`, {
+      method: "POST",
+      body: JSON.stringify({ project_id: projectId, goal }),
+    }),
+  resumeAgent: (projectId: string, response: string) =>
+    http(`/api/agents/resume`, {
+      method: "POST",
+      body: JSON.stringify({ project_id: projectId, response }),
+    }),
+  retryAgent: (projectId: string) =>
+    http(`/api/agents/retry`, {
+      method: "POST",
+      body: JSON.stringify({ project_id: projectId }),
+    }),
+  stopAgent: (projectId: string) =>
+    http(`/api/agents/stop`, {
+      method: "POST",
+      body: JSON.stringify({ project_id: projectId }),
+    }),
+  resumeFrom: (projectId: string, checkpointId: string) =>
+    http(`/api/agents/resume_from`, {
+      method: "POST",
+      body: JSON.stringify({ project_id: projectId, checkpoint_id: checkpointId }),
+    }),
+  listCheckpoints: (projectId: string) =>
+    http<{ checkpoints: CheckpointT[] }>(`/api/agents/checkpoints/${projectId}`),
+  listAgentLogs: (projectId: string, limit = 5000) =>
+    http<{ logs: PersistedAgentLog[] }>(`/api/agents/logs/${projectId}?limit=${limit}`),
+};
