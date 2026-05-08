@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.db.session import get_db
 from backend.ticket_system import schemas, service
+from backend.ticket_system.models import AgentRole, SubtaskStatus
 
 router = APIRouter()
 
@@ -59,6 +60,23 @@ async def answer(
 
 
 # ===== subtasks =====
+@router.get("/subtasks", response_model=list[schemas.SubtaskOut])
+async def list_subtasks(
+    project_id: str,
+    ticket_id: str | None = None,
+    assigned_to: AgentRole | None = None,
+    status: SubtaskStatus | None = None,
+    db: AsyncSession = Depends(get_db),
+):
+    return await service.list_subtasks(
+        db,
+        project_id=project_id,
+        ticket_id=ticket_id,
+        assigned_to=assigned_to,
+        status=status,
+    )
+
+
 @router.post("/{ticket_id}/subtasks", response_model=schemas.SubtaskOut)
 async def create_subtask(
     ticket_id: str,

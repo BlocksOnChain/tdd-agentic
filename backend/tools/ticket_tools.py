@@ -160,14 +160,13 @@ class CreateSubtaskArgs(BaseModel):
         default="",
         description="What capability this subtask must implement.",
     )
-    test_cases: list[TestCaseInput] = Field(
-        ...,
+    test_cases: list[TestCaseInput] | None = Field(
+        default=None,
         description=(
-            "REQUIRED, must contain at least one item. The TDD anchor — each "
-            "entry is a structured RITE test spec with given/should/expected. "
-            "The developer will write the failing test first using these specs."
+            "RITE-format test specs. REQUIRED for backend_dev/frontend_dev subtasks "
+            "(TDD anchor). OPTIONAL for qa/devops subtasks (they may be checklist-driven "
+            "or exploratory / operational)."
         ),
-        min_length=1,
     )
     assigned_to: str = Field(
         ...,
@@ -186,7 +185,7 @@ class CreateSubtaskArgs(BaseModel):
 async def create_subtask(
     ticket_id: str,
     title: str,
-    test_cases: list[TestCaseInput],
+    test_cases: list[TestCaseInput] | None,
     assigned_to: str,
     description: str = "",
     required_functionality: str = "",
@@ -198,12 +197,6 @@ async def create_subtask(
     test_type?, notes?}. The dev will translate each spec into one
     assert({given, should, actual, expected}) call.
     """
-    if not test_cases:
-        return _dump(
-            {
-                "error": "test_cases must contain at least one entry (TDD anchor required).",
-            }
-        )
     try:
         role = AgentRole(assigned_to)
     except ValueError:
@@ -215,6 +208,15 @@ async def create_subtask(
                 )
             }
         )
+    if role in {AgentRole.BACKEND_DEV, AgentRole.FRONTEND_DEV} and not (test_cases or []):
+        return _dump(
+            {
+                "error": (
+                    "test_cases must contain at least one entry for backend_dev/frontend_dev "
+                    "(TDD anchor required). For qa/devops subtasks, test_cases may be empty."
+                ),
+            }
+        )
     async with AsyncSessionLocal() as db:
         subtask = await service.create_subtask(
             db,
@@ -223,7 +225,7 @@ async def create_subtask(
                 title=title,
                 description=description,
                 required_functionality=required_functionality,
-                test_cases=[t.model_dump() for t in test_cases],
+                test_cases=[t.model_dump() for t in (test_cases or [])],
                 assigned_to=role,
                 order_index=order_index,
             ),
@@ -399,6 +401,51 @@ async def next_pending_subtask(ticket_id: str, role: str | None = None) -> str:
         )
 
 
+@tool
+async def next_pending_subtask_in_project(project_id: str, role: str) -> str:
+    """Return the next pending subtask for a role across the whole project.
+
+    Uses ticket.order_index first, then subtask.order_index.
+    """
+    try:
+        r = AgentRole(role)
+    except ValueError:
+        return _dump(
+            {
+                "error": (
+                    f"role='{role}' is not a valid role. "
+                    "Use one of: backend_dev, frontend_dev, devops, qa."
+                )
+            }
+        )
+    async with AsyncSessionLocal() as db:
+        row = await service.next_pending_subtask_in_project(db, project_id=project_id, role=r)
+        if row is None:
+            return _dump({"ticket": None, "subtask": None})
+        ticket, sub = row
+        return _dump(
+            {
+                "ticket": {
+                    "id": ticket.id,
+                    "title": ticket.title,
+                    "status": ticket.status.value,
+                    "order_index": ticket.order_index,
+                },
+                "subtask": {
+                    "id": sub.id,
+                    "ticket_id": sub.ticket_id,
+                    "title": sub.title,
+                    "description": sub.description,
+                    "required_functionality": sub.required_functionality,
+                    "test_cases": schemas._normalise_test_cases(sub.test_cases or []),
+                    "assigned_to": sub.assigned_to.value,
+                    "order_index": sub.order_index,
+                    "status": sub.status.value,
+                },
+            }
+        )
+
+
 PM_TICKET_TOOLS = [
     list_tickets,
     get_ticket,
@@ -421,7 +468,68 @@ LEAD_TICKET_TOOLS = [
 DEV_TICKET_TOOLS = [
     get_ticket,
     next_pending_subtask,
+    next_pending_subtask_in_project,
     update_subtask_status,
     mark_todo_done,
     add_todo_to_subtask,
 ]
+
+
+@tool
+async def list_subtasks(
+    project_id: str,
+    ticket_id: str | None = None,
+    assigned_to: str | None = None,
+    status: str | None = None,
+) -> str:
+    """List subtasks filtered by project_id and optionally ticket_id and/or assigned_to.
+
+    Intended for PM review, dashboards, and automation.
+    """
+    role: AgentRole | None = None
+    if assigned_to is not None:
+        try:
+            role = AgentRole(assigned_to)
+        except ValueError:
+            return _dump(
+                {
+                    "error": (
+                        f"assigned_to='{assigned_to}' is not a valid role. "
+                        "Use one of: backend_dev, frontend_dev, devops, qa."
+                    )
+                }
+            )
+    st: SubtaskStatus | None = None
+    if status is not None:
+        try:
+            st = SubtaskStatus(status)
+        except ValueError:
+            return _dump(
+                {
+                    "error": (
+                        f"status='{status}' is not a valid subtask status. "
+                        "Use one of: pending, in_progress, done, blocked."
+                    )
+                }
+            )
+    async with AsyncSessionLocal() as db:
+        rows = await service.list_subtasks(
+            db,
+            project_id=project_id,
+            ticket_id=ticket_id,
+            assigned_to=role,
+            status=st,
+        )
+        out = [
+            {
+                "id": s.id,
+                "ticket_id": s.ticket_id,
+                "title": s.title,
+                "assigned_to": s.assigned_to.value,
+                "order_index": s.order_index,
+                "status": s.status.value,
+                "test_case_count": len(s.test_cases or []),
+            }
+            for s in rows
+        ]
+        return _dump(out)

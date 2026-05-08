@@ -216,7 +216,13 @@ def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
         subs = list(t.subtasks or [])
         if not subs:
             continue
-        if any(s.assigned_to == AgentRole.FRONTEND_DEV for s in subs):
+        # If *any* client-side execution subtask exists already, don't
+        # force a frontend_lead fallback. Some tickets are legitimately
+        # QA-only or DevOps-only even when they relate to client/UI scope.
+        if any(
+            s.assigned_to in {AgentRole.FRONTEND_DEV, AgentRole.DEVOPS, AgentRole.QA}
+            for s in subs
+        ):
             continue
         if _text_suggests_client_scope(t):
             fe_candidates.append(t)
@@ -228,12 +234,12 @@ def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
             next_agent="frontend_lead",
             rationale=(
                 "Fallback: ticket text suggests client/UI work but there is no "
-                "frontend_dev subtask yet; routing frontend_lead after backend phase."
+                "client-side execution subtask yet; routing frontend_lead."
             ),
             instructions=(
                 f"Plan client-side subtasks for these tickets (UUIDs): {ids}. "
                 f"Titles: {preview}. Use list_tickets / get_ticket; assign UI work to "
-                f"frontend_dev (or devops for client-only infra). "
+                f"frontend_dev, devops (client infra), or qa (client test coverage). "
                 f"Call update_ticket_status(in_review) when frontend planning is complete."
             ),
         )

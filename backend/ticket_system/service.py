@@ -149,6 +149,34 @@ async def list_tickets(db: AsyncSession, project_id: str | None = None) -> list[
     return list(result.scalars().unique().all())
 
 
+async def list_subtasks(
+    db: AsyncSession,
+    *,
+    project_id: str,
+    ticket_id: str | None = None,
+    assigned_to: AgentRole | None = None,
+    status: SubtaskStatus | None = None,
+) -> list[Subtask]:
+    """List subtasks for a project with optional filters.
+
+    Ordering is stable for execution planning: ticket.order_index then subtask.order_index.
+    """
+    stmt = (
+        select(Subtask)
+        .join(Ticket, Ticket.id == Subtask.ticket_id)
+        .where(Ticket.project_id == project_id)
+        .order_by(Ticket.order_index, Subtask.order_index, Subtask.created_at)
+    )
+    if ticket_id is not None:
+        stmt = stmt.where(Subtask.ticket_id == ticket_id)
+    if assigned_to is not None:
+        stmt = stmt.where(Subtask.assigned_to == assigned_to)
+    if status is not None:
+        stmt = stmt.where(Subtask.status == status)
+    result = await db.execute(stmt)
+    return list(result.scalars().unique().all())
+
+
 async def get_ticket(db: AsyncSession, ticket_id: str) -> Ticket:
     stmt = (
         select(Ticket)
@@ -399,6 +427,40 @@ async def next_pending_subtask_for_role(
     )
     result = await db.execute(stmt)
     return result.scalar_one_or_none()
+
+
+async def next_pending_subtask_in_project(
+    db: AsyncSession,
+    *,
+    project_id: str,
+    role: AgentRole,
+) -> tuple[Ticket, Subtask] | None:
+    """Return the next pending subtask for a role across the whole project.
+
+    Ordering:
+      1) ticket.order_index ASC (the "ticket order to do")
+      2) subtask.order_index ASC (within-ticket execution order)
+
+    Only considers tickets in TODO or IN_PROGRESS and subtasks in PENDING.
+    """
+    stmt = (
+        select(Ticket, Subtask)
+        .join(Subtask, Subtask.ticket_id == Ticket.id)
+        .where(
+            Ticket.project_id == project_id,
+            Ticket.status.in_([TicketStatus.TODO, TicketStatus.IN_PROGRESS]),
+            Subtask.status == SubtaskStatus.PENDING,
+            Subtask.assigned_to == role,
+        )
+        .order_by(Ticket.order_index, Ticket.created_at, Subtask.order_index, Subtask.created_at)
+        .limit(1)
+    )
+    result = await db.execute(stmt)
+    row = result.first()
+    if row is None:
+        return None
+    ticket, subtask = row
+    return ticket, subtask
 
 
 # ===== Todo =====

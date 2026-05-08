@@ -151,6 +151,14 @@ export const api = {
     http(`/api/projects/${projectId}`, { method: "DELETE" }),
   listTickets: (projectId?: string) =>
     http<TicketT[]>(`/api/tickets${projectId ? `?project_id=${projectId}` : ""}`),
+  listSubtasks: (params: { project_id: string; ticket_id?: string; assigned_to?: AgentRole; status?: SubtaskStatus }) => {
+    const q = new URLSearchParams();
+    q.set("project_id", params.project_id);
+    if (params.ticket_id) q.set("ticket_id", params.ticket_id);
+    if (params.assigned_to) q.set("assigned_to", params.assigned_to);
+    if (params.status) q.set("status", params.status);
+    return http<SubtaskT[]>(`/api/tickets/subtasks?${q.toString()}`);
+  },
   getTicket: (id: string) => http<TicketT>(`/api/tickets/${id}`),
   answerQuestion: (ticketId: string, questionIndex: number, answer: string) =>
     http<TicketT>(`/api/tickets/${ticketId}/answer`, {
