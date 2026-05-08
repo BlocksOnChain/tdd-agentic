@@ -6,6 +6,7 @@ import logging
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
+from sqlalchemy import text
 from langgraph.types import Command
 from pydantic import BaseModel
 
@@ -312,6 +313,84 @@ async def get_agent_logs(project_id: str, limit: int = 5000) -> dict[str, Any]:
         rows = await list_agent_logs(db, project_id=project_id, limit=limit)
     rows.reverse()
     return {"logs": rows}
+
+
+@router.get("/logs/item/{log_id}")
+async def get_agent_log_item(log_id: str) -> dict[str, Any]:
+    """Return a single persisted agent log row + optional checkpoint metadata.
+
+    This is used by the frontend "click log line" popup to fetch full details
+    on demand without loading large payloads for the whole log list.
+    """
+    async with AsyncSessionLocal() as db:
+        row = (
+            await db.execute(
+                text(
+                    """
+                    SELECT
+                      id,
+                      project_id,
+                      created_at,
+                      agent,
+                      kind,
+                      payload,
+                      (payload->>'checkpoint_id') AS checkpoint_id
+                    FROM agent_logs
+                    WHERE id = :id
+                    LIMIT 1
+                    """
+                ),
+                {"id": log_id},
+            )
+        ).fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Log not found")
+        (id_, project_id, created_at, agent, kind, payload, checkpoint_id) = row
+
+        checkpoint: dict[str, Any] | None = None
+        if project_id and checkpoint_id:
+            # Lightweight checkpoint metadata lookup. Avoid loading giant checkpoints.
+            ck = (
+                await db.execute(
+                    text(
+                        """
+                        SELECT
+                          checkpoint->>'id' AS checkpoint_id,
+                          checkpoint->>'ts' AS ts,
+                          pg_column_size(checkpoint) AS checkpoint_bytes,
+                          metadata
+                        FROM checkpoints
+                        WHERE thread_id = :thread_id
+                          AND checkpoint_ns = ''
+                          AND checkpoint->>'id' = :checkpoint_id
+                        LIMIT 1
+                        """
+                    ),
+                    {"thread_id": project_id, "checkpoint_id": checkpoint_id},
+                )
+            ).fetchone()
+            if ck is not None:
+                (cid, ts, cbytes, meta) = ck
+                checkpoint = {
+                    "checkpoint_id": cid,
+                    "created_at": ts,
+                    "bytes": int(cbytes) if cbytes is not None else None,
+                    "metadata": meta or {},
+                }
+
+        return {
+            "log": {
+                "id": id_,
+                "project_id": project_id,
+                "created_at": created_at.isoformat() if created_at else None,
+                "ts": created_at.timestamp() if created_at else None,
+                "agent": agent,
+                "kind": kind,
+                "payload": payload or {},
+                "checkpoint_id": checkpoint_id,
+            },
+            "checkpoint": checkpoint,
+        }
 
 
 @router.post("/start")

@@ -102,6 +102,25 @@ export interface PersistedAgentLog {
   checkpoint_id: string | null;
 }
 
+export interface LogItemResponse {
+  log: {
+    id: string;
+    project_id: string | null;
+    created_at: string | null;
+    ts: number | null;
+    agent: string;
+    kind: string;
+    payload: Record<string, unknown>;
+    checkpoint_id: string | null;
+  };
+  checkpoint: {
+    checkpoint_id: string;
+    created_at: string | null;
+    bytes: number | null;
+    metadata: Record<string, unknown>;
+  } | null;
+}
+
 export function persistedLogToEntry(row: PersistedAgentLog): AgentLogEntry {
   const p = row.payload || {};
   const node = typeof p.node === "string" ? p.node : null;
@@ -198,4 +217,6 @@ export const api = {
   },
   listAgentLogs: (projectId: string, limit = 5000) =>
     http<{ logs: PersistedAgentLog[] }>(`/api/agents/logs/${projectId}?limit=${limit}`),
+  getAgentLogItem: (logId: string) =>
+    http<LogItemResponse>(`/api/agents/logs/item/${logId}`),
 };

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { api } from "@/lib/api";
+import { api, LogItemResponse } from "@/lib/api";
 import { useUIStore } from "@/lib/store";
 
 const colorFor = (agent: string) => {
@@ -28,6 +28,9 @@ const colorFor = (agent: string) => {
 export function AgentLog() {
   const { logs, clearLogs, selectedProjectId } = useUIStore();
   const [pending, setPending] = useState<string | null>(null);
+  const [selected, setSelected] = useState<LogItemResponse | null>(null);
+  const [selectedLoading, setSelectedLoading] = useState(false);
+  const [selectedError, setSelectedError] = useState<string | null>(null);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
@@ -54,6 +57,21 @@ export function AgentLog() {
     }
   };
 
+  const openDetails = async (logId: string | undefined) => {
+    if (!logId) return;
+    setSelectedError(null);
+    setSelectedLoading(true);
+    try {
+      const r = await api.getAgentLogItem(logId);
+      setSelected(r);
+    } catch (e) {
+      setSelectedError(e instanceof Error ? e.message : "Failed to load log details");
+      setSelected(null);
+    } finally {
+      setSelectedLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (isAtBottom) scrollToBottom();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,7 +95,8 @@ export function AgentLog() {
           {logs.map((l, i) => (
             <div
               key={l.id ?? `live-${l.ts}-${i}-${l.agent}`}
-              className="group flex gap-2 hover:bg-muted/40 rounded px-1 py-0.5"
+              className="group flex cursor-pointer gap-2 rounded px-1 py-0.5 hover:bg-muted/40"
+              onClick={() => void openDetails(l.id)}
             >
               <span className="text-zinc-600 shrink-0">
                 {new Date(l.ts * 1000).toLocaleTimeString()}
@@ -111,6 +130,62 @@ export function AgentLog() {
           </button>
         )}
       </div>
+
+      {selectedLoading && (
+        <div className="border-t border-border px-3 py-2 text-xs text-zinc-500">
+          Loading details…
+        </div>
+      )}
+      {selectedError && (
+        <div className="border-t border-border px-3 py-2 text-xs text-red-400">
+          {selectedError}
+        </div>
+      )}
+
+      {selected && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-6">
+          <div className="w-full max-w-3xl rounded border border-border bg-surface shadow-lg">
+            <div className="flex items-center justify-between border-b border-border px-3 py-2">
+              <div className="text-sm font-medium">Log details</div>
+              <button
+                className="text-xs text-zinc-400 hover:text-zinc-200"
+                onClick={() => setSelected(null)}
+              >
+                Close
+              </button>
+            </div>
+            <div className="max-h-[70vh] overflow-auto p-3 font-mono text-xs">
+              <div className="text-zinc-300">
+                <div>agent: {selected.log.agent}</div>
+                <div>kind: {selected.log.kind}</div>
+                <div>ts: {selected.log.created_at ?? "—"}</div>
+                <div>checkpoint_id: {selected.log.checkpoint_id ?? "—"}</div>
+              </div>
+
+              {selected.checkpoint && (
+                <div className="mt-3 rounded border border-border bg-muted p-2">
+                  <div className="text-zinc-200">Checkpoint</div>
+                  <div className="text-zinc-400">
+                    <div>id: {selected.checkpoint.checkpoint_id}</div>
+                    <div>created_at: {selected.checkpoint.created_at ?? "—"}</div>
+                    <div>size: {selected.checkpoint.bytes ?? "—"} bytes</div>
+                  </div>
+                  <pre className="mt-2 whitespace-pre-wrap break-words text-zinc-300">
+                    {JSON.stringify(selected.checkpoint.metadata, null, 2)}
+                  </pre>
+                </div>
+              )}
+
+              <div className="mt-3 rounded border border-border bg-muted p-2">
+                <div className="text-zinc-200">Payload</div>
+                <pre className="mt-2 whitespace-pre-wrap break-words text-zinc-300">
+                  {JSON.stringify(selected.log.payload, null, 2)}
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,8 +1,8 @@
 """Root LangGraph state for the multi-agent system.
 
-Uses Pydantic BaseModel with `extra="forbid"` per 2026 best practices, plus the
-`add_messages` reducer for the conversation channel and explicit reducers for
-list aggregation across parallel branches.
+Important: everything in this state is persisted into LangGraph checkpoints.
+Keep it small and bounded; large ever-growing arrays will bloat checkpoints and
+can make resume-from-checkpoint fail.
 """
 from __future__ import annotations
 
@@ -39,7 +39,12 @@ class SystemState(BaseModel):
     human_responses: Annotated[list[str], operator.add] = Field(default_factory=list)
 
     next_agent: str | None = None  # supervisor routing decision
-    events: Annotated[list[AgentEvent], operator.add] = Field(default_factory=list)
+
+    # NOTE: events are already persisted in the DB (agent_logs) and streamed via WS.
+    # We keep only a small tail in checkpoint state to avoid checkpoint bloat.
+    events: Annotated[list[AgentEvent], lambda a, b: (list(a) + list(b))[-400:]] = Field(
+        default_factory=list
+    )
 
 
 __all__ = ["SystemState", "AgentEvent"]
