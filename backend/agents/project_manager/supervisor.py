@@ -214,35 +214,63 @@ async def _advance_in_review_to_todo(project_id: str | None) -> list[str]:
 
 
 async def _infer_next_dev_route(project_id: str | None) -> RoutingDecision | None:
-    """Best-effort deterministic routing to a dev role based on pending subtasks."""
+    """Deterministic routing to a dev role based on ticket/subtask state.
+
+    Policy:
+      1) Consider tickets in stable execution order (ticket.order_index) with status
+         TODO first (then IN_PROGRESS).
+      2) If ANY subtask is already IN_PROGRESS on the first eligible ticket, route to
+         that subtask's assigned_to role so the same developer can continue.
+      3) Otherwise, route to the assigned_to role of the earliest PENDING subtask
+         (lowest subtask.order_index).
+    """
     if not project_id:
         return None
     async with AsyncSessionLocal() as db:
         tickets = await service.list_tickets(db, project_id=project_id)
-        for t in tickets:
-            if t.status not in (TicketStatus.TODO, TicketStatus.IN_PROGRESS):
-                continue
-            full = await service.get_ticket(db, t.id)
+        # Stable ticket order already enforced by service.list_tickets().
+        eligible = [t for t in tickets if t.status in (TicketStatus.TODO, TicketStatus.IN_PROGRESS)]
+        # Prefer TODO over IN_PROGRESS when choosing the "first ticket".
+        eligible.sort(key=lambda t: (0 if t.status == TicketStatus.TODO else 1, t.order_index, t.created_at))
+
+        valid_dev_roles = {AgentRole.BACKEND_DEV, AgentRole.FRONTEND_DEV, AgentRole.DEVOPS, AgentRole.QA}
+
+        for t in eligible:
+            # list_tickets eager-loads subtasks; only re-fetch if missing for some reason.
+            full = t if getattr(t, "subtasks", None) is not None else await service.get_ticket(db, t.id)
             subs = list(full.subtasks or [])
             if not subs:
                 continue
-            pending = [s for s in subs if s.status == SubtaskStatus.PENDING]
+
+            in_progress = [s for s in subs if s.status == SubtaskStatus.IN_PROGRESS and s.assigned_to in valid_dev_roles]
+            if in_progress:
+                # Continue the earliest in-progress subtask (lowest order_index).
+                in_progress.sort(key=lambda s: (s.order_index, s.created_at))
+                s0 = in_progress[0]
+                return RoutingDecision(
+                    next_agent=s0.assigned_to.value,
+                    rationale="Auto-route: subtask already in progress.",
+                    instructions=(
+                        f"Continue work on ticket {full.id} ({full.title!r}). "
+                        f"An in_progress subtask exists (order_index={s0.order_index}, assigned_to={s0.assigned_to.value}). "
+                        "Use get_ticket(ticket_id) to review context; proceed with the in-progress subtask."
+                    ),
+                )
+
+            pending = [s for s in subs if s.status == SubtaskStatus.PENDING and s.assigned_to in valid_dev_roles]
             if not pending:
                 continue
-            # Prefer backend_dev first, then frontend_dev, devops, qa.
-            order = (AgentRole.BACKEND_DEV, AgentRole.FRONTEND_DEV, AgentRole.DEVOPS, AgentRole.QA)
-            for role in order:
-                if any(s.assigned_to == role for s in pending):
-                    agent = role.value
-                    return RoutingDecision(
-                        next_agent=agent,
-                        rationale="Auto-route: found pending subtasks ready for execution.",
-                        instructions=(
-                            f"Work on ticket {full.id} ({full.title!r}). "
-                            "Use get_ticket(ticket_id), then next_pending_subtask(ticket_id) "
-                            "and follow the subtask order_index."
-                        ),
-                    )
+            pending.sort(key=lambda s: (s.order_index, s.created_at))
+            s0 = pending[0]
+            return RoutingDecision(
+                next_agent=s0.assigned_to.value,
+                rationale="Auto-route: dispatch first pending subtask in order.",
+                instructions=(
+                    f"Work on ticket {full.id} ({full.title!r}). "
+                    f"Start the first pending subtask (order_index={s0.order_index}, assigned_to={s0.assigned_to.value}). "
+                    "Use get_ticket(ticket_id), then next_pending_subtask(ticket_id) and follow order_index."
+                ),
+            )
     return None
 
 
