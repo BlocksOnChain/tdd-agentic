@@ -27,7 +27,8 @@ from backend.tools.hitl_tools import ask_human
 from backend.tools.rag_tools import rag_query
 from backend.tools.ticket_tools import PM_TICKET_TOOLS
 from backend.ticket_system import service
-from backend.ticket_system.models import AgentRole, Ticket, TicketStatus
+from backend.ticket_system import schemas
+from backend.ticket_system.models import AgentRole, SubtaskStatus, Ticket, TicketStatus
 
 MAX_TOOL_RESULT_CHARS = 4000
 MAX_PROJECT_CONTEXT_CHARS = 1500
@@ -170,6 +171,81 @@ def _ticket_has_unanswered_questions(ticket: Ticket) -> bool:
     return False
 
 
+def _ticket_ready_for_todo(ticket: Ticket) -> bool:
+    """Conservative readiness check for moving IN_REVIEW -> TODO.
+
+    User expectation in this app: IN_REVIEW means planning has happened at least
+    once and the ticket should be eligible for developer execution unless it
+    still has unanswered questions or no subtasks at all.
+    """
+    if ticket.status != TicketStatus.IN_REVIEW:
+        return False
+    if _ticket_has_unanswered_questions(ticket):
+        return False
+    subs = list(ticket.subtasks or [])
+    return len(subs) > 0
+
+
+async def _advance_in_review_to_todo(project_id: str | None) -> list[str]:
+    """Auto-advance tickets from IN_REVIEW to TODO when they are ready.
+
+    Returns the list of ticket ids advanced.
+    """
+    if not project_id:
+        return []
+    advanced: list[str] = []
+    async with AsyncSessionLocal() as db:
+        tickets = await service.list_tickets(db, project_id=project_id)
+        # list_tickets may not eager-load subtasks depending on the query;
+        # fetch details only for candidates to keep this cheap.
+        for t in tickets:
+            if t.status != TicketStatus.IN_REVIEW:
+                continue
+            full = await service.get_ticket(db, t.id)
+            if not _ticket_ready_for_todo(full):
+                continue
+            await service.update_ticket(
+                db,
+                full.id,
+                schemas.TicketUpdate(status=TicketStatus.TODO),
+            )
+            advanced.append(full.id)
+    return advanced
+
+
+async def _infer_next_dev_route(project_id: str | None) -> RoutingDecision | None:
+    """Best-effort deterministic routing to a dev role based on pending subtasks."""
+    if not project_id:
+        return None
+    async with AsyncSessionLocal() as db:
+        tickets = await service.list_tickets(db, project_id=project_id)
+        for t in tickets:
+            if t.status not in (TicketStatus.TODO, TicketStatus.IN_PROGRESS):
+                continue
+            full = await service.get_ticket(db, t.id)
+            subs = list(full.subtasks or [])
+            if not subs:
+                continue
+            pending = [s for s in subs if s.status == SubtaskStatus.PENDING]
+            if not pending:
+                continue
+            # Prefer backend_dev first, then frontend_dev, devops, qa.
+            order = (AgentRole.BACKEND_DEV, AgentRole.FRONTEND_DEV, AgentRole.DEVOPS, AgentRole.QA)
+            for role in order:
+                if any(s.assigned_to == role for s in pending):
+                    agent = role.value
+                    return RoutingDecision(
+                        next_agent=agent,
+                        rationale="Auto-route: found pending subtasks ready for execution.",
+                        instructions=(
+                            f"Work on ticket {full.id} ({full.title!r}). "
+                            "Use get_ticket(ticket_id), then next_pending_subtask(ticket_id) "
+                            "and follow the subtask order_index."
+                        ),
+                    )
+    return None
+
+
 def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
     """Pick backend_lead or frontend_lead from DB state when the LLM routing fails.
 
@@ -251,6 +327,17 @@ async def _infer_fallback_route(project_id: str | None) -> RoutingDecision | Non
         return None
     async with AsyncSessionLocal() as db:
         tickets = await service.list_tickets(db, project_id=project_id)
+    # If the project has no tickets yet, the safest deterministic next step
+    # is to dispatch the researcher to scaffold docs/context (PM step 1).
+    if not tickets:
+        return RoutingDecision(
+            next_agent="researcher",
+            rationale="Fallback: PM LLM unavailable and no tickets exist yet.",
+            instructions=(
+                "Gather initial project context and scaffold docs; then ingest into RAG. "
+                "After research, hand back to project_manager."
+            ),
+        )
     return _fallback_routing_decision(tickets)
 
 
@@ -279,6 +366,23 @@ def build_project_manager_node():
 
     async def project_manager_node(state: SystemState) -> dict[str, Any]:
         events = [await emit("project_manager", "turn_start", {}, state.project_id)]
+
+        # Deterministic PM hygiene: tickets IN_REVIEW should be promoted to TODO
+        # once planning is complete so dev agents can run.
+        advanced = await _advance_in_review_to_todo(state.project_id)
+        if advanced:
+            events.append(
+                await emit(
+                    "project_manager",
+                    "tickets_advanced_to_todo",
+                    {"ticket_ids": advanced},
+                    state.project_id,
+                )
+            )
+
+        # If there is developer work ready, route deterministically even if the
+        # LLM later fails or emits invalid routing JSON.
+        ready_dev = await _infer_next_dev_route(state.project_id)
         llm = with_retry(pm_model().bind_tools(PM_TOOLS))
         system_prompt = _build_system_prompt(state)
 
@@ -329,6 +433,21 @@ def build_project_manager_node():
                     )
                 )
                 decision = await _infer_fallback_route(state.project_id)
+                # If DB heuristics can't confidently choose a specialist, keep the
+                # run alive (do NOT end) and surface the configuration problem.
+                if decision is None:
+                    decision = RoutingDecision(
+                        next_agent="project_manager",
+                        rationale=(
+                            "Fallback: PM LLM call failed and no safe DB route was inferred."
+                        ),
+                        instructions=(
+                            "The configured PM model is failing (often llama.cpp chat-template/tool "
+                            "compatibility). Fix by routing PM_MODEL to a stable provider/model "
+                            "(e.g. anthropic/claude-sonnet-4-6) or adjust llama-server chat template, "
+                            "then retry the run."
+                        ),
+                    )
                 break
             messages.append(ai)
 
@@ -361,26 +480,37 @@ def build_project_manager_node():
         new_msgs: list = []
 
         if decision is None or decision.next_agent not in VALID_TARGETS:
-            fb = await _infer_fallback_route(state.project_id)
-            if fb is not None:
-                decision = fb
+            if ready_dev is not None:
+                decision = ready_dev
                 events.append(
                     await emit(
                         "project_manager",
                         "route_fallback",
-                        {
-                            "next_agent": decision.next_agent,
-                            "rationale": decision.rationale,
-                        },
+                        {"next_agent": decision.next_agent, "rationale": "Auto-route: pending subtasks exist."},
                         state.project_id,
                     )
                 )
             else:
-                decision = RoutingDecision(
-                    next_agent="end",
-                    rationale="Supervisor failed to produce a valid routing decision.",
-                    instructions="",
-                )
+                fb = await _infer_fallback_route(state.project_id)
+                if fb is not None:
+                    decision = fb
+                    events.append(
+                        await emit(
+                            "project_manager",
+                            "route_fallback",
+                            {
+                                "next_agent": decision.next_agent,
+                                "rationale": decision.rationale,
+                            },
+                            state.project_id,
+                        )
+                    )
+                else:
+                    decision = RoutingDecision(
+                        next_agent="project_manager",
+                        rationale="No valid routing decision and no safe fallback route was inferred.",
+                        instructions="Call list_tickets(project_id) and determine next agent from DB state.",
+                    )
         elif decision.next_agent == "end":
             fb = await _infer_fallback_route(state.project_id)
             if fb is not None:
