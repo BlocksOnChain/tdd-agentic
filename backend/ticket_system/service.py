@@ -5,8 +5,12 @@ LangChain tools call into this module so behaviour stays consistent.
 """
 from __future__ import annotations
 
+import shutil
 import time
+from pathlib import Path
 from typing import Any
+
+from backend.config import get_settings
 
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
@@ -46,12 +50,33 @@ class TicketStateError(ValueError):
     """Raised when a status transition is not permitted."""
 
 
+# ===== Workspace seed (AGENTS.md, docs/) =====
+_WORKSPACE_SEED_DIR = Path(__file__).resolve().parent.parent / "workspace_seed"
+
+
+def seed_project_workspace(project_id: str) -> None:
+    """Lay down AGENTS.md, docs/, and conventions so agents never cite node_modules."""
+    settings = get_settings()
+    dest = settings.workspace_root / project_id
+    try:
+        if dest.exists():
+            return
+        if _WORKSPACE_SEED_DIR.is_dir():
+            shutil.copytree(_WORKSPACE_SEED_DIR, dest)
+        else:
+            dest.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        # Workspace is optional at create time; agents can mkdir via tools later.
+        pass
+
+
 # ===== Project =====
 async def create_project(db: AsyncSession, payload: schemas.ProjectCreate) -> Project:
     project = Project(name=payload.name, description=payload.description, goal=payload.goal)
     db.add(project)
     await db.commit()
     await db.refresh(project)
+    seed_project_workspace(project.id)
     await bus.publish(Event(type="project", payload={"action": "created", "id": project.id}))
     return project
 

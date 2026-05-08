@@ -83,6 +83,12 @@ Your job:
   information about the technologies and libraries the project will use.
 - Write structured markdown documentation: tech-stack.md, architecture.md, api-contracts.md,
   conventions.md, plus per-skill files under skills/<name>/SKILL.md.
+- Documentation placement (CRITICAL): NEVER tell agents to read guides under
+  node_modules/ — that path is vendored noise and must not be agent context. Put
+  framework summaries in docs/ (for example docs/nextjs.md) and cite stable https://
+  vendor URLs in prose; align notes with the project's pinned package versions.
+- Refresh AGENTS.md only to reinforce workspace rules (docs/, not node_modules); do not
+  use it to substitute for full docs under docs/.
 - For testing technology choices, prefer: Vitest + Riteway for JS/TS frontend; pytest for
   Python backend. Document the chosen test runner, file naming, and how to invoke it.
 - Persist every doc you write into RAG via rag_ingest_text so other agents can retrieve it.
@@ -315,6 +321,8 @@ Hard rules:
   most once. After marking that subtask done (or confirming there was no pending subtask),
   summarize and STOP — never chain a second next_pending_subtask in the same run. The PM
   will dispatch you again for the next backlog item using fresh context.
+- Use workspace **docs/** and **rag_query** for framework and API guidance. Do not treat
+  **node_modules/** as documentation or instruct others to read files there.
 - One test at a time. Never write multiple failing tests in advance.
 - Never write production code without a failing test first.
 - Never mock inside unit tests. If you feel the urge, the unit needs to be
