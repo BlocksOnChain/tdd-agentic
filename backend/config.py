@@ -18,6 +18,11 @@ class Settings(BaseSettings):
 
     # LLM
     openai_api_key: str = ""
+    # When set, all ``openai/<model>`` slugs use this host (llama.cpp, LM Studio,
+    # vLLM, etc.). Example: http://127.0.0.1:8080/v1
+    openai_base_url: str = ""
+    # Seconds; raise for slow local inference.
+    openai_request_timeout: float = 120.0
     anthropic_api_key: str = ""
     pm_model: str = "anthropic/claude-sonnet-4-6"
     researcher_model: str = "openai/gpt-4o"
@@ -28,8 +33,12 @@ class Settings(BaseSettings):
     frontend_dev_model: str | None = None
     grader_model: str = "anthropic/claude-haiku-4-5"
 
-    # Model and Anthropic tool version used by the web_search LangChain tool.
-    # Haiku is ~1/5 the price of Sonnet and supports the server-side web_search tool.
+    # Web search backing for the ``web_search`` tool (researcher).
+    # anthropic — Claude ``bind_tools`` with server-side search (needs credits).
+    # tavily — Tavily REST API only (pairs with local / non-Anthropic setups).
+    # auto — use tavily when TAVILY_API_KEY is set, else anthropic when ANTHROPIC_API_KEY is set.
+    web_search_provider: str = "auto"
+    # anthropic-only: model and native tool revision for server-side ``web_search``.
     web_search_model: str = "claude-haiku-4-5"
     web_search_tool_version: str = "web_search_20260209"
 

@@ -122,12 +122,20 @@ def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> Ba
 
     if provider == "openai":
         common.pop("max_tokens", None)  # ChatOpenAI uses ``max_tokens`` differently
-        return ChatOpenAI(
-            model=name,
-            api_key=settings.openai_api_key or None,
-            max_retries=settings.llm_max_retries,
+        kwargs_openai: dict = {
+            "model": name,
+            "api_key": settings.openai_api_key or None,
+            "max_retries": settings.llm_max_retries,
+            "timeout": settings.openai_request_timeout,
             **common,
-        )
+        }
+        base = (settings.openai_base_url or "").strip()
+        if base:
+            kwargs_openai["base_url"] = base
+            # Local OpenAI-compatible servers usually ignore the key but require a value.
+            if not kwargs_openai.get("api_key"):
+                kwargs_openai["api_key"] = "not-needed"
+        return ChatOpenAI(**kwargs_openai)
     if provider == "anthropic":
         return ChatAnthropic(
             model=name,
