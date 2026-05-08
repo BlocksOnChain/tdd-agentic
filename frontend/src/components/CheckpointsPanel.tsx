@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { api, CheckpointT } from "@/lib/api";
 import { useUIStore } from "@/lib/store";
+
+const POLL_MS = 12000;
 
 export function CheckpointsPanel() {
   const { selectedProjectId } = useUIStore();
@@ -11,26 +13,61 @@ export function CheckpointsPanel() {
   const [pending, setPending] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const refresh = async () => {
+  /** Avoid overlapping polls (stacked timeouts while prior fetch is slow). */
+  const inFlight = useRef(false);
+  /** Cancel timed poll loops when switching project or unmounting. */
+  const gen = useRef(0);
+
+  const refresh = async (opts?: { force?: boolean }) => {
     if (!selectedProjectId) {
       setItems([]);
       return;
     }
+    if (opts?.force !== true && inFlight.current) return;
+    inFlight.current = true;
     setLoading(true);
     try {
-      const r = await api.listCheckpoints(selectedProjectId);
+      const r = await api.listCheckpoints(selectedProjectId, {
+        force: opts?.force,
+      });
       setItems(r.checkpoints);
     } catch {
       setItems([]);
     } finally {
       setLoading(false);
+      inFlight.current = false;
     }
   };
 
   useEffect(() => {
-    refresh();
-    const id = setInterval(refresh, 5000);
-    return () => clearInterval(id);
+    gen.current += 1;
+    const myGen = gen.current;
+    const pollTimerRef = { id: undefined as ReturnType<typeof setTimeout> | undefined };
+    void refresh({ force: true });
+
+    const tick = async () => {
+      if (gen.current !== myGen) return;
+      if (typeof document !== "undefined" && !document.hidden && selectedProjectId) {
+        await refresh();
+      }
+      if (gen.current !== myGen) return;
+      pollTimerRef.id = window.setTimeout(tick, POLL_MS);
+    };
+
+    pollTimerRef.id = window.setTimeout(tick, POLL_MS);
+
+    const vis = () => {
+      if (!document.hidden && gen.current === myGen && selectedProjectId) {
+        void refresh();
+      }
+    };
+    document.addEventListener("visibilitychange", vis);
+
+    return () => {
+      if (pollTimerRef.id !== undefined) window.clearTimeout(pollTimerRef.id);
+      gen.current += 1;
+      document.removeEventListener("visibilitychange", vis);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProjectId]);
 
@@ -49,14 +86,14 @@ export function CheckpointsPanel() {
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
         <div className="text-sm font-medium">Checkpoints</div>
         <button
-          onClick={refresh}
+          onClick={() => void refresh({ force: true })}
           className="text-xs text-zinc-400 hover:text-zinc-200"
           disabled={loading}
         >
           {loading ? "…" : "Refresh"}
         </button>
       </div>
-      <div className="max-h-[60vh] overflow-y-auto scrollbar p-3 flex flex-col gap-2">
+      <div className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto p-3 scrollbar">
         {items.length === 0 && (
           <div className="text-xs text-zinc-500">
             No checkpoints yet. Start an agent run to populate.
@@ -87,17 +124,19 @@ export function CheckpointsPanel() {
             <div className="mt-1 text-zinc-400">
               {cp.wrote_nodes.length > 0 && (
                 <span>
-                  wrote: <span className="text-zinc-200">{cp.wrote_nodes.join(", ")}</span>
+                  wrote:{" "}
+                  <span className="text-zinc-200">{cp.wrote_nodes.join(", ")}</span>
                 </span>
               )}
               {cp.next.length > 0 && (
                 <span className="ml-2">
-                  next: <span className="text-zinc-200">{cp.next.join(", ")}</span>
+                  next:{" "}
+                  <span className="text-zinc-200">{cp.next.join(", ")}</span>
                 </span>
               )}
             </div>
             {cp.checkpoint_id && (
-              <div className="mt-1 font-mono text-[10px] text-zinc-600 truncate">
+              <div className="mt-1 truncate font-mono text-[10px] text-zinc-600">
                 id: {cp.checkpoint_id}
               </div>
             )}

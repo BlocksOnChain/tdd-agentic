@@ -30,6 +30,10 @@ from langchain_core.tools import BaseTool
 from langgraph.graph import END, START, StateGraph
 
 from backend.agents.common import emit, run_tool_calls
+from backend.agents.llm_audit import (
+    log_llm_invoke_exception_context,
+    log_llm_invoke_start,
+)
 from backend.agents.llm import with_retry
 from backend.agents.skills.loader import inject_skills
 from backend.agents.state import SystemState
@@ -173,8 +177,22 @@ def build_specialist_subgraph(
         local_ai_msgs: list[AIMessage] = []
         local_tool_msgs: list[ToolMessage] = []
 
-        for _ in range(max_steps):
-            ai: AIMessage = await llm.ainvoke(messages)
+        for step_i in range(max_steps):
+            log_llm_invoke_start(
+                node_name=name,
+                step_index=step_i + 1,
+                step_cap=max_steps,
+                project_id=state.project_id,
+            )
+            try:
+                ai: AIMessage = await llm.ainvoke(messages)
+            except Exception:
+                log_llm_invoke_exception_context(
+                    node_name=name,
+                    step_index=step_i + 1,
+                    project_id=state.project_id,
+                )
+                raise
             messages.append(ai)
             local_ai_msgs.append(ai)
 

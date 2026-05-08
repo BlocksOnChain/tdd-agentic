@@ -10,9 +10,13 @@ Adds two production-grade behaviours on top of plain LangChain integrations:
 
 Slug format: ``provider/model`` (``openai/gpt-4o``,
 ``anthropic/claude-sonnet-4-6``).
+
+``OPENAI_BASE_URL`` applies **only** to ``openai/...`` slugs. Roles still set to
+``anthropic/...`` call Anthropic's API regardless of ``OPENAI_BASE_URL``.
 """
 from __future__ import annotations
 
+import logging
 import threading
 
 from langchain_anthropic import ChatAnthropic
@@ -22,6 +26,8 @@ from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
 
 from backend.config import get_settings
+
+_logger = logging.getLogger(__name__)
 
 # Module-wide singletons keyed by provider — shared across all agent calls.
 _LIMITERS: dict[str, InMemoryRateLimiter] = {}
@@ -100,6 +106,43 @@ def _split_slug(model_slug: str) -> tuple[str, str]:
         return "openai", model_slug
     p, n = model_slug.split("/", 1)
     return p.lower(), n
+
+
+def log_resolved_llm_routing() -> None:
+    """Log where each configured role sends traffic (local vs cloud).
+
+    Misconfiguration: OPENAI_BASE_URL set for llama-server but LEAD_MODEL (etc.)
+    still ``anthropic/...`` → those roles never hit localhost.
+    """
+    settings = get_settings()
+    rows: list[tuple[str, str]] = [
+        ("pm_model", settings.pm_model),
+        ("researcher_model", settings.researcher_model),
+        ("lead_model", settings.lead_model),
+        ("dev_model", settings.dev_model),
+        ("backend_dev_model", settings.backend_dev_model or settings.dev_model),
+        ("frontend_dev_model", settings.frontend_dev_model or settings.dev_model),
+        ("grader_model", settings.grader_model),
+    ]
+    base = (settings.openai_base_url or "").strip()
+    for label, slug in rows:
+        provider, model_name = _split_slug(slug)
+        if provider == "openai" and base:
+            target = f"OpenAI-compatible {base} (model={model_name!r})"
+        elif provider == "openai":
+            target = f"OpenAI platform API (model={model_name!r})"
+        else:
+            target = f"Anthropic API (model={model_name!r})"
+        _logger.info("LLM routing %s=%s -> %s", label, slug, target)
+
+    if base:
+        conflicts = [label for label, slug in rows if _split_slug(slug)[0] == "anthropic"]
+        if conflicts:
+            _logger.warning(
+                "OPENAI_BASE_URL is set but these env roles still use anthropic/ slugs %s — "
+                "they will NOT reach your local server. Set each to openai/<model_id>.",
+                conflicts,
+            )
 
 
 def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> BaseChatModel:

@@ -73,6 +73,10 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    # Lets the backend reach llama-server / LM Studio on the Docker host (Windows/macOS/Linux).
+    # Still use OPENAI_BASE_URL=http://host.docker.internal:8080/v1 in .env.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       POSTGRES_HOST: postgres
       QDRANT_HOST: qdrant

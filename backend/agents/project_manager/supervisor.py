@@ -14,6 +14,10 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, Tool
 from pydantic import BaseModel, Field
 
 from backend.agents.common import emit, run_tool_calls
+from backend.agents.llm_audit import (
+    log_llm_invoke_exception_context,
+    log_llm_invoke_start,
+)
 from backend.agents.llm import pm_model, with_retry
 from backend.agents.prompts import PROJECT_MANAGER_SYSTEM
 from backend.agents.skills.loader import inject_skills
@@ -288,8 +292,38 @@ def build_project_manager_node():
             messages.append(HumanMessage(content="(start)"))
         decision: RoutingDecision | None = None
 
-        for _ in range(8):  # max tool-calling rounds per supervisor turn
-            ai: AIMessage = await llm.ainvoke(messages)
+        for step_i in range(8):  # max tool-calling rounds per supervisor turn
+            log_llm_invoke_start(
+                node_name="project_manager",
+                step_index=step_i + 1,
+                step_cap=8,
+                project_id=state.project_id,
+            )
+            try:
+                ai: AIMessage = await llm.ainvoke(messages)
+            except Exception as exc:
+                log_llm_invoke_exception_context(
+                    node_name="project_manager",
+                    step_index=step_i + 1,
+                    project_id=state.project_id,
+                )
+                # Some OpenAI-compatible local servers (llama.cpp, LM Studio, etc.)
+                # can 500 when tool-calling payloads are present or when their chat
+                # template parser rejects the prompt. Instead of crashing the whole
+                # orchestration run, fall back to DB-based routing and keep going.
+                events.append(
+                    await emit(
+                        "project_manager",
+                        "llm_error_fallback",
+                        {
+                            "step": step_i + 1,
+                            "error_preview": _truncate(str(exc), 500),
+                        },
+                        state.project_id,
+                    )
+                )
+                decision = await _infer_fallback_route(state.project_id)
+                break
             messages.append(ai)
 
             if ai.tool_calls:

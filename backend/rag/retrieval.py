@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 from qdrant_client import AsyncQdrantClient
 
 from backend.agents.llm import grader_model, researcher_model
+from backend.agents.llm_audit import log_rag_crag_llm_targets
 from backend.config import get_settings
 from backend.rag.embeddings import get_embeddings
 from backend.rag.ingestion import PAYLOAD_TEXT_KEY, collection_name, ensure_collection
@@ -112,7 +113,13 @@ async def _rewrite(query: str) -> str:
 
 async def crag_retrieve(project_id: str, query: str, k: int = 6) -> list[Document]:
     """Retrieve and grade. On total miss, rewrite once and retry."""
+    settings = get_settings()
     initial = await _vector_search(project_id, query, k)
+    log_rag_crag_llm_targets(
+        docs_to_grade=len(initial),
+        grader_slug=settings.grader_model,
+        rewriter_slug=settings.researcher_model,
+    )
     relevant = await _grade(query, initial)
     if relevant:
         return relevant

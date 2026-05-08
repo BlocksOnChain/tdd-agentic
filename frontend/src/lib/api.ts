@@ -182,8 +182,12 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ project_id: projectId, checkpoint_id: checkpointId }),
     }),
-  listCheckpoints: (projectId: string) =>
-    http<{ checkpoints: CheckpointT[] }>(`/api/agents/checkpoints/${projectId}`),
+  listCheckpoints: (projectId: string, opts?: { force?: boolean }) => {
+    const q = opts?.force ? "?force=true" : "";
+    return http<{ checkpoints: CheckpointT[] }>(
+      `/api/agents/checkpoints/${projectId}${q}`,
+    );
+  },
   listAgentLogs: (projectId: string, limit = 5000) =>
     http<{ logs: PersistedAgentLog[] }>(`/api/agents/logs/${projectId}?limit=${limit}`),
 };

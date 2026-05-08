@@ -5,6 +5,7 @@ LangGraph checkpointer pool lifecycle.
 """
 from __future__ import annotations
 
+import logging
 import warnings
 from contextlib import asynccontextmanager
 
@@ -33,6 +34,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.agents.checkpointer import close_pool, get_pool
+from backend.agents.llm import log_resolved_llm_routing
 from backend.agents.skills.seed import seed_builtin_skills
 from backend.api.routes import agents as agents_routes
 from backend.api.routes import projects as projects_routes
@@ -45,7 +47,14 @@ from backend.db.session import init_db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    settings = get_settings()  # noqa: F841 (loaded for early validation)
+    settings = get_settings()
+    log_resolved_llm_routing()
+    ll = logging.getLogger("backend.agents.llm_http")
+    ll.setLevel(logging.INFO if settings.llm_invoke_log_each_call else logging.WARNING)
+    if settings.llm_openai_http_debug:
+        logging.getLogger("openai").setLevel(logging.DEBUG)
+        logging.getLogger("httpcore").setLevel(logging.DEBUG)
+        logging.getLogger("httpx").setLevel(logging.DEBUG)
     await init_db()
     await get_pool()  # warm checkpointer connection pool
     await seed_builtin_skills()

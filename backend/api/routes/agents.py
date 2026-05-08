@@ -13,6 +13,10 @@ from backend.agents.checkpointer import get_checkpointer
 from backend.agents.graph import build_root_graph
 from backend.agents.observability import callbacks_for
 from backend.agents.state import SystemState
+from backend.api.checkpoint_list_cache import (
+    get_checkpoints_list,
+    invalidate_checkpoint_list_cache,
+)
 from backend.api.events import Event, bus
 from backend.agent_logs.service import list_agent_logs
 from backend.db.session import AsyncSessionLocal
@@ -146,9 +150,13 @@ async def _stream_once(graph, project_id: str, payload: Any, config: dict) -> No
     After each update we tag the event with the *current* checkpoint_id so
     the UI can offer a "Resume from here" action per log entry.
     """
+    last_checkpoint_id: str | None = None
     async for chunk in graph.astream(payload, config=config, stream_mode="updates"):
         snapshot = await graph.aget_state(config)
         checkpoint_id = _checkpoint_id(snapshot)
+        if checkpoint_id and checkpoint_id != last_checkpoint_id:
+            invalidate_checkpoint_list_cache(project_id)
+            last_checkpoint_id = checkpoint_id
         for node_name, update in chunk.items():
             if node_name == "__interrupt__":
                 await _broadcast_interrupts(project_id, update)
@@ -166,6 +174,9 @@ async def _stream_once(graph, project_id: str, payload: Any, config: dict) -> No
             )
     snapshot = await graph.aget_state(config)
     if snapshot is not None:
+        checkpoint_id = _checkpoint_id(snapshot)
+        if checkpoint_id and checkpoint_id != last_checkpoint_id:
+            invalidate_checkpoint_list_cache(project_id)
         for task in snapshot.tasks:
             for itp in getattr(task, "interrupts", []) or []:
                 await _broadcast_interrupts(project_id, itp)
@@ -305,6 +316,7 @@ async def get_agent_logs(project_id: str, limit: int = 5000) -> dict[str, Any]:
 
 @router.post("/start")
 async def start_run(payload: StartRunRequest):
+    invalidate_checkpoint_list_cache(payload.project_id)
     initial = SystemState(
         project_id=payload.project_id,
         project_context=payload.project_context or payload.goal,
@@ -316,6 +328,7 @@ async def start_run(payload: StartRunRequest):
 
 @router.post("/resume")
 async def resume_run(payload: ResumeRequest):
+    invalidate_checkpoint_list_cache(payload.project_id)
     _spawn(payload.project_id, _resume_graph(payload.project_id, payload.response))
     return {"status": "resumed", "project_id": payload.project_id}
 
@@ -327,6 +340,7 @@ class RetryRequest(BaseModel):
 @router.post("/retry")
 async def retry_run(payload: RetryRequest):
     """Resume a project's graph from its last persisted checkpoint."""
+    invalidate_checkpoint_list_cache(payload.project_id)
     _spawn(payload.project_id, _retry_graph(payload.project_id))
     return {"status": "retrying", "project_id": payload.project_id}
 
@@ -342,6 +356,7 @@ async def stop_run(payload: StopRequest):
     Waits up to ~10s for the task to honour the cancel so the response
     accurately reflects whether the run actually stopped.
     """
+    invalidate_checkpoint_list_cache(payload.project_id)
     task = RUNNING_TASKS.get(payload.project_id)
     if task is None or task.done():
         return {"status": "not_running", "project_id": payload.project_id}
@@ -361,6 +376,7 @@ class ResumeFromRequest(BaseModel):
 @router.post("/resume_from")
 async def resume_from(payload: ResumeFromRequest):
     """Resume the graph from a specific historical checkpoint."""
+    invalidate_checkpoint_list_cache(payload.project_id)
     _spawn(
         payload.project_id,
         _resume_from_checkpoint(payload.project_id, payload.checkpoint_id),
@@ -373,40 +389,21 @@ async def resume_from(payload: ResumeFromRequest):
 
 
 @router.get("/checkpoints/{project_id}")
-async def list_checkpoints(project_id: str, limit: int = 100) -> dict:
+async def list_checkpoints(
+    project_id: str,
+    limit: int = 100,
+    force: bool = False,
+) -> dict:
     """Return the project's checkpoint history (latest first).
+
+    Responses are TTL-cached server-side unless ``force=1`` to avoid piled-up
+    LangGraph compilations while the UI polls.
 
     Each item is a flattened ``StateSnapshot`` with the ``checkpoint_id``,
     creation timestamp, the writes that produced it, and the next nodes
     queued to run from that point.
     """
-    config = {"configurable": {"thread_id": project_id}}
-    out: list[dict[str, Any]] = []
-    async with get_checkpointer() as saver:
-        graph = build_root_graph(checkpointer=saver)
-        async for snap in graph.aget_state_history(config):
-            cfg_conf = (snap.config or {}).get("configurable") or {}
-            meta = snap.metadata or {}
-            writes = meta.get("writes") or {}
-            wrote_nodes = list(writes.keys()) if isinstance(writes, dict) else []
-            out.append(
-                {
-                    "checkpoint_id": cfg_conf.get("checkpoint_id"),
-                    "parent_checkpoint_id": (
-                        (snap.parent_config or {}).get("configurable", {}).get("checkpoint_id")
-                        if snap.parent_config
-                        else None
-                    ),
-                    "created_at": getattr(snap, "created_at", None),
-                    "source": meta.get("source"),
-                    "step": meta.get("step"),
-                    "wrote_nodes": wrote_nodes,
-                    "next": list(snap.next or []),
-                }
-            )
-            if len(out) >= limit:
-                break
-    return {"checkpoints": out}
+    return await get_checkpoints_list(project_id, limit=limit, force_refresh=force)
 
 
 @router.get("/state/{project_id}")

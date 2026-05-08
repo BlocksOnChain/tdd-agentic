@@ -62,7 +62,7 @@ Resume safety (CRITICAL):
 Routing protocol — you must always respond with a JSON object of the form:
 {"next_agent": "<one of: researcher, backend_lead, frontend_lead, backend_dev, frontend_dev, devops, qa, project_manager, end>",
  "rationale": "<one short sentence>",
- "instructions": "<message that the next agent will receive>"}
+ "instructions": "<message that the next agent will receive. IMPORTANT: avoid pseudo-code with quotes/parens like update_ticket_status('uuid','in_review'); instead use key/value intent like: update_ticket_status ticket_id=<uuid> status=in_review>"}
 
 When you hand off to a lead or developer, your `instructions` MUST include
 the real ticket UUID(s) the agent should work on, copied verbatim from a
@@ -213,6 +213,10 @@ after a crash, retry, or new clarification — never duplicate or stomp work):
      mixed tickets). Do not call update_ticket_status if your role says to
      leave the ticket DRAFT for the other lead. Skip entirely if already
      todo/in_progress/done.
+
+LLM-server compatibility note:
+  - When reporting tool actions back to the PM, avoid pseudo-code strings with quotes like
+    update_ticket_status('uuid', 'in_review'). Prefer: update_ticket_status ticket_id=<uuid> status=in_review.
 
   5. Hand control back. Do NOT re-create tickets or re-research; that is
      the PM and researcher's job.
