@@ -20,9 +20,12 @@ from backend.agents.llm_audit import (
 )
 from backend.agents.llm import pm_model, with_retry
 from backend.agents.prompts import PROJECT_MANAGER_SYSTEM
+from backend.agents.session_memory import SessionMemory
 from backend.agents.skills.loader import inject_skills
 from backend.agents.state import SystemState
 from backend.db.session import AsyncSessionLocal
+from backend.agents.researcher.scaffold import is_scaffolded_path
+from backend.rag.workspace_sync import list_research_markdown
 from backend.tools.hitl_tools import ask_human
 from backend.tools.rag_tools import rag_query
 from backend.tools.ticket_tools import PM_TICKET_TOOLS
@@ -46,6 +49,18 @@ VALID_TARGETS = {
     "project_manager",
     "end",
 }
+
+PLANNING_TARGETS = {
+    "backend_lead",
+    "frontend_lead",
+    "backend_dev",
+    "frontend_dev",
+    "devops",
+    "qa",
+}
+
+PM_TICKET_BACKLOG_TOOLS = [*PM_TICKET_TOOLS, rag_query]
+PM_TICKET_BACKLOG_TOOLS_BY_NAME = {t.name: t for t in PM_TICKET_BACKLOG_TOOLS}
 
 
 class RoutingDecision(BaseModel):
@@ -101,7 +116,11 @@ def _condense_messages_for_supervisor(
 
 
 def _build_system_prompt(state: SystemState) -> str:
-    base = inject_skills(PROJECT_MANAGER_SYSTEM, role="project_manager")
+    base = inject_skills(
+        PROJECT_MANAGER_SYSTEM,
+        role="project_manager",
+        project_id=state.project_id,
+    )
     ctx = _truncate(state.project_context or "", MAX_PROJECT_CONTEXT_CHARS)
     pid = state.project_id or "(unknown)"
     lines = [
@@ -176,7 +195,6 @@ _CLIENT_SCOPE_TOKENS: frozenset[str] = frozenset(
 _CLIENT_SCOPE_PHRASES: tuple[str, ...] = (
     "next.js",
     "nextjs",
-    "webrtc",
     "vite",
     "webpack",
 )
@@ -388,14 +406,228 @@ def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
     return None
 
 
-async def _infer_fallback_route(project_id: str | None) -> RoutingDecision | None:
+def _human_message_text(message: Any) -> str:
+    content = getattr(message, "content", "")
+    return content if isinstance(content, str) else str(content)
+
+
+def _research_phase_complete(
+    messages: list,
+    session_memory: SessionMemory | None = None,
+) -> bool:
+    """True when the researcher already handed control back to the PM."""
+    last_dispatch = -1
+    last_handback = -1
+    for i, message in enumerate(messages):
+        if getattr(message, "type", None) != "human":
+            continue
+        text = _human_message_text(message)
+        if text.startswith("[from project_manager → researcher]"):
+            last_dispatch = i
+        elif text.startswith("[from researcher → project_manager]"):
+            last_handback = i
+    return last_handback > last_dispatch
+
+
+def _research_materials_ready(project_id: str | None) -> bool:
+    if not project_id:
+        return False
+    for row in list_research_markdown(project_id):
+        path = str(row.get("path") or "")
+        if int(row.get("bytes") or 0) <= 0:
+            continue
+        if not path.startswith("docs/") or not path.endswith(".md"):
+            continue
+        if path == "docs/README.md":
+            continue
+        if is_scaffolded_path(project_id, path):
+            continue
+        return True
+    return False
+
+
+def _pm_research_redispatch_decision() -> RoutingDecision:
+    return RoutingDecision(
+        next_agent="researcher",
+        rationale=(
+            "Research docs are missing or empty; researcher must scaffold docs under docs/ "
+            "and ingest them into RAG before ticket creation."
+        ),
+        instructions=(
+            "Write or refresh project docs under docs/ (for example docs/tech-stack.md, "
+            "docs/architecture.md, docs/conventions.md, docs/api-contracts.md), call "
+            "rag_ingest_text for each authored file, then hand back to project_manager."
+        ),
+        phase="research",
+    )
+
+
+def _pm_ticket_creation_decision() -> RoutingDecision:
+    return RoutingDecision(
+        next_agent="project_manager",
+        rationale=(
+            "Fallback: research finished but no tickets exist; PM must create tickets "
+            "before lead planning."
+        ),
+        instructions=(
+            "Call list_tickets(project_id). If empty, call rag_query(project_id, query=<project goal>) "
+            "and read PROJECT_CONTEXT. Use create_ticket for each major deliverable with "
+            "business_requirements and technical_requirements grounded in those sources. "
+            "Do not route to leads or devs while the backlog is empty."
+        ),
+        phase="backend_planning",
+    )
+
+
+def _pm_ticket_creation_nudge() -> str:
+    decision = _pm_ticket_creation_decision()
+    return _format_pm_handoff("project_manager", decision)
+
+
+async def _must_create_tickets_before_planning(
+    project_id: str | None,
+    *,
+    messages: list,
+    session_memory: SessionMemory | None,
+) -> bool:
+    if not project_id:
+        return False
+    if not _research_phase_complete(messages, session_memory):
+        return False
+    if not _research_materials_ready(project_id):
+        return False
+    return not await _list_project_tickets(project_id)
+
+
+async def _list_project_tickets(project_id: str | None) -> list[Ticket]:
+    if not project_id:
+        return []
+    async with AsyncSessionLocal() as db:
+        return await service.list_tickets(db, project_id=project_id)
+
+
+async def _guard_planning_without_tickets(
+    decision: RoutingDecision,
+    *,
+    project_id: str | None,
+    messages: list,
+    session_memory: SessionMemory | None,
+) -> RoutingDecision:
+    if decision.next_agent not in PLANNING_TARGETS:
+        return decision
+    if not project_id:
+        return decision
+    if await _list_project_tickets(project_id):
+        return decision
+    if not _research_phase_complete(messages, session_memory):
+        return decision
+    if not _research_materials_ready(project_id):
+        return _pm_research_redispatch_decision()
+    return _pm_ticket_creation_decision()
+
+
+async def _run_pm_ticket_backlog_phase(
+    *,
+    state: SystemState,
+    system_prompt: str,
+    condensed: list,
+    events: list,
+) -> bool:
+    """Force PM ticket tools until the backlog is populated or the step budget is exhausted."""
+    if not state.project_id:
+        return False
+    if await _list_project_tickets(state.project_id):
+        return True
+
+    tool_llm = with_retry(
+        pm_model().bind_tools(PM_TICKET_BACKLOG_TOOLS, tool_choice="any")
+    )
+    messages: list = [SystemMessage(content=system_prompt), *condensed]
+    if not any(getattr(m, "type", None) == "human" for m in messages):
+        messages.append(HumanMessage(content="(start)"))
+
+    for step_i in range(8):
+        log_llm_invoke_start(
+            node_name="project_manager",
+            step_index=step_i + 1,
+            step_cap=8,
+            project_id=state.project_id,
+        )
+        try:
+            ai: AIMessage = await tool_llm.ainvoke(messages)
+        except Exception as exc:
+            log_llm_invoke_exception_context(
+                node_name="project_manager",
+                step_index=step_i + 1,
+                project_id=state.project_id,
+            )
+            events.append(
+                await emit(
+                    "project_manager",
+                    "llm_error_fallback",
+                    {
+                        "step": step_i + 1,
+                        "error_preview": _truncate(str(exc), 500),
+                        "phase": "ticket_backlog",
+                    },
+                    state.project_id,
+                )
+            )
+            return False
+        messages.append(ai)
+        if not ai.tool_calls:
+            messages.append(
+                HumanMessage(
+                    content=(
+                        "Call list_tickets(project_id), then rag_query(project_id, query=<project goal>), "
+                        "then create_ticket for each major deliverable with business_requirements and "
+                        "technical_requirements grounded in the research docs and PROJECT_CONTEXT."
+                    )
+                )
+            )
+            continue
+
+        tool_msgs = await run_tool_calls(
+            ai,
+            PM_TICKET_BACKLOG_TOOLS_BY_NAME,
+            agent="project_manager",
+            project_id=state.project_id,
+        )
+        for tm in tool_msgs:
+            events.append(
+                await emit(
+                    "project_manager",
+                    "tool_result",
+                    {"name": tm.name, "preview": str(tm.content)[:300]},
+                    state.project_id,
+                )
+            )
+            messages.append(
+                ToolMessage(
+                    content=_truncate(str(tm.content), MAX_TOOL_RESULT_CHARS),
+                    name=tm.name,
+                    tool_call_id=tm.tool_call_id,
+                )
+            )
+        if await _list_project_tickets(state.project_id):
+            return True
+    return bool(await _list_project_tickets(state.project_id))
+
+
+async def _infer_fallback_route(
+    project_id: str | None,
+    *,
+    messages: list | None = None,
+    session_memory: SessionMemory | None = None,
+) -> RoutingDecision | None:
     if not project_id:
         return None
-    async with AsyncSessionLocal() as db:
-        tickets = await service.list_tickets(db, project_id=project_id)
-    # If the project has no tickets yet, the safest deterministic next step
-    # is to dispatch the researcher to scaffold docs/context (PM step 1).
+    tickets = await _list_project_tickets(project_id)
     if not tickets:
+        if _research_phase_complete(messages or [], session_memory):
+            if not _research_materials_ready(project_id):
+                return _pm_research_redispatch_decision()
+            return _pm_ticket_creation_decision()
         return RoutingDecision(
             next_agent="researcher",
             rationale="Fallback: PM LLM unavailable and no tickets exist yet.",
@@ -423,7 +655,10 @@ def _parse_routing(text: str) -> RoutingDecision | None:
         return None
     try:
         data = json.loads(text[start : end + 1])
-        return RoutingDecision(**data)
+        decision = RoutingDecision(**data)
+        if decision.next_agent.strip().lower() == "pm":
+            decision.next_agent = "project_manager"
+        return decision
     except Exception:
         return None
 
@@ -457,6 +692,47 @@ def build_project_manager_node():
         # don't pay for every specialist's entire tool transcript on each
         # supervisor invocation.
         condensed = _condense_messages_for_supervisor(list(state.messages))
+        research_handback = _research_phase_complete(
+            list(state.messages),
+            state.session_memory,
+        )
+        if (
+            state.project_id
+            and research_handback
+            and not await _list_project_tickets(state.project_id)
+            and not _research_materials_ready(state.project_id)
+        ):
+            decision = _pm_research_redispatch_decision()
+            events.append(
+                await emit(
+                    "project_manager",
+                    "route",
+                    {"next_agent": decision.next_agent, "rationale": decision.rationale},
+                    state.project_id,
+                )
+            )
+            return {
+                "messages": [
+                    HumanMessage(
+                        content=_format_pm_handoff(decision.next_agent, decision)
+                    )
+                ],
+                "next_agent": decision.next_agent,
+                "active_ticket_id": state.active_ticket_id,
+            }
+
+        if await _must_create_tickets_before_planning(
+            state.project_id,
+            messages=list(state.messages),
+            session_memory=state.session_memory,
+        ):
+            condensed.append(HumanMessage(content=_pm_ticket_creation_nudge()))
+            await _run_pm_ticket_backlog_phase(
+                state=state,
+                system_prompt=system_prompt,
+                condensed=condensed,
+                events=events,
+            )
         messages: list = [SystemMessage(content=system_prompt), *condensed]
         # Anthropic requires the conversation to end with a user message
         # before the model can produce a new assistant turn. If the last
@@ -499,7 +775,11 @@ def build_project_manager_node():
                         state.project_id,
                     )
                 )
-                decision = await _infer_fallback_route(state.project_id)
+                decision = await _infer_fallback_route(
+                    state.project_id,
+                    messages=list(state.messages),
+                    session_memory=state.session_memory,
+                )
                 # If DB heuristics can't confidently choose a specialist, keep the
                 # run alive (do NOT end) and surface the configuration problem.
                 if decision is None:
@@ -519,7 +799,12 @@ def build_project_manager_node():
             messages.append(ai)
 
             if ai.tool_calls:
-                tool_msgs: list[ToolMessage] = await run_tool_calls(ai, TOOLS_BY_NAME)
+                tool_msgs: list[ToolMessage] = await run_tool_calls(
+                    ai,
+                    TOOLS_BY_NAME,
+                    agent="project_manager",
+                    project_id=state.project_id,
+                )
                 for tm in tool_msgs:
                     events.append(
                         await emit(
@@ -538,6 +823,35 @@ def build_project_manager_node():
                 continue
 
             decision = _parse_routing(str(ai.content))
+            if await _must_create_tickets_before_planning(
+                state.project_id,
+                messages=list(state.messages),
+                session_memory=state.session_memory,
+            ):
+                if decision is None:
+                    messages.append(
+                        HumanMessage(
+                            content=(
+                                "Research is complete but the ticket backlog is still empty. "
+                                "Do not return routing JSON yet. Call list_tickets(project_id), "
+                                "then create_ticket for each major deliverable with "
+                                "business_requirements and technical_requirements."
+                            )
+                        )
+                    )
+                    continue
+                messages.append(
+                    HumanMessage(
+                        content=(
+                            "Research is complete but the ticket backlog is still empty. "
+                            "Do not return routing JSON yet. Call list_tickets(project_id), "
+                            "then create_ticket for each major deliverable with "
+                            "business_requirements and technical_requirements."
+                        )
+                    )
+                )
+                decision = None
+                continue
             break
 
         # We do NOT push the PM's intermediate AI/Tool messages back into
@@ -547,6 +861,7 @@ def build_project_manager_node():
         new_msgs: list = []
 
         if decision is None or decision.next_agent not in VALID_TARGETS:
+            ready_dev = await _infer_next_dev_route(state.project_id)
             if ready_dev is not None:
                 decision = ready_dev
                 events.append(
@@ -558,7 +873,11 @@ def build_project_manager_node():
                     )
                 )
             else:
-                fb = await _infer_fallback_route(state.project_id)
+                fb = await _infer_fallback_route(
+                    state.project_id,
+                    messages=list(state.messages),
+                    session_memory=state.session_memory,
+                )
                 if fb is not None:
                     decision = fb
                     events.append(
@@ -579,7 +898,11 @@ def build_project_manager_node():
                         instructions="Call list_tickets(project_id) and determine next agent from DB state.",
                     )
         elif decision.next_agent == "end":
-            fb = await _infer_fallback_route(state.project_id)
+            fb = await _infer_fallback_route(
+                state.project_id,
+                messages=list(state.messages),
+                session_memory=state.session_memory,
+            )
             if fb is not None:
                 decision = fb
                 events.append(
@@ -594,6 +917,23 @@ def build_project_manager_node():
                     )
                 )
 
+        if (
+            state.project_id
+            and research_handback
+            and not await _list_project_tickets(state.project_id)
+        ):
+            if not _research_materials_ready(state.project_id):
+                decision = _pm_research_redispatch_decision()
+            else:
+                decision = _pm_ticket_creation_decision()
+
+        decision = await _guard_planning_without_tickets(
+            decision,
+            project_id=state.project_id,
+            messages=list(state.messages),
+            session_memory=state.session_memory,
+        )
+
         events.append(
             await emit(
                 "project_manager",
@@ -604,7 +944,7 @@ def build_project_manager_node():
         )
 
         # If the PM hands off, append an instruction message visible to the next agent.
-        if decision.next_agent not in {"end", "project_manager"} and (
+        if decision.next_agent != "end" and (
             decision.instructions or decision.ticket_ids or decision.phase
         ):
             new_msgs.append(

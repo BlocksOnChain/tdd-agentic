@@ -46,7 +46,11 @@ def _format_tool_error(exc: BaseException, tool_name: str | None) -> str:
 
 
 async def run_tool_calls(
-    ai_message: AIMessage, tools_by_name: dict[str, BaseTool]
+    ai_message: AIMessage,
+    tools_by_name: dict[str, BaseTool],
+    *,
+    agent: str | None = None,
+    project_id: str | None = None,
 ) -> list[ToolMessage]:
     """Execute tool calls in an AI message and return the resulting ToolMessages."""
     results: list[ToolMessage] = []
@@ -54,6 +58,13 @@ async def run_tool_calls(
         name = call.get("name")
         args = call.get("args", {})
         call_id = call.get("id")
+        if agent:
+            await emit(
+                agent,
+                "tool_call",
+                {"name": name, "args": args},
+                project_id,
+            )
         tool = tools_by_name.get(name)
         if tool is None:
             content = f"TOOL_ERROR: tool '{name}' is not registered for this agent."

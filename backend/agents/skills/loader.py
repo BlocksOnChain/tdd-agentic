@@ -4,7 +4,13 @@ from __future__ import annotations
 from backend.agents.skills.registry import get_skills_for_role
 
 
-def inject_skills(base_prompt: str, role: str, max_chars: int | None = None) -> str:
+def inject_skills(
+    base_prompt: str,
+    role: str,
+    *,
+    project_id: str | None = None,
+    max_chars: int | None = None,
+) -> str:
     """Append a compact index of skills assigned to ``role``.
 
     Full ``SKILL.md`` bodies are available via ``rag_query``; only names and
@@ -12,7 +18,7 @@ def inject_skills(base_prompt: str, role: str, max_chars: int | None = None) -> 
     """
     from backend.config import get_settings
 
-    skills = get_skills_for_role(role)
+    skills = get_skills_for_role(role, project_id)
     if not skills:
         return base_prompt
 

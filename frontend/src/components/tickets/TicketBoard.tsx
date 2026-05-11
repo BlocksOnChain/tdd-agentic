@@ -99,6 +99,38 @@ export function TicketBoard() {
 }
 
 function TicketDetail({ ticket, onClose }: { ticket: TicketT; onClose: () => void }) {
+  const { selectedProjectId, setTickets } = useUIStore();
+  const [drafts, setDrafts] = useState<Record<number, string>>({});
+  const [errors, setErrors] = useState<Record<number, string>>({});
+
+  const submitAnswer = async (questionIndex: number) => {
+    const value = drafts[questionIndex]?.trim();
+    if (!value) return;
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[questionIndex];
+      return next;
+    });
+    try {
+      await api.answerQuestion(ticket.id, questionIndex, value);
+      if (selectedProjectId) {
+        const refreshed = await api.listTickets(selectedProjectId);
+        setTickets(refreshed);
+        await api.resumeAgent(selectedProjectId, value);
+      }
+      setDrafts((prev) => {
+        const next = { ...prev };
+        delete next[questionIndex];
+        return next;
+      });
+    } catch (err) {
+      setErrors((prev) => ({
+        ...prev,
+        [questionIndex]: err instanceof Error ? err.message : "Could not save answer",
+      }));
+    }
+  };
+
   return (
     <div className="rounded border border-border bg-surface p-4">
       <div className="flex items-start justify-between">
@@ -126,8 +158,26 @@ function TicketDetail({ ticket, onClose }: { ticket: TicketT; onClose: () => voi
             {ticket.questions.map((q, i) => (
               <li key={i} className="rounded border border-border bg-muted p-2 text-sm">
                 <div className="text-zinc-200">{q.question}</div>
-                {q.answer && (
+                {q.answer ? (
                   <div className="mt-1 text-xs text-zinc-400">→ {q.answer}</div>
+                ) : (
+                  <div className="mt-2 flex flex-col gap-2">
+                    <textarea
+                      className="w-full rounded border border-border bg-surface px-2 py-1 text-xs"
+                      rows={2}
+                      placeholder="Your answer…"
+                      value={drafts[i] ?? ""}
+                      onChange={(e) => setDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
+                    />
+                    {errors[i] && <div className="text-xs text-red-400">{errors[i]}</div>}
+                    <button
+                      type="button"
+                      className="self-start rounded border border-accent bg-accent/20 px-2 py-1 text-xs text-accent"
+                      onClick={() => submitAnswer(i)}
+                    >
+                      Save answer & resume
+                    </button>
+                  </div>
                 )}
               </li>
             ))}

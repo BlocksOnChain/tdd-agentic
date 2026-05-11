@@ -10,10 +10,12 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.events import Event, bus
-from backend.api.routes.agents import RUNNING_TASKS
+from backend.agents.checkpointer import delete_thread_checkpoints
+from backend.api.routes.agents import RUNNING_TASKS, _cancel_task
 from backend.config import get_settings
 from backend.db.session import get_db
 from backend.rag.ingestion import collection_name
+from backend.rag.workspace_sync import list_research_markdown
 from backend.ticket_system import schemas, service
 from backend.ticket_system.models import AgentLog
 
@@ -38,6 +40,16 @@ async def get_one(project_id: str, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
+@router.get("/{project_id}/research-artifacts")
+async def research_artifacts(project_id: str, db: AsyncSession = Depends(get_db)) -> dict:
+    """List researcher markdown on disk for a project (docs/, AGENTS.md, skills)."""
+    try:
+        await service.get_project(db, project_id)
+    except NoResultFound as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return {"project_id": project_id, "workspace_files": list_research_markdown(project_id)}
+
+
 @router.delete("/{project_id}")
 async def delete_one(project_id: str, db: AsyncSession = Depends(get_db)) -> dict:
     """Delete a project and every artifact attached to it.
@@ -60,7 +72,7 @@ async def delete_one(project_id: str, db: AsyncSession = Depends(get_db)) -> dic
 
     task = RUNNING_TASKS.get(project_id)
     if task is not None and not task.done():
-        task.cancel()
+        await _cancel_task(project_id, task)
 
     settings = get_settings()
     try:
@@ -78,6 +90,11 @@ async def delete_one(project_id: str, db: AsyncSession = Depends(get_db)) -> dic
             shutil.rmtree(workspace, ignore_errors=True)
         except Exception:
             pass
+
+    try:
+        await delete_thread_checkpoints(project_id)
+    except Exception:
+        pass
 
     await db.execute(delete(AgentLog).where(AgentLog.project_id == project_id))
     await db.delete(project)

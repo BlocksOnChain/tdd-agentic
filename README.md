@@ -8,6 +8,12 @@ A team of specialized AI agents — Project Manager, Researcher, Backend Lead, F
 
 ## Architecture
 
+The stack follows a **hybrid** design (see [docs/deep-agents-integration-review.md](docs/deep-agents-integration-review.md)):
+
+- **Control plane (custom):** FastAPI + WebSocket, Postgres checkpointer with `thread_id = project_id`, `agent_logs`, and the Next.js monitoring client.
+- **Root orchestration (LangGraph):** Project Manager supervisor node, explicit `next_agent` routing, and specialist subgraphs — **not** replaced by a single Deep Agent.
+- **Specialist harness (LangChain Deep Agents):** Long-horizon roles can run inside `create_deep_agent` with virtual filesystem (`FilesystemBackend` scoped to each project workspace), context middleware, and additive custom tools (tickets, RAG, web search). Deep-agent transcripts stay **inside** the specialist invocation; only PM handoffs and structured **`session_memory`** land in the checkpointed root state.
+
 ```
 ┌────────────────────────────┐      ┌─────────────────────────────┐
 │   Next.js Monitoring UI    │◀────▶│  FastAPI + WebSocket Hub    │
@@ -16,11 +22,10 @@ A team of specialized AI agents — Project Manager, Researcher, Backend Lead, F
                                                   │
                                                   ▼
                                 ┌────────────────────────────────────┐
-                                │  LangGraph Root Graph (Supervisor) │
-                                │                                    │
-                                │   Project Manager                  │
+                                │  LangGraph root graph              │
+                                │  PM supervisor (routing + tickets)   │
                                 │     │                              │
-                                │     ├─ researcher  (subgraph)      │
+                                │     ├─ researcher (Deep Agent *)   │
                                 │     ├─ backend_lead, frontend_lead │
                                 │     ├─ backend_dev, frontend_dev   │
                                 │     └─ devops, qa                  │
@@ -29,7 +34,10 @@ A team of specialized AI agents — Project Manager, Researcher, Backend Lead, F
                 ┌─────────────────────────────────┼────────────────────────┐
                 ▼                                 ▼                        ▼
         PostgreSQL                            Qdrant                  Langfuse
-   (tickets + checkpointer)             (per-project RAG)          (LLM tracing)
+   (tickets + checkpointer + session_memory)   (per-project RAG)    (LLM tracing)
+
+* Researcher uses Deep Agents by default; other specialists still use the legacy
+  tool loop until migrated. Set USE_DEEP_AGENT_RESEARCHER=false to roll back.
 ```
 
 ### Agent hierarchy
@@ -37,7 +45,7 @@ A team of specialized AI agents — Project Manager, Researcher, Backend Lead, F
 | Agent | Role |
 |-------|------|
 | Project Manager | Supervisor; generates tickets, routes work, asks humans questions |
-| Researcher | Web search, doc generation, RAG ingestion, skill creation |
+| Researcher | Web search, doc generation, RAG ingestion, skill creation (Deep Agent harness when enabled) |
 | Backend / Frontend Leads | Decompose tickets into ordered subtasks with explicit test cases |
 | Backend / Frontend Devs | TDD red→green→refactor cycle on assigned subtasks |
 | DevOps | Infra, CI, Docker subtasks |
@@ -102,7 +110,9 @@ tdd-agentic/
 │   ├── agents/                # LangGraph nodes & subgraphs
 │   │   ├── graph.py           # Root graph wiring
 │   │   ├── state.py           # Pydantic SystemState (extra='forbid')
-│   │   ├── runner.py          # Generic specialist subgraph factory
+│   │   ├── session_memory.py # Checkpointed narrative (merge with message trim)
+│   │   ├── runner.py          # Legacy specialist subgraph factory
+│   │   ├── deep/              # Deep Agents adapter + workspace backend
 │   │   ├── checkpointer.py    # AsyncPostgresSaver
 │   │   ├── llm.py             # Multi-provider LLM factory
 │   │   ├── observability.py   # Optional Langfuse hook
@@ -149,6 +159,11 @@ GRADER_MODEL=anthropic/claude-haiku-4-5
 
 Slugs are `provider/model`. Add new providers by extending `backend/agents/llm.py`.
 
+### Deep Agents (researcher)
+
+- **`USE_DEEP_AGENT_RESEARCHER`** — default `true`. Set `false` to use the previous specialist tool loop and `fs_*` tools for the researcher only.
+- **`DEEP_AGENT_RECURSION_LIMIT`** — max LangGraph steps for one inner deep-agent turn (default `80`).
+
 ---
 
 ## RAG — CRAG pipeline
@@ -159,7 +174,15 @@ Slugs are `provider/model`. Add new providers by extending `backend/agents/llm.p
 2. Grade each doc with a small LLM (`GRADER_MODEL`) for relevance.
 3. If nothing relevant survives, **rewrite** the query and retry once.
 
-Embeddings default to OpenAI `text-embedding-3-small`. Set `EMBEDDING_PROVIDER=local` to use sentence-transformers locally.
+Embeddings default to OpenAI `text-embedding-3-small`. Set `EMBEDDING_PROVIDER=local` to use sentence-transformers on the machine that runs the backend.
+
+**Why Docker builds were huge:** the `sentence-transformers` dependency pulls in **PyTorch** (`torch`). On Linux, pip often resolves **CUDA-enabled** torch wheels (hundreds of MB to over 1GB). That is only needed for **local** embeddings — the default stack uses OpenAI for embeddings and does not install `sentence-transformers`.
+
+For local embeddings, install the extra (adds PyTorch; use a [CPU-only torch index](https://pytorch.org/get-started/locally/) in constrained environments if you want to avoid NVIDIA wheels):
+
+```bash
+pip install -e ".[embeddings-local]"
+```
 
 ---
 
@@ -171,6 +194,8 @@ Researchers can call the `create_skill` tool to author a focused skill brief and
 - Registered in `_skills/registry.json`
 - Indexed into the project's RAG collection
 - **Automatically injected** into the system prompt of every agent assigned to that role (`backend/agents/skills/loader.py`)
+
+When the researcher runs as a Deep Agent, skill directories are also passed to the harness as `/_skills` (progressive disclosure alongside `inject_skills`).
 
 ---
 

@@ -25,6 +25,7 @@ from backend.config import get_settings
 _ALLOWED_MSGPACK_MODULES: list[tuple[str, str]] = [
     ("backend.agents.state", "SystemState"),
     ("backend.agents.state", "AgentEvent"),
+    ("backend.agents.session_memory", "SessionMemory"),
 ]
 
 
@@ -63,6 +64,25 @@ async def close_pool() -> None:
     if _pool is not None:
         await _pool.close()
         _pool = None
+
+
+async def delete_thread_checkpoints(thread_id: str) -> None:
+    """Remove LangGraph checkpoint rows for a project thread."""
+    pool = await get_pool()
+    async with pool.connection() as conn:
+        async with conn.cursor() as cur:
+            await cur.execute(
+                "DELETE FROM checkpoint_writes WHERE thread_id = %s",
+                (thread_id,),
+            )
+            await cur.execute(
+                "DELETE FROM checkpoints WHERE thread_id = %s",
+                (thread_id,),
+            )
+            await cur.execute(
+                "DELETE FROM checkpoint_blobs WHERE thread_id = %s",
+                (thread_id,),
+            )
 
 
 @asynccontextmanager

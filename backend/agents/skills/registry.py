@@ -16,19 +16,37 @@ from typing import Any
 
 from backend.config import get_settings
 
-
-def _registry_path() -> Path:
-    settings = get_settings()
-    base = settings.workspace_root / "_skills"
-    base.mkdir(parents=True, exist_ok=True)
-    return base / "registry.json"
-
+ALLOWED_SKILL_ROLES = frozenset(
+    {
+        "project_manager",
+        "researcher",
+        "backend_lead",
+        "frontend_lead",
+        "backend_dev",
+        "frontend_dev",
+        "devops",
+        "qa",
+    }
+)
 
 _lock = threading.Lock()
 
 
-def _load_raw() -> dict[str, Any]:
-    path = _registry_path()
+def _project_skill_root(project_id: str | None) -> Path:
+    settings = get_settings()
+    if project_id:
+        return settings.workspace_root / project_id / "_skills"
+    return settings.workspace_root / "_skills"
+
+
+def _registry_path(project_id: str | None) -> Path:
+    root = _project_skill_root(project_id)
+    root.mkdir(parents=True, exist_ok=True)
+    return root / "registry.json"
+
+
+def _load_raw(project_id: str | None) -> dict[str, Any]:
+    path = _registry_path(project_id)
     if not path.exists():
         return {"skills": {}}
     try:
@@ -37,8 +55,8 @@ def _load_raw() -> dict[str, Any]:
         return {"skills": {}}
 
 
-def _save_raw(data: dict[str, Any]) -> None:
-    _registry_path().write_text(json.dumps(data, indent=2), encoding="utf-8")
+def _save_raw(project_id: str | None, data: dict[str, Any]) -> None:
+    _registry_path(project_id).write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
 def upsert_skill(
@@ -49,13 +67,19 @@ def upsert_skill(
     project_id: str | None = None,
 ) -> dict[str, Any]:
     """Create or update a skill and persist its content to disk."""
-    settings = get_settings()
-    skill_dir = settings.workspace_root / "_skills" / name
+    invalid = [role for role in roles if role not in ALLOWED_SKILL_ROLES]
+    if invalid:
+        raise ValueError(
+            "Invalid skill roles: "
+            f"{', '.join(invalid)}. Allowed: {', '.join(sorted(ALLOWED_SKILL_ROLES))}."
+        )
+
+    skill_dir = _project_skill_root(project_id) / name
     skill_dir.mkdir(parents=True, exist_ok=True)
     (skill_dir / "SKILL.md").write_text(content, encoding="utf-8")
 
     with _lock:
-        data = _load_raw()
+        data = _load_raw(project_id)
         data["skills"][name] = {
             "name": name,
             "description": description,
@@ -63,21 +87,44 @@ def upsert_skill(
             "project_id": project_id,
             "path": str((skill_dir / "SKILL.md").as_posix()),
         }
-        _save_raw(data)
+        _save_raw(project_id, data)
     return data["skills"][name]
 
 
-def list_skills() -> list[dict[str, Any]]:
-    return list(_load_raw().get("skills", {}).values())
+def list_skills(project_id: str | None = None) -> list[dict[str, Any]]:
+    if project_id:
+        return list(_load_raw(project_id).get("skills", {}).values())
+    settings = get_settings()
+    root = settings.workspace_root
+    if not root.is_dir():
+        return []
+    rows: list[dict[str, Any]] = []
+    for project_dir in sorted(root.iterdir()):
+        if not project_dir.is_dir():
+            continue
+        rows.extend(_load_raw(project_dir.name).get("skills", {}).values())
+    legacy = _load_raw(None).get("skills", {})
+    rows.extend(legacy.values())
+    return rows
 
 
-def get_skills_for_role(role: str) -> list[dict[str, Any]]:
-    return [s for s in list_skills() if role in (s.get("roles") or [])]
+def get_skills_for_role(role: str, project_id: str | None = None) -> list[dict[str, Any]]:
+    by_name: dict[str, dict[str, Any]] = {}
+    for skill in list_skills(None):
+        if role in (skill.get("roles") or []):
+            by_name[str(skill.get("name") or "")] = skill
+    if project_id:
+        for skill in list_skills(project_id):
+            if role in (skill.get("roles") or []):
+                by_name[str(skill.get("name") or "")] = skill
+    return [skill for name, skill in by_name.items() if name]
 
 
-def get_skill_content(name: str) -> str | None:
-    skills = _load_raw().get("skills", {})
+def get_skill_content(name: str, project_id: str | None = None) -> str | None:
+    skills = _load_raw(project_id).get("skills", {})
     info = skills.get(name)
+    if info is None and project_id is not None:
+        info = _load_raw(None).get("skills", {}).get(name)
     if info is None:
         return None
     path = Path(info["path"])

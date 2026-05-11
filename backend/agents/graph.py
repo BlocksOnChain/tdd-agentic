@@ -38,6 +38,8 @@ def _route_from_pm(state: SystemState) -> str:
     supervisor turn after a tool call.
     """
     target = (state.next_agent or "").lower()
+    if target == "pm":
+        target = "project_manager"
     if target == "end":
         return END
     if target in AGENT_NODES:

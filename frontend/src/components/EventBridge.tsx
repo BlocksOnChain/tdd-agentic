@@ -2,7 +2,9 @@
 
 import { useEffect } from "react";
 
+import { formatAgentLogDetail } from "@/lib/agentLog";
 import { api, TicketT, persistedLogToEntry } from "@/lib/api";
+import { normalizeInterrupt } from "@/lib/interrupts";
 import { useUIStore } from "@/lib/store";
 import { useEventStream, WSEvent } from "@/lib/websocket";
 
@@ -12,11 +14,20 @@ import { useEventStream, WSEvent } from "@/lib/websocket";
  * of the layout tree so every page sees live state.
  */
 export function EventBridge() {
-  const { appendLog, pushInterrupt, setTickets, selectedProjectId, setCrash, setLogsFromHistory } =
-    useUIStore();
+  const {
+    appendLog,
+    pushInterrupt,
+    setInterrupts,
+    setTickets,
+    selectedProjectId,
+    setCrash,
+    setLogsFromHistory,
+  } = useUIStore();
 
   useEventStream((e: WSEvent) => {
     if (e.type === "agent") {
+      const activeProjectId = useUIStore.getState().selectedProjectId;
+      if (activeProjectId && e.project_id && e.project_id !== activeProjectId) return;
       const p = e.payload as Record<string, unknown>;
       const node = (p.node as string) ?? (p.agent as string) ?? "system";
       const kind = (p.kind as string) ?? "log";
@@ -24,7 +35,7 @@ export function EventBridge() {
         ts: e.ts ?? Date.now() / 1000,
         agent: node,
         kind,
-        detail: JSON.stringify(p).slice(0, 1200),
+        detail: formatAgentLogDetail(kind, p),
         checkpoint_id: (p.checkpoint_id as string | undefined) ?? null,
       });
       if (kind === "crash") {
@@ -44,13 +55,9 @@ export function EventBridge() {
       }
     }
     if (e.type === "interrupt") {
-      const p = e.payload as Record<string, unknown>;
-      pushInterrupt({
-        ticket_id: p.ticket_id as string | undefined,
-        question: (p.question as string) ?? "(no question text)",
-        asked_by: p.asked_by as string | undefined,
-        receivedAt: Date.now(),
-      });
+      if (selectedProjectId && e.project_id && e.project_id !== selectedProjectId) return;
+      const normalized = normalizeInterrupt(e.payload);
+      if (normalized) pushInterrupt(normalized);
     }
     if (e.type === "ticket" && selectedProjectId) {
       api
@@ -71,6 +78,7 @@ export function EventBridge() {
   useEffect(() => {
     if (!selectedProjectId) {
       setLogsFromHistory([]);
+      setInterrupts([]);
       return;
     }
     const pid = selectedProjectId;
@@ -89,7 +97,18 @@ export function EventBridge() {
         setLogsFromHistory(logs.map(persistedLogToEntry));
       })
       .catch(() => undefined);
-  }, [selectedProjectId, setTickets, setLogsFromHistory]);
+    api
+      .listInterrupts(pid)
+      .then(({ interrupts }) => {
+        if (useUIStore.getState().selectedProjectId !== pid) return;
+        setInterrupts(
+          interrupts
+            .map((item) => normalizeInterrupt(item))
+            .filter((item): item is NonNullable<typeof item> => item !== null),
+        );
+      })
+      .catch(() => undefined);
+  }, [selectedProjectId, setTickets, setLogsFromHistory, setInterrupts]);
 
   return null;
 }

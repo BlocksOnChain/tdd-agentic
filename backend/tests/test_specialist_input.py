@@ -3,11 +3,33 @@ from __future__ import annotations
 
 from langchain_core.messages import HumanMessage
 
-from backend.agents.runner import _build_specialist_input
+from backend.agents.runner import build_specialist_focused_messages, specialist_closing_instruction
 from backend.agents.state import SystemState
 
 
-def test_skips_duplicate_goal_when_project_context_set() -> None:
+def test_skips_duplicate_goal_when_project_context_set_for_dev() -> None:
+    state = SystemState(
+        project_context="Build a todo API",
+        messages=[
+            HumanMessage(content="Build a todo API"),
+            HumanMessage(content="[from project_manager → backend_dev]\nImplement API."),
+        ],
+    )
+    out = build_specialist_focused_messages(state, "backend_dev")
+    assert not any(
+        isinstance(m, HumanMessage) and "[original project goal]" in str(m.content) for m in out
+    )
+
+
+def test_specialist_closing_instruction_varies_by_role_and_runtime() -> None:
+    assert "docs/" in specialist_closing_instruction(role="researcher")
+    assert "web_search" in specialist_closing_instruction(role="researcher", for_deep=True)
+    assert "write_file" in specialist_closing_instruction(role="researcher", for_deep=True)
+    assert "Kanban" not in specialist_closing_instruction(role="backend_dev")
+    assert "Kanban" in specialist_closing_instruction(role="backend_dev", for_deep=True)
+
+
+def test_researcher_keeps_original_goal_when_project_context_set() -> None:
     state = SystemState(
         project_context="Build a todo API",
         messages=[
@@ -15,7 +37,27 @@ def test_skips_duplicate_goal_when_project_context_set() -> None:
             HumanMessage(content="[from project_manager → researcher]\nResearch FastAPI."),
         ],
     )
-    out = _build_specialist_input(state, "researcher")
-    assert not any(
+    out = build_specialist_focused_messages(state, "researcher")
+    assert any(
         isinstance(m, HumanMessage) and "[original project goal]" in str(m.content) for m in out
+    )
+
+
+def test_researcher_skips_prior_self_handoff_summary() -> None:
+    state = SystemState(
+        project_context="Build a todo API",
+        messages=[
+            HumanMessage(content="Build a todo API"),
+            HumanMessage(
+                content=(
+                    "[from researcher → project_manager]\n"
+                    "I am a 3rd year student looking for a summer internship."
+                )
+            ),
+            HumanMessage(content="[from project_manager → researcher]\nRefresh docs/tech-stack.md."),
+        ],
+    )
+    out = build_specialist_focused_messages(state, "researcher")
+    assert not any(
+        isinstance(m, HumanMessage) and "summer internship" in str(m.content) for m in out
     )

@@ -17,6 +17,7 @@ from qdrant_client import AsyncQdrantClient
 from backend.agents.llm import grader_model, researcher_model
 from backend.agents.llm_audit import log_rag_crag_llm_targets
 from backend.config import get_settings
+from backend.rag.cache import crag_cache_get, crag_cache_pop, crag_cache_put
 from backend.rag.embeddings import get_embeddings
 from backend.rag.ingestion import PAYLOAD_TEXT_KEY, collection_name, ensure_collection
 
@@ -48,9 +49,6 @@ _REWRITE_PROMPT = ChatPromptTemplate.from_messages(
         ("human", "Original query: {query}\nReturn ONLY the rewritten query."),
     ]
 )
-
-_CRAG_CACHE: dict[tuple[str, str, int], tuple[float, list[Document]]] = {}
-
 
 def _point_to_document(payload: dict[str, Any] | None, score: float | None) -> Document:
     payload = dict(payload or {})
@@ -117,19 +115,19 @@ async def _rewrite(query: str) -> str:
 def _cache_get(project_id: str, query: str, k: int) -> list[Document] | None:
     settings = get_settings()
     key = (project_id, query.strip().lower(), k)
-    row = _CRAG_CACHE.get(key)
+    row = crag_cache_get(key)
     if row is None:
         return None
     ts, docs = row
     if time.time() - ts > settings.rag_grade_cache_ttl_seconds:
-        _CRAG_CACHE.pop(key, None)
+        crag_cache_pop(key)
         return None
     return docs
 
 
 def _cache_put(project_id: str, query: str, k: int, docs: list[Document]) -> None:
     key = (project_id, query.strip().lower(), k)
-    _CRAG_CACHE[key] = (time.time(), docs)
+    crag_cache_put(key, (time.time(), docs))
 
 
 async def crag_retrieve(project_id: str, query: str, k: int | None = None) -> list[Document]:

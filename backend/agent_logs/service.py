@@ -6,9 +6,8 @@ from typing import Any
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-_MAX_PREVIEW_CHARS = 1200
-_MAX_RATIONALE_CHARS = 800
-_MAX_ERROR_CHARS = 1200
+from backend.agent_logs.display import format_agent_log_detail
+
 
 async def list_agent_logs(
     db: AsyncSession,
@@ -18,7 +17,6 @@ async def list_agent_logs(
 ) -> list[dict[str, Any]]:
     """Return newest-first rows; caller may reverse for chronological UI."""
     lim = max(1, min(limit, 10_000))
-    # Fast path: return a compact, bounded payload preview (no full JSON).
     result = await db.execute(
         text(
             """
@@ -29,9 +27,7 @@ async def list_agent_logs(
               kind,
               ticket_id,
               subtask_id,
-              left((payload->>'preview'), :preview_chars) AS preview,
-              left((payload->>'rationale'), :rationale_chars) AS rationale,
-              left((payload->>'error'), :error_chars) AS error,
+              payload,
               (payload->>'checkpoint_id') AS checkpoint_id
             FROM agent_logs
             WHERE project_id = :project_id
@@ -39,28 +35,25 @@ async def list_agent_logs(
             LIMIT :lim
             """
         ),
-        {
-            "project_id": project_id,
-            "lim": lim,
-            "preview_chars": _MAX_PREVIEW_CHARS,
-            "rationale_chars": _MAX_RATIONALE_CHARS,
-            "error_chars": _MAX_ERROR_CHARS,
-        },
+        {"project_id": project_id, "lim": lim},
     )
     rows = result.fetchall()
     out: list[dict[str, Any]] = []
-    for (id_, created_at, agent, kind, ticket_id, subtask_id, preview, rationale, error, checkpoint_id) in rows:
-        p: dict[str, Any] = {}
+    for (
+        id_,
+        created_at,
+        agent,
+        kind,
+        ticket_id,
+        subtask_id,
+        payload,
+        checkpoint_id,
+    ) in rows:
+        p: dict[str, Any] = dict(payload) if isinstance(payload, dict) else {}
         if ticket_id is not None:
-            p["ticket_id"] = ticket_id
+            p.setdefault("ticket_id", ticket_id)
         if subtask_id is not None:
-            p["subtask_id"] = subtask_id
-        if preview:
-            p["preview"] = preview
-        if rationale:
-            p["rationale"] = rationale
-        if error:
-            p["error"] = error
+            p.setdefault("subtask_id", subtask_id)
         out.append(
             {
                 "id": id_,
@@ -69,6 +62,7 @@ async def list_agent_logs(
                 "agent": agent,
                 "kind": kind,
                 "payload": p,
+                "detail": format_agent_log_detail(kind, p),
                 "checkpoint_id": checkpoint_id,
             }
         )

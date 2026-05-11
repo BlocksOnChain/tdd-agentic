@@ -3,19 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { InterruptPanel } from "@/components/hitl/InterruptPanel";
+import { InterruptPanel, useHumanInputCount } from "@/components/hitl/InterruptPanel";
 import { cn } from "@/lib/cn";
 import { useUIStore } from "@/lib/store";
 
 const NAV = [
   { href: "/", label: "Dashboard" },
+  { href: "/human", label: "Human input" },
   { href: "/tickets", label: "Tickets" },
   { href: "/logs", label: "Logs" },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const hitlPending = useUIStore((s) => s.interrupts.length > 0);
+  const humanInputCount = useHumanInputCount();
+  const hitlPending = humanInputCount > 0;
   return (
     <div className="grid min-h-screen grid-cols-[220px_1fr]">
       <aside className="border-r border-border bg-surface p-4 flex flex-col gap-2">
@@ -26,11 +28,16 @@ export function Shell({ children }: { children: React.ReactNode }) {
               key={item.href}
               href={item.href}
               className={cn(
-                "rounded px-3 py-2 text-sm hover:bg-muted",
+                "flex items-center justify-between rounded px-3 py-2 text-sm hover:bg-muted",
                 pathname === item.href && "bg-muted text-accent"
               )}
             >
-              {item.label}
+              <span>{item.label}</span>
+              {item.href === "/human" && hitlPending ? (
+                <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-300">
+                  {humanInputCount}
+                </span>
+              ) : null}
             </Link>
           ))}
         </nav>

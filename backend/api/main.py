@@ -41,13 +41,14 @@ from backend.api.routes import projects as projects_routes
 from backend.api.routes import tickets as tickets_routes
 from backend.api.routes.agents import cancel_all_running_tasks
 from backend.api.websocket import router as ws_router
-from backend.config import get_settings
+from backend.config import get_settings, log_settings_warnings
 from backend.db.session import init_db
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
+    log_settings_warnings(settings)
     log_resolved_llm_routing()
     ll = logging.getLogger("backend.agents.llm_http")
     ll.setLevel(logging.INFO if settings.llm_invoke_log_each_call else logging.WARNING)

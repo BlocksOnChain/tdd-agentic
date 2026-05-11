@@ -12,6 +12,7 @@ from typing import Annotated, Any
 from pydantic import BaseModel, ConfigDict, Field
 
 from backend.agents.message_reducer import add_messages_trimmed
+from backend.agents.session_memory import SessionMemory, merge_session_memory
 
 
 class AgentEvent(BaseModel):
@@ -29,6 +30,10 @@ class SystemState(BaseModel):
     model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
 
     messages: Annotated[list, add_messages_trimmed] = Field(default_factory=list)
+
+    session_memory: Annotated[SessionMemory, merge_session_memory] = Field(
+        default_factory=SessionMemory
+    )
 
     project_id: str | None = None
     project_context: str = ""

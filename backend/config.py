@@ -1,11 +1,24 @@
 """Application configuration loaded from environment via pydantic-settings."""
 from __future__ import annotations
 
+import logging
 from functools import lru_cache
 from pathlib import Path
+from urllib.parse import urlparse
 
-from pydantic import AliasChoices, Field
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_logger = logging.getLogger(__name__)
+
+
+def _default_workspace_root() -> Path:
+    docker_root = Path("/app/workspace")
+    if docker_root.is_dir():
+        return docker_root
+    local_root = Path.cwd() / "workspace"
+    local_root.mkdir(parents=True, exist_ok=True)
+    return local_root
 
 
 class Settings(BaseSettings):
@@ -110,11 +123,47 @@ class Settings(BaseSettings):
     backend_cors_origins: str = "http://localhost:3000"
 
     # Workspace where generated project artifacts live
-    workspace_root: Path = Path("/app/workspace")
+    workspace_root: Path = Field(default_factory=_default_workspace_root)
+
+    # LangChain Deep Agents (specialist harness). Set false to use the legacy
+    # tool-loop subgraph for the researcher only.
+    use_deep_agent_researcher: bool = True
+    # Max LangGraph steps for one specialist deep-agent invocation (inner loop).
+    deep_agent_recursion_limit: int = 80
 
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.backend_cors_origins.split(",") if o.strip()]
+
+    @field_validator("workspace_root", mode="before")
+    @classmethod
+    def _coerce_workspace_root(cls, value: object) -> Path:
+        if value is None or (isinstance(value, str) and not value.strip()):
+            return _default_workspace_root()
+        return Path(value)
+
+
+def log_settings_warnings(settings: Settings | None = None) -> None:
+    """Emit configuration warnings once at startup."""
+    settings = settings or get_settings()
+    db_host = urlparse(settings.database_url.replace("+psycopg", "")).hostname
+    ck_host = urlparse(settings.checkpointer_url).hostname
+    if db_host and ck_host and db_host != ck_host:
+        _logger.warning(
+            "DATABASE_URL host %r differs from CHECKPOINTER_URL host %r; "
+            "tickets and LangGraph checkpoints may be on different databases.",
+            db_host,
+            ck_host,
+        )
+    provider = (settings.web_search_provider or "auto").strip().lower()
+    has_tavily = bool(settings.tavily_api_key.strip())
+    has_anthropic = bool(settings.anthropic_api_key.strip())
+    if provider == "tavily" and not has_tavily:
+        _logger.warning("WEB_SEARCH_PROVIDER=tavily but TAVILY_API_KEY is empty.")
+    elif provider == "auto" and not has_tavily and not has_anthropic:
+        _logger.warning(
+            "Researcher web_search has no backend: set TAVILY_API_KEY and/or ANTHROPIC_API_KEY."
+        )
 
 
 @lru_cache(maxsize=1)

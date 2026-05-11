@@ -29,6 +29,10 @@ def _dump(obj: Any) -> str:
     return json.dumps(obj, default=str, indent=2)
 
 
+def _tool_error(exc: BaseException) -> str:
+    return _dump({"error": str(exc)})
+
+
 @tool
 async def list_tickets(project_id: str) -> str:
     """List every ticket in a project as compact rows (id, title, status).
@@ -102,11 +106,14 @@ async def create_ticket(
 async def update_ticket_status(ticket_id: str, status: str) -> str:
     """Transition a ticket to a new status. Valid: draft, in_review, questions_pending, todo, in_progress, done, blocked."""
     async with AsyncSessionLocal() as db:
-        ticket = await service.update_ticket(
-            db,
-            ticket_id,
-            schemas.TicketUpdate(status=TicketStatus(status)),
-        )
+        try:
+            ticket = await service.update_ticket(
+                db,
+                ticket_id,
+                schemas.TicketUpdate(status=TicketStatus(status)),
+            )
+        except (service.TicketStateError, ValueError) as exc:
+            return _tool_error(exc)
         return _dump({"id": ticket.id, "status": ticket.status.value})
 
 
@@ -258,11 +265,14 @@ async def create_subtask(
 async def update_subtask_status(subtask_id: str, status: str) -> str:
     """Update a subtask's status. Valid: pending, in_progress, done, blocked."""
     async with AsyncSessionLocal() as db:
-        subtask = await service.update_subtask(
-            db,
-            subtask_id,
-            schemas.SubtaskUpdate(status=SubtaskStatus(status)),
-        )
+        try:
+            subtask = await service.update_subtask(
+                db,
+                subtask_id,
+                schemas.SubtaskUpdate(status=SubtaskStatus(status)),
+            )
+        except (service.TicketStateError, ValueError) as exc:
+            return _tool_error(exc)
         return _dump({"id": subtask.id, "status": subtask.status.value})
 
 
@@ -459,35 +469,6 @@ async def next_pending_subtask_in_project(project_id: str, role: str) -> str:
         )
 
 
-PM_TICKET_TOOLS = [
-    list_tickets,
-    get_ticket,
-    create_ticket,
-    update_ticket_status,
-    add_question_to_ticket,
-]
-
-LEAD_TICKET_TOOLS = [
-    list_tickets,
-    get_ticket,
-    create_subtask,
-    update_subtask,
-    delete_subtask,
-    update_subtask_status,
-    add_todo_to_subtask,
-    update_ticket_status,
-]
-
-DEV_TICKET_TOOLS = [
-    get_ticket,
-    next_pending_subtask,
-    next_pending_subtask_in_project,
-    update_subtask_status,
-    mark_todo_done,
-    add_todo_to_subtask,
-]
-
-
 @tool
 async def list_subtasks(
     project_id: str,
@@ -546,3 +527,33 @@ async def list_subtasks(
             for s in rows
         ]
         return _dump(out)
+
+
+PM_TICKET_TOOLS = [
+    list_tickets,
+    get_ticket,
+    list_subtasks,
+    create_ticket,
+    update_ticket_status,
+    add_question_to_ticket,
+]
+
+LEAD_TICKET_TOOLS = [
+    list_tickets,
+    get_ticket,
+    create_subtask,
+    update_subtask,
+    delete_subtask,
+    update_subtask_status,
+    add_todo_to_subtask,
+    update_ticket_status,
+]
+
+DEV_TICKET_TOOLS = [
+    get_ticket,
+    next_pending_subtask,
+    next_pending_subtask_in_project,
+    update_subtask_status,
+    mark_todo_done,
+    add_todo_to_subtask,
+]

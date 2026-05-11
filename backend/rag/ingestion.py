@@ -15,6 +15,7 @@ from qdrant_client import AsyncQdrantClient
 from qdrant_client.http.models import Distance, PointStruct, VectorParams
 
 from backend.config import get_settings
+from backend.rag.cache import invalidate_crag_cache_for_project
 from backend.rag.embeddings import embedding_dim, get_embeddings
 
 
@@ -85,6 +86,7 @@ async def ingest_text(
     client = AsyncQdrantClient(url=settings.qdrant_url)
     try:
         await client.upsert(collection_name=name, points=points)
+        invalidate_crag_cache_for_project(project_id)
         return len(points)
     finally:
         await client.close()

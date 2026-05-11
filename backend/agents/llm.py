@@ -164,12 +164,12 @@ def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> Ba
     }
 
     if provider == "openai":
-        common.pop("max_tokens", None)  # ChatOpenAI uses ``max_tokens`` differently
         kwargs_openai: dict = {
             "model": name,
             "api_key": settings.openai_api_key or None,
             "max_retries": settings.llm_max_retries,
             "timeout": settings.openai_request_timeout,
+            "max_tokens": settings.max_output_tokens,
             **common,
         }
         base = (settings.openai_base_url or "").strip()

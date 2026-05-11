@@ -7,10 +7,12 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import text
+from sqlalchemy.exc import NoResultFound
+from langchain_core.messages import HumanMessage
 from langgraph.types import Command
 from pydantic import BaseModel
 
-from backend.agents.checkpointer import get_checkpointer
+from backend.agents.checkpointer import delete_thread_checkpoints, get_checkpointer
 from backend.agents.graph import build_root_graph
 from backend.agents.observability import callbacks_for
 from backend.agents.state import SystemState
@@ -21,6 +23,7 @@ from backend.api.checkpoint_list_cache import (
 from backend.api.events import Event, bus
 from backend.agent_logs.service import list_agent_logs
 from backend.db.session import AsyncSessionLocal
+from backend.ticket_system import service as ticket_service
 
 logger = logging.getLogger(__name__)
 
@@ -76,11 +79,11 @@ async def cancel_all_running_tasks(timeout: float = _STOP_GRACE_SECONDS) -> None
     RUNNING_TASKS.clear()
 
 
-def _spawn(project_id: str, coro) -> None:
+async def _spawn(project_id: str, coro) -> None:
     """Schedule a graph run, cancelling any previous one for the same project."""
     prior = RUNNING_TASKS.get(project_id)
     if prior is not None and not prior.done():
-        prior.cancel()
+        await _cancel_task(project_id, prior)
 
     async def _wrapper() -> None:
         try:
@@ -131,6 +134,7 @@ class StartRunRequest(BaseModel):
     project_id: str
     goal: str
     project_context: str = ""
+    fresh: bool = False
 
 
 class ResumeRequest(BaseModel):
@@ -273,18 +277,32 @@ async def _resume_from_checkpoint(project_id: str, checkpoint_id: str) -> None:
         "recursion_limit": 250,
         "callbacks": callbacks_for(project_id),
     }
+    delay = INITIAL_RETRY_DELAY_S
     async with get_checkpointer() as saver:
         graph = build_root_graph(checkpointer=saver)
-        try:
-            await _stream_once(graph, project_id, None, config)
-        except Exception as exc:
-            await bus.publish(
-                Event(
-                    type="agent",
-                    project_id=project_id,
-                    payload={"error": str(exc), "kind": "crash"},
+        for attempt in range(MAX_AUTO_RETRIES + 1):
+            try:
+                await _stream_once(graph, project_id, None, config)
+                return
+            except Exception as exc:
+                transient = _is_transient(exc)
+                will_retry = transient and attempt < MAX_AUTO_RETRIES
+                await bus.publish(
+                    Event(
+                        type="agent",
+                        project_id=project_id,
+                        payload={
+                            "error": str(exc),
+                            "kind": "transient_error" if will_retry else "crash",
+                            "attempt": attempt + 1,
+                            "will_retry_in_seconds": delay if will_retry else None,
+                        },
+                    )
                 )
-            )
+                if not will_retry:
+                    return
+                await asyncio.sleep(delay)
+                delay *= 2
 
 
 def _safe(value: Any) -> Any:
@@ -393,22 +411,34 @@ async def get_agent_log_item(log_id: str) -> dict[str, Any]:
         }
 
 
+async def _ensure_project_exists(project_id: str) -> None:
+    async with AsyncSessionLocal() as db:
+        try:
+            await ticket_service.get_project(db, project_id)
+        except NoResultFound as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
 @router.post("/start")
 async def start_run(payload: StartRunRequest):
+    await _ensure_project_exists(payload.project_id)
     invalidate_checkpoint_list_cache(payload.project_id)
+    if payload.fresh:
+        await delete_thread_checkpoints(payload.project_id)
     initial = SystemState(
         project_id=payload.project_id,
         project_context=payload.project_context or payload.goal,
-        messages=[{"role": "user", "content": payload.goal}],
+        messages=[HumanMessage(content=payload.goal)],
     )
-    _spawn(payload.project_id, _run_graph(payload.project_id, initial))
-    return {"status": "started", "project_id": payload.project_id}
+    await _spawn(payload.project_id, _run_graph(payload.project_id, initial))
+    return {"status": "started", "project_id": payload.project_id, "fresh": payload.fresh}
 
 
 @router.post("/resume")
 async def resume_run(payload: ResumeRequest):
+    await _ensure_project_exists(payload.project_id)
     invalidate_checkpoint_list_cache(payload.project_id)
-    _spawn(payload.project_id, _resume_graph(payload.project_id, payload.response))
+    await _spawn(payload.project_id, _resume_graph(payload.project_id, payload.response))
     return {"status": "resumed", "project_id": payload.project_id}
 
 
@@ -419,8 +449,9 @@ class RetryRequest(BaseModel):
 @router.post("/retry")
 async def retry_run(payload: RetryRequest):
     """Resume a project's graph from its last persisted checkpoint."""
+    await _ensure_project_exists(payload.project_id)
     invalidate_checkpoint_list_cache(payload.project_id)
-    _spawn(payload.project_id, _retry_graph(payload.project_id))
+    await _spawn(payload.project_id, _retry_graph(payload.project_id))
     return {"status": "retrying", "project_id": payload.project_id}
 
 
@@ -455,8 +486,9 @@ class ResumeFromRequest(BaseModel):
 @router.post("/resume_from")
 async def resume_from(payload: ResumeFromRequest):
     """Resume the graph from a specific historical checkpoint."""
+    await _ensure_project_exists(payload.project_id)
     invalidate_checkpoint_list_cache(payload.project_id)
-    _spawn(
+    await _spawn(
         payload.project_id,
         _resume_from_checkpoint(payload.project_id, payload.checkpoint_id),
     )

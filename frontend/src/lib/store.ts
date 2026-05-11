@@ -10,6 +10,8 @@ export interface PendingInterrupt {
   ticket_id?: string;
   question: string;
   asked_by?: string;
+  kind?: string;
+  question_index?: number;
   receivedAt: number;
 }
 
@@ -33,6 +35,7 @@ interface UIState {
   clearLogs: () => void;
 
   interrupts: PendingInterrupt[];
+  setInterrupts: (items: PendingInterrupt[]) => void;
   pushInterrupt: (i: PendingInterrupt) => void;
   popInterrupt: (idx: number) => void;
 
@@ -59,7 +62,18 @@ export const useUIStore = create<UIState>((set) => ({
   clearLogs: () => set({ logs: [] }),
 
   interrupts: [],
-  pushInterrupt: (i) => set((s) => ({ interrupts: [...s.interrupts, i] })),
+  setInterrupts: (items) => set({ interrupts: items }),
+  pushInterrupt: (i) =>
+    set((s) => {
+      const duplicate = s.interrupts.some(
+        (existing) =>
+          existing.question === i.question &&
+          existing.ticket_id === i.ticket_id &&
+          existing.kind === i.kind,
+      );
+      if (duplicate) return s;
+      return { interrupts: [...s.interrupts, i] };
+    }),
   popInterrupt: (idx) =>
     set((s) => ({ interrupts: s.interrupts.filter((_, i) => i !== idx) })),
 

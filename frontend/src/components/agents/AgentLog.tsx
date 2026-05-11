@@ -5,6 +5,28 @@ import { useEffect, useRef, useState } from "react";
 import { api, LogItemResponse } from "@/lib/api";
 import { useUIStore } from "@/lib/store";
 
+const kindClass = (kind: string) => {
+  switch (kind) {
+    case "tool_result":
+    case "tool_call":
+      return "text-sky-300";
+    case "research_artifacts":
+      return "text-teal-300";
+    case "route":
+    case "route_fallback":
+      return "text-amber-200";
+    case "turn_start":
+    case "turn_end":
+      return "text-zinc-400";
+    case "crash":
+    case "transient_error":
+    case "llm_error_fallback":
+      return "text-red-300";
+    default:
+      return "text-zinc-500";
+  }
+};
+
 const colorFor = (agent: string) => {
   switch (agent) {
     case "project_manager":
@@ -102,7 +124,7 @@ export function AgentLog() {
                 {new Date(l.ts * 1000).toLocaleTimeString()}
               </span>
               <span className={`shrink-0 ${colorFor(l.agent)}`}>{l.agent}</span>
-              <span className="text-zinc-500 shrink-0">{l.kind}</span>
+              <span className={`shrink-0 ${kindClass(l.kind)}`}>{l.kind}</span>
               <span className="text-zinc-300 break-all flex-1">{l.detail}</span>
               {l.checkpoint_id && selectedProjectId && (
                 <button

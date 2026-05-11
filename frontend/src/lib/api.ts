@@ -1,3 +1,5 @@
+import { formatAgentLogDetail } from "./agentLog";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export type TicketStatus =
@@ -99,6 +101,7 @@ export interface PersistedAgentLog {
   agent: string;
   kind: string;
   payload: Record<string, unknown>;
+  detail?: string;
   checkpoint_id: string | null;
 }
 
@@ -132,12 +135,13 @@ export function persistedLogToEntry(row: PersistedAgentLog): AgentLogEntry {
         ? Date.parse(row.created_at) / 1000
         : Date.now() / 1000;
   const cp = row.checkpoint_id ?? (typeof p.checkpoint_id === "string" ? p.checkpoint_id : null);
+  const kind = row.kind || (typeof p.kind === "string" ? p.kind : "log");
   return {
     id: row.id,
     ts,
     agent: node ?? agentField ?? row.agent,
-    kind: row.kind || (typeof p.kind === "string" ? p.kind : "log"),
-    detail: JSON.stringify(p).slice(0, 1200),
+    kind,
+    detail: row.detail ?? formatAgentLogDetail(kind, p),
     checkpoint_id: cp,
   };
 }
@@ -194,6 +198,8 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ project_id: projectId, response }),
     }),
+  listInterrupts: (projectId: string) =>
+    http<{ interrupts: unknown[] }>(`/api/agents/interrupts/${projectId}`),
   retryAgent: (projectId: string) =>
     http(`/api/agents/retry`, {
       method: "POST",
