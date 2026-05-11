@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "tdd-agentic"
 version = "0.1.0"
@@ -43,6 +47,11 @@ dev = [
     "mypy>=1.13.0",
 ]
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["backend*"]
+exclude = ["backend.tests*"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"
@@ -54,3 +63,4 @@ ignore = ["E501"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["backend/tests"]
+pythonpath = ["."]

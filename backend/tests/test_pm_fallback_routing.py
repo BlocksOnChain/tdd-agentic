@@ -32,7 +32,7 @@ def test_fallback_routes_frontend_for_todo_ticket_with_client_hint_and_no_fe_sub
     d = _fallback_routing_decision([t])
     assert d is not None
     assert d.next_agent == "frontend_lead"
-    assert "tid" in d.instructions
+    assert d.ticket_ids == ["tid"]
 
 
 def test_fallback_routes_backend_for_draft_without_subtasks() -> None:
