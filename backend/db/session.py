@@ -61,3 +61,12 @@ async def init_db() -> None:
                 """
             )
         )
+        await conn.execute(
+            text(
+                """
+                DROP INDEX IF EXISTS subtasks_ticket_normalised_title_uq;
+                CREATE UNIQUE INDEX IF NOT EXISTS subtasks_ticket_order_index_uq
+                ON subtasks (ticket_id, order_index);
+                """
+            )
+        )

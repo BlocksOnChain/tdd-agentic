@@ -44,10 +44,18 @@ async def list_tickets(project_id: str) -> str:
 
 
 @tool
-async def get_ticket(ticket_id: str) -> str:
-    """Fetch a single ticket with its subtasks and todos."""
+async def get_ticket(ticket_id: str, detail: str = "summary") -> str:
+    """Fetch one ticket. ``detail='summary'`` omits RITE trees; use ``full`` for specs."""
     from sqlalchemy.exc import NoResultFound
 
+    mode = (detail or "summary").strip().lower()
+    if mode not in {"summary", "full"}:
+        return _dump(
+            {
+                "error": "detail must be 'summary' or 'full'.",
+                "received": detail,
+            }
+        )
     async with AsyncSessionLocal() as db:
         try:
             ticket = await service.get_ticket(db, ticket_id)
@@ -62,7 +70,9 @@ async def get_ticket(ticket_id: str) -> str:
                     "suggested_next_tool": "list_tickets",
                 }
             )
-        return _dump(await service.to_dict_ticket(ticket))
+        if mode == "full":
+            return _dump(await service.to_dict_ticket(ticket))
+        return _dump(await service.to_dict_ticket_summary(ticket))
 
 
 @tool
@@ -177,7 +187,10 @@ class CreateSubtaskArgs(BaseModel):
     )
     order_index: int = Field(
         default=0,
-        description="0-based execution order. Lower runs first.",
+        description=(
+            "0-based execution order. Lower runs first. Unique per ticket; "
+            "reusing an order_index returns the existing subtask."
+        ),
     )
 
 
@@ -193,8 +206,8 @@ async def create_subtask(
 ) -> str:
     """Create an ordered subtask under a ticket using RITE-format test cases.
 
-    test_cases must be a list of objects with {given, should, expected,
-    test_type?, notes?}. The dev will translate each spec into one
+    Idempotent on (ticket_id, order_index). test_cases must be a list of objects
+    with {given, should, expected, test_type?, notes?}. The dev will translate each spec into one
     assert({given, should, actual, expected}) call.
     """
     try:

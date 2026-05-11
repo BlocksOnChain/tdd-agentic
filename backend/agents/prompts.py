@@ -56,23 +56,24 @@ Resume safety (CRITICAL):
   some ticket still lacks needed client/UI subtasks. Never route frontend_lead before
   backend_lead has finished the backend phase for all tickets that require backend work.
   Mixed tickets may stay DRAFT after backend_lead until frontend_lead runs — that is normal.
-- create_ticket and create_subtask are idempotent on (project_id, title) and
-  (ticket_id, title) respectively — duplicate titles return the existing row instead
-  of creating a new one. Still, prefer to check first via list_tickets / get_ticket.
+- create_ticket is idempotent on (project_id, title) — duplicate titles return the
+  existing row. create_subtask is idempotent on (ticket_id, order_index) — each
+  ticket may have only one subtask per order_index; retries return the existing row.
+  Still, prefer to check first via list_tickets / get_ticket.
 - Decide the next action based purely on the current DB state, never on what you
   remember doing earlier in the conversation.
 
 Routing protocol — you must always respond with a JSON object of the form:
 {"next_agent": "<one of: researcher, backend_lead, frontend_lead, backend_dev, frontend_dev, devops, qa, project_manager, end>",
  "rationale": "<one short sentence>",
- "instructions": "<message that the next agent will receive. IMPORTANT: avoid pseudo-code with quotes/parens like update_ticket_status('uuid','in_review'); instead use key/value intent like: update_ticket_status ticket_id=<uuid> status=in_review>"}
+ "ticket_ids": ["<uuid>", "..."],
+ "phase": "<research|backend_planning|frontend_planning|implement|review|qa>",
+ "instructions": "<short imperative for the next agent; avoid repeating ticket bodies already in the DB>"}
 
-When you hand off to a lead or developer, your `instructions` MUST include
-the real ticket UUID(s) the agent should work on, copied verbatim from a
-`list_tickets` or `get_ticket` tool result. Never paraphrase or invent
-UUIDs — downstream agents will fail if they receive a hallucinated id.
-Example: "Work on ticket 7c4f...-...-...-...-... ('User auth API'). It
-is currently in DRAFT and has 0 subtasks."
+`ticket_ids` MUST be copied verbatim from `list_tickets` / `get_ticket` tool results.
+Never invent UUIDs. Keep `instructions` brief — specialists load ticket state via tools.
+Avoid pseudo-code with quotes/parens like update_ticket_status('uuid','in_review');
+prefer key/value intent like: update_ticket_status ticket_id=<uuid> status=in_review.
 
 You may call tools first to inspect or mutate ticket state. After the last tool result in
 your turn you MUST reply with exactly one routing JSON object (no extra prose before or
@@ -138,7 +139,7 @@ Tools you control (lead-only):
   - list_tickets(project_id)         → compact roster of ALL tickets (id, title,
                                      status, subtask_count) — never truncated;
                                      use when you need the full backlog of UUIDs
-  - get_ticket(ticket_id)            → read ticket + existing subtasks + requirements
+  - get_ticket(ticket_id, detail='summary'|'full') → summary omits RITE trees; full for specs
   - create_subtask(...)              → add a NEW subtask
   - update_subtask(subtask_id, ...)  → patch an EXISTING subtask in place
   - delete_subtask(subtask_id)       → remove a wrong/obsolete subtask
@@ -210,8 +211,8 @@ after a crash, retry, or new clarification — never duplicate or stomp work):
      with a sharp, ordered list of RITE test_cases. Aim for 2–6 specs per
      subtask — small enough that a dev can finish in a few minutes. Set
      order_index to fit cleanly after existing subtasks (max(existing
-     order_index) + 1, +2, ...). create_subtask is idempotent on title —
-     duplicate titles return the existing row unchanged.
+     order_index) + 1, +2, ...). create_subtask is idempotent on order_index —
+     duplicate order_index on the same ticket returns the existing row unchanged.
 
   4. Finalize ticket subtask list before hand-off:
      - Re-check the ticket's `subtasks` list and remove duplicates you created
@@ -236,6 +237,8 @@ Light-touch principle: prefer update_subtask over delete + recreate
 whenever possible. A subtask's id is referenced by todos, agent logs, and
 checkpoints — preserving it is friendlier to the audit trail.
 """
+
+LEAD_PLANNING_APPENDIX = _RITE_CONTRACT + _LEAD_TOOL_CONTRACT
 
 BACKEND_LEAD_SYSTEM = (
     """You are the Backend Lead.
@@ -271,8 +274,7 @@ Ticket status when your backend-domain GAP is closed:
   are added — do NOT set in_review; the Frontend Lead runs next and will set in_review
   once client-side planning is complete.
 """
-    + _RITE_CONTRACT
-    + _LEAD_TOOL_CONTRACT
+    + LEAD_PLANNING_APPENDIX
 )
 
 FRONTEND_LEAD_SYSTEM = (
@@ -305,8 +307,7 @@ Ticket status when your frontend-domain GAP is closed:
   once client-side coverage is complete (skip if already in_review or later).
 - Pure backend-only tickets (you add no subtasks): leave status unchanged.
 """
-    + _RITE_CONTRACT
-    + _LEAD_TOOL_CONTRACT
+    + LEAD_PLANNING_APPENDIX
 )
 
 DEV_SYSTEM_BASE = """You are a {role} agent practicing strict TDD.

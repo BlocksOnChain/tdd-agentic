@@ -22,3 +22,13 @@ def test_parses_json_in_markdown_fence() -> None:
 
 def test_returns_none_on_garbage() -> None:
     assert _parse_routing("just some prose with no JSON") is None
+
+
+def test_parses_optional_ticket_ids() -> None:
+    text = (
+        '{"next_agent": "qa", "rationale": "verify", '
+        '"ticket_ids": ["aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"], "phase": "qa"}'
+    )
+    decision = _parse_routing(text)
+    assert decision is not None
+    assert decision.ticket_ids == ["aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"]

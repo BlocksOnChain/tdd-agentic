@@ -16,6 +16,7 @@ below the per-minute rate limits, even on long projects.
 """
 from __future__ import annotations
 
+import json
 from typing import Any, Callable
 
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -96,10 +97,10 @@ def _build_specialist_input(state: SystemState, agent_name: str) -> list[BaseMes
     if not msgs:
         return []
 
-    initial_goal: HumanMessage | None = None
+    first_human: HumanMessage | None = None
     for m in msgs:
         if isinstance(m, HumanMessage):
-            initial_goal = m
+            first_human = m
             break
 
     pm_instruction: HumanMessage | None = None
@@ -115,21 +116,23 @@ def _build_specialist_input(state: SystemState, agent_name: str) -> list[BaseMes
             pm_instruction = m
             continue
         if collect_handoffs and content.startswith("[from ") and "→ project_manager" in content:
-            if len(handoff_summaries) < 2 and m is not initial_goal:
+            if len(handoff_summaries) < 2 and m is not first_human:
                 handoff_summaries.append(m)
 
     out: list[BaseMessage] = []
-    if initial_goal is not None:
-        truncated_goal = (
-            initial_goal.content
-            if isinstance(initial_goal.content, str)
-            else str(initial_goal.content)
-        )
-        out.append(
-            HumanMessage(
-                content=f"[original project goal]\n{_truncate(truncated_goal, 4000)}"
+    if not (state.project_context or "").strip():
+        initial_goal = first_human
+        if initial_goal is not None:
+            truncated_goal = (
+                initial_goal.content
+                if isinstance(initial_goal.content, str)
+                else str(initial_goal.content)
             )
-        )
+            out.append(
+                HumanMessage(
+                    content=f"[original project goal]\n{_truncate(truncated_goal, 4000)}"
+                )
+            )
     for s in reversed(handoff_summaries):
         c = s.content if isinstance(s.content, str) else str(s.content)
         out.append(HumanMessage(content=_truncate(c, 2000)))
@@ -140,6 +143,21 @@ def _build_specialist_input(state: SystemState, agent_name: str) -> list[BaseMes
         out.append(HumanMessage(content="(No explicit instruction. Inspect state and proceed with your role.)"))
 
     return out
+
+
+def _latest_subtask_id_from_tools(tool_msgs: list[ToolMessage]) -> str | None:
+    for tm in reversed(tool_msgs):
+        if tm.name not in {"next_pending_subtask", "next_pending_subtask_in_project"}:
+            continue
+        try:
+            data = json.loads(str(tm.content))
+        except (json.JSONDecodeError, TypeError):
+            continue
+        sub = data.get("subtask") or {}
+        sid = sub.get("id")
+        if sid:
+            return str(sid)
+    return None
 
 
 PromptBuilder = Callable[[SystemState], str]
@@ -158,7 +176,7 @@ def build_specialist_subgraph(
     tools_by_name: dict[str, BaseTool] = {t.name: t for t in tools}
 
     async def specialist(state: SystemState) -> dict[str, Any]:
-        events = [await emit(name, "turn_start", {}, state.project_id)]
+        await emit(name, "turn_start", {}, state.project_id)
         base = llm_factory()
         bound = base.bind_tools(tools) if tools else base
         llm = with_retry(bound)
@@ -168,6 +186,12 @@ def build_specialist_subgraph(
         pid = state.project_id or "(unknown)"
         prefix = (
             f"{system}\n\nPROJECT_ID: {pid}\nPROJECT_CONTEXT:\n{ctx}\n"
+        )
+        if state.active_ticket_id:
+            prefix += f"ACTIVE_TICKET_ID: {state.active_ticket_id}\n"
+        if state.active_subtask_id:
+            prefix += f"ACTIVE_SUBTASK_ID: {state.active_subtask_id}\n"
+        prefix += (
             "Use tools as needed. When done, respond with a short summary of what you accomplished."
         )
 
@@ -201,13 +225,11 @@ def build_specialist_subgraph(
 
             tool_msgs = await run_tool_calls(ai, tools_by_name)
             for tm in tool_msgs:
-                events.append(
-                    await emit(
-                        name,
-                        "tool_result",
-                        {"name": tm.name, "preview": str(tm.content)[:300]},
-                        state.project_id,
-                    )
+                await emit(
+                    name,
+                    "tool_result",
+                    {"name": tm.name, "preview": str(tm.content)[:300]},
+                    state.project_id,
                 )
                 truncated = ToolMessage(
                     content=_truncate(str(tm.content), MAX_TOOL_RESULT_CHARS),
@@ -223,8 +245,12 @@ def build_specialist_subgraph(
             content=f"[from {name} → project_manager]\n{summary}"
         )
 
-        events.append(await emit(name, "turn_end", {}, state.project_id))
-        return {"messages": [handoff], "events": events}
+        await emit(name, "turn_end", {}, state.project_id)
+        update: dict[str, Any] = {"messages": [handoff]}
+        subtask_id = _latest_subtask_id_from_tools(local_tool_msgs)
+        if subtask_id:
+            update["active_subtask_id"] = subtask_id
+        return update
 
     g = StateGraph(SystemState)
     g.add_node(name, specialist)

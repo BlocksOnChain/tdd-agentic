@@ -9,8 +9,9 @@ from __future__ import annotations
 import operator
 from typing import Annotated, Any
 
-from langgraph.graph.message import add_messages
 from pydantic import BaseModel, ConfigDict, Field
+
+from backend.agents.message_reducer import add_messages_trimmed
 
 
 class AgentEvent(BaseModel):
@@ -27,7 +28,7 @@ class SystemState(BaseModel):
 
     model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
 
-    messages: Annotated[list, add_messages] = Field(default_factory=list)
+    messages: Annotated[list, add_messages_trimmed] = Field(default_factory=list)
 
     project_id: str | None = None
     project_context: str = ""
@@ -35,16 +36,14 @@ class SystemState(BaseModel):
     active_ticket_id: str | None = None
     active_subtask_id: str | None = None
 
+    # Legacy fields retained for older checkpoints; not written by current nodes.
     pending_questions: Annotated[list[str], operator.add] = Field(default_factory=list)
     human_responses: Annotated[list[str], operator.add] = Field(default_factory=list)
 
     next_agent: str | None = None  # supervisor routing decision
 
-    # NOTE: events are already persisted in the DB (agent_logs) and streamed via WS.
-    # We keep only a small tail in checkpoint state to avoid checkpoint bloat.
-    events: Annotated[list[AgentEvent], lambda a, b: (list(a) + list(b))[-400:]] = Field(
-        default_factory=list
-    )
+    # Streamed via WS and stored in agent_logs; not duplicated in checkpoints.
+    events: Annotated[list[AgentEvent], lambda _a, _b: []] = Field(default_factory=list)
 
 
 __all__ = ["SystemState", "AgentEvent"]

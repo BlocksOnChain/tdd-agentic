@@ -8,7 +8,7 @@ import enum
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, DateTime, Enum, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, DateTime, Enum, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.db.session import Base
@@ -106,6 +106,9 @@ class Ticket(Base):
 
 class Subtask(Base):
     __tablename__ = "subtasks"
+    __table_args__ = (
+        UniqueConstraint("ticket_id", "order_index", name="uq_subtasks_ticket_order_index"),
+    )
 
     id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
     ticket_id: Mapped[str] = mapped_column(

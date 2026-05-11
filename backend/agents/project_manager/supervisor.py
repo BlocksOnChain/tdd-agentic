@@ -52,6 +52,8 @@ class RoutingDecision(BaseModel):
     next_agent: str = Field(description="Next agent to dispatch")
     rationale: str = Field(default="")
     instructions: str = Field(default="")
+    ticket_ids: list[str] = Field(default_factory=list)
+    phase: str = Field(default="")
 
 
 PM_TOOLS = [*PM_TICKET_TOOLS, rag_query, ask_human]
@@ -102,10 +104,47 @@ def _build_system_prompt(state: SystemState) -> str:
     base = inject_skills(PROJECT_MANAGER_SYSTEM, role="project_manager")
     ctx = _truncate(state.project_context or "", MAX_PROJECT_CONTEXT_CHARS)
     pid = state.project_id or "(unknown)"
-    return (
-        f"{base}\n\nPROJECT_ID: {pid}\nPROJECT_CONTEXT:\n{ctx}\n"
+    lines = [
+        f"{base}",
+        "",
+        f"PROJECT_ID: {pid}",
+        f"PROJECT_CONTEXT:\n{ctx}",
+    ]
+    if state.active_ticket_id:
+        lines.append(f"ACTIVE_TICKET_ID: {state.active_ticket_id}")
+    if state.active_subtask_id:
+        lines.append(f"ACTIVE_SUBTASK_ID: {state.active_subtask_id}")
+    lines.append(
         "Use ticket tools to inspect or mutate state. Then return a routing decision JSON."
     )
+    return "\n".join(lines)
+
+
+_UUID_RE = re.compile(
+    r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+    re.IGNORECASE,
+)
+
+
+def _normalise_ticket_ids(decision: RoutingDecision) -> list[str]:
+    ids = [str(t).strip() for t in (decision.ticket_ids or []) if str(t).strip()]
+    if ids:
+        return ids
+    return _UUID_RE.findall(decision.instructions or "")
+
+
+def _format_pm_handoff(target: str, decision: RoutingDecision) -> str:
+    ticket_ids = _normalise_ticket_ids(decision)
+    meta: dict[str, Any] = {}
+    if ticket_ids:
+        meta["ticket_ids"] = ticket_ids
+    if decision.phase:
+        meta["phase"] = decision.phase
+    header = json.dumps(meta, separators=(",", ":")) if meta else "{}"
+    body = (decision.instructions or "").strip()
+    if body:
+        return f"[from project_manager → {target}]\n{header}\n{body}"
+    return f"[from project_manager → {target}]\n{header}"
 
 
 # Heuristic for tickets that still need a frontend_lead pass. Used when the PM model
@@ -251,10 +290,11 @@ async def _infer_next_dev_route(project_id: str | None) -> RoutingDecision | Non
                     next_agent=s0.assigned_to.value,
                     rationale="Auto-route: subtask already in progress.",
                     instructions=(
-                        f"Continue work on ticket {full.id} ({full.title!r}). "
-                        f"An in_progress subtask exists (order_index={s0.order_index}, assigned_to={s0.assigned_to.value}). "
-                        "Use get_ticket(ticket_id) to review context; proceed with the in-progress subtask."
+                        f"Continue in_progress subtask order_index={s0.order_index} "
+                        f"({s0.assigned_to.value})."
                     ),
+                    ticket_ids=[full.id],
+                    phase="implement",
                 )
 
             pending = [s for s in subs if s.status == SubtaskStatus.PENDING and s.assigned_to in valid_dev_roles]
@@ -266,10 +306,11 @@ async def _infer_next_dev_route(project_id: str | None) -> RoutingDecision | Non
                 next_agent=s0.assigned_to.value,
                 rationale="Auto-route: dispatch first pending subtask in order.",
                 instructions=(
-                    f"Work on ticket {full.id} ({full.title!r}). "
-                    f"Start the first pending subtask (order_index={s0.order_index}, assigned_to={s0.assigned_to.value}). "
-                    "Use get_ticket(ticket_id), then next_pending_subtask(ticket_id) and follow order_index."
+                    f"Start pending subtask order_index={s0.order_index} "
+                    f"({s0.assigned_to.value})."
                 ),
+                ticket_ids=[full.id],
+                phase="implement",
             )
     return None
 
@@ -295,16 +336,15 @@ def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
         and not _ticket_has_unanswered_questions(t)
     ]
     if drafts_without_subtasks:
-        ids = ", ".join(t.id for t in drafts_without_subtasks)
+        ids = [t.id for t in drafts_without_subtasks]
         return RoutingDecision(
             next_agent="backend_lead",
             rationale=(
                 "Fallback: DRAFT ticket(s) still have no subtasks; routing backend_lead."
             ),
-            instructions=(
-                f"Break down these DRAFT tickets into backend-domain subtasks first "
-                f"(UUIDs): {ids}. Call list_tickets / get_ticket, then create_subtask."
-            ),
+            instructions="Break down DRAFT tickets into backend-domain subtasks.",
+            ticket_ids=ids,
+            phase="backend_planning",
         )
 
     fe_candidates: list[Ticket] = []
@@ -332,8 +372,7 @@ def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
             fe_candidates.append(t)
 
     if fe_candidates:
-        ids = ", ".join(t.id for t in fe_candidates)
-        preview = "; ".join(t.title for t in fe_candidates[:6])
+        ids = [t.id for t in fe_candidates]
         return RoutingDecision(
             next_agent="frontend_lead",
             rationale=(
@@ -341,11 +380,10 @@ def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
                 "client-side execution subtask yet; routing frontend_lead."
             ),
             instructions=(
-                f"Plan client-side subtasks for these tickets (UUIDs): {ids}. "
-                f"Titles: {preview}. Use list_tickets / get_ticket; assign UI work to "
-                f"frontend_dev, devops (client infra), or qa (client test coverage). "
-                f"Call update_ticket_status(in_review) when frontend planning is complete."
+                "Plan client-side subtasks; assign frontend_dev, devops, or qa as needed."
             ),
+            ticket_ids=ids,
+            phase="frontend_planning",
         )
     return None
 
@@ -365,6 +403,7 @@ async def _infer_fallback_route(project_id: str | None) -> RoutingDecision | Non
                 "Gather initial project context and scaffold docs; then ingest into RAG. "
                 "After research, hand back to project_manager."
             ),
+            phase="research",
         )
     return _fallback_routing_decision(tickets)
 
@@ -565,17 +604,24 @@ def build_project_manager_node():
         )
 
         # If the PM hands off, append an instruction message visible to the next agent.
-        if decision.next_agent not in {"end", "project_manager"} and decision.instructions:
+        if decision.next_agent not in {"end", "project_manager"} and (
+            decision.instructions or decision.ticket_ids or decision.phase
+        ):
             new_msgs.append(
                 HumanMessage(
-                    content=f"[from project_manager → {decision.next_agent}]\n{decision.instructions}"
+                    content=_format_pm_handoff(decision.next_agent, decision)
                 )
             )
+
+        ticket_ids = _normalise_ticket_ids(decision)
+        active_ticket = ticket_ids[0] if ticket_ids else state.active_ticket_id
+        if decision.next_agent in {"end", "project_manager"}:
+            active_ticket = state.active_ticket_id
 
         return {
             "messages": new_msgs,
             "next_agent": decision.next_agent,
-            "events": events,
+            "active_ticket_id": active_ticket,
         }
 
     return project_manager_node

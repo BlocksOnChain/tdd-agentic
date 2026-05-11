@@ -6,6 +6,7 @@ survives, the query is rewritten and we retry once before giving up.
 """
 from __future__ import annotations
 
+import time
 from typing import Any
 
 from langchain_core.documents import Document
@@ -47,6 +48,8 @@ _REWRITE_PROMPT = ChatPromptTemplate.from_messages(
         ("human", "Original query: {query}\nReturn ONLY the rewritten query."),
     ]
 )
+
+_CRAG_CACHE: dict[tuple[str, str, int], tuple[float, list[Document]]] = {}
 
 
 def _point_to_document(payload: dict[str, Any] | None, score: float | None) -> Document:
@@ -111,10 +114,33 @@ async def _rewrite(query: str) -> str:
     return str(msg.content).strip().strip('"')
 
 
-async def crag_retrieve(project_id: str, query: str, k: int = 6) -> list[Document]:
+def _cache_get(project_id: str, query: str, k: int) -> list[Document] | None:
+    settings = get_settings()
+    key = (project_id, query.strip().lower(), k)
+    row = _CRAG_CACHE.get(key)
+    if row is None:
+        return None
+    ts, docs = row
+    if time.time() - ts > settings.rag_grade_cache_ttl_seconds:
+        _CRAG_CACHE.pop(key, None)
+        return None
+    return docs
+
+
+def _cache_put(project_id: str, query: str, k: int, docs: list[Document]) -> None:
+    key = (project_id, query.strip().lower(), k)
+    _CRAG_CACHE[key] = (time.time(), docs)
+
+
+async def crag_retrieve(project_id: str, query: str, k: int | None = None) -> list[Document]:
     """Retrieve and grade. On total miss, rewrite once and retry."""
     settings = get_settings()
-    initial = await _vector_search(project_id, query, k)
+    limit = k if k is not None else settings.rag_default_k
+    cached = _cache_get(project_id, query, limit)
+    if cached is not None:
+        return cached
+
+    initial = await _vector_search(project_id, query, limit)
     log_rag_crag_llm_targets(
         docs_to_grade=len(initial),
         grader_slug=settings.grader_model,
@@ -122,11 +148,14 @@ async def crag_retrieve(project_id: str, query: str, k: int = 6) -> list[Documen
     )
     relevant = await _grade(query, initial)
     if relevant:
+        _cache_put(project_id, query, limit, relevant)
         return relevant
 
     rewritten = await _rewrite(query)
-    second = await _vector_search(project_id, rewritten, k)
-    return await _grade(rewritten, second)
+    second = await _vector_search(project_id, rewritten, limit)
+    graded = await _grade(rewritten, second)
+    _cache_put(project_id, query, limit, graded)
+    return graded
 
 
 async def format_context(docs: list[Document], max_chars: int = 6000) -> str:

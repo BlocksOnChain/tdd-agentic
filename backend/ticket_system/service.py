@@ -13,7 +13,7 @@ from typing import Any
 from backend.config import get_settings
 
 from sqlalchemy import select
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -272,35 +272,49 @@ async def answer_question(
 
 
 # ===== Subtask =====
-async def create_subtask(
-    db: AsyncSession, ticket_id: str, payload: schemas.SubtaskCreate
-) -> Subtask:
-    """Create a subtask, or return the existing one if a same-title
-    subtask already exists on this ticket (case-insensitive). Idempotent.
-    """
-    ticket = await get_ticket(db, ticket_id)
+def _normalise_title(title: str) -> str:
+    return title.strip()
 
-    existing_stmt = (
+
+def _subtask_by_order_stmt(ticket_id: str, order_index: int):
+    return (
         select(Subtask)
         .options(selectinload(Subtask.todos))
         .where(
-            Subtask.ticket_id == ticket.id,
-            Subtask.title.ilike(payload.title.strip()),
+            Subtask.ticket_id == ticket_id,
+            Subtask.order_index == order_index,
         )
         .limit(1)
     )
-    existing = (await db.execute(existing_stmt)).scalar_one_or_none()
+
+
+async def create_subtask(
+    db: AsyncSession, ticket_id: str, payload: schemas.SubtaskCreate
+) -> Subtask:
+    """Create a subtask, or return the existing row for the same ``order_index``.
+
+    Each ticket may have at most one subtask per ``order_index``. Idempotency
+    is enforced in application code and by a Postgres unique index on
+    ``(ticket_id, order_index)`` so concurrent creates cannot both commit.
+    """
+    ticket = await get_ticket(db, ticket_id)
+    title = _normalise_title(payload.title)
+    order_index = payload.order_index
+
+    existing = (
+        await db.execute(_subtask_by_order_stmt(ticket.id, order_index))
+    ).scalar_one_or_none()
     if existing is not None:
         return existing
 
     subtask = Subtask(
         ticket_id=ticket.id,
-        title=payload.title,
+        title=title,
         description=payload.description,
         required_functionality=payload.required_functionality,
         test_cases=list(payload.test_cases),
         assigned_to=payload.assigned_to,
-        order_index=payload.order_index,
+        order_index=order_index,
         status=SubtaskStatus.PENDING,
     )
     db.add(subtask)
@@ -315,7 +329,16 @@ async def create_subtask(
                 status=TodoStatus.PENDING,
             )
         )
-    await db.commit()
+    try:
+        await db.commit()
+    except IntegrityError:
+        await db.rollback()
+        existing = (
+            await db.execute(_subtask_by_order_stmt(ticket.id, order_index))
+        ).scalar_one_or_none()
+        if existing is not None:
+            return existing
+        raise
     await db.refresh(subtask)
     await bus.publish(
         Event(
@@ -351,7 +374,16 @@ async def update_subtask(
     data = patch.model_dump(exclude_unset=True)
     for k, v in data.items():
         setattr(subtask, k, v)
-    await db.commit()
+    try:
+        await db.commit()
+    except IntegrityError as exc:
+        await db.rollback()
+        if "order_index" in data:
+            raise TicketStateError(
+                f"Subtask order_index {data['order_index']} is already used on ticket "
+                f"{subtask.ticket_id}."
+            ) from exc
+        raise
     await db.refresh(subtask)
     await bus.publish(
         Event(
@@ -534,6 +566,42 @@ async def to_dict_ticket(ticket: Ticket) -> dict[str, Any]:
             }
             for s in ticket.subtasks
         ],
+    }
+
+
+async def to_dict_ticket_summary(ticket: Ticket) -> dict[str, Any]:
+    """Compact ticket payload for PM/lead list+plan tools (no RITE trees)."""
+    subs = list(ticket.subtasks or [])
+    return {
+        "id": ticket.id,
+        "project_id": ticket.project_id,
+        "title": ticket.title,
+        "status": ticket.status.value,
+        "order_index": ticket.order_index,
+        "description_preview": (ticket.description or "")[:400],
+        "business_requirements": list(ticket.business_requirements or []),
+        "technical_requirements": list(ticket.technical_requirements or []),
+        "open_questions": sum(
+            1
+            for q in (ticket.questions or [])
+            if isinstance(q, dict) and q.get("answer") in (None, "")
+        ),
+        "subtasks": [
+            {
+                "id": s.id,
+                "title": s.title,
+                "assigned_to": s.assigned_to.value,
+                "order_index": s.order_index,
+                "status": s.status.value,
+                "test_case_count": len(s.test_cases or []),
+                "todo_count": len(s.todos or []),
+            }
+            for s in subs
+        ],
+        "hint": (
+            "Call get_ticket(ticket_id, detail='full') for RITE test_cases and todos; "
+            "dev agents should use next_pending_subtask* for active work."
+        ),
     }
 
 

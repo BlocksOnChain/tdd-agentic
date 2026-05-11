@@ -90,6 +90,14 @@ class Settings(BaseSettings):
 
     # Tools
     tavily_api_key: str = ""
+    fs_read_max_bytes: int = 32_768
+    shell_output_max_chars: int = 8_000
+
+    # Agent context budgets
+    checkpoint_max_human_messages: int = 12
+    skill_inject_max_chars: int = 2_000
+    rag_default_k: int = 4
+    rag_grade_cache_ttl_seconds: float = 300.0
 
     # Observability
     langfuse_public_key: str = ""

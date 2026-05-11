@@ -20,7 +20,10 @@ async def rag_ingest_text(project_id: str, source: str, text: str) -> str:
 
 
 @tool
-async def rag_query(project_id: str, query: str, k: int = 6) -> str:
+async def rag_query(project_id: str, query: str, k: int | None = None) -> str:
     """Retrieve relevant project documents using the CRAG pipeline."""
-    docs = await retrieval.crag_retrieve(project_id, query, k=k)
+    from backend.config import get_settings
+
+    limit = k if k is not None else get_settings().rag_default_k
+    docs = await retrieval.crag_retrieve(project_id, query, k=limit)
     return await retrieval.format_context(docs)
