@@ -11,13 +11,15 @@ Adds two production-grade behaviours on top of plain LangChain integrations:
 Slug format: ``provider/model`` (``openai/gpt-4o``,
 ``anthropic/claude-sonnet-4-6``).
 
-``OPENAI_BASE_URL`` applies **only** to ``openai/...`` slugs. Roles still set to
+``OPENAI_BASE_URL`` applies to ``openai/...`` slugs unless the researcher uses
+``RESEARCHER_OPENAI_BASE_URL`` or ``RESEARCHER_USE_PLATFORM_OPENAI``. Roles set to
 ``anthropic/...`` call Anthropic's API regardless of ``OPENAI_BASE_URL``.
 """
 from __future__ import annotations
 
 import logging
 import threading
+from typing import Literal
 
 from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -25,7 +27,7 @@ from langchain_core.rate_limiters import InMemoryRateLimiter
 from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
 
-from backend.config import get_settings
+from backend.config import Settings, get_settings
 
 _logger = logging.getLogger(__name__)
 
@@ -108,6 +110,35 @@ def _split_slug(model_slug: str) -> tuple[str, str]:
     return p.lower(), n
 
 
+OpenaiHostOverride = Literal["none", "researcher", "grader"]
+
+
+def _openai_base_url_for_client(
+    settings: Settings,
+    *,
+    host_override: OpenaiHostOverride = "none",
+) -> str | None:
+    """Return ``base_url`` for ``ChatOpenAI``, or ``None`` to omit (SDK default host).
+
+    ``host_override`` applies role-specific OpenAI URL / platform flags before
+    falling back to the global ``openai_base_url``.
+    """
+    if host_override == "researcher":
+        explicit = (settings.researcher_openai_base_url or "").strip()
+        if explicit:
+            return explicit
+        if settings.researcher_use_platform_openai:
+            return None
+    elif host_override == "grader":
+        explicit = (settings.grader_openai_base_url or "").strip()
+        if explicit:
+            return explicit
+        if settings.grader_use_platform_openai:
+            return None
+    global_base = (settings.openai_base_url or "").strip()
+    return global_base or None
+
+
 def log_resolved_llm_routing() -> None:
     """Log where each configured role sends traffic (local vs cloud).
 
@@ -115,6 +146,15 @@ def log_resolved_llm_routing() -> None:
     still ``anthropic/...`` → those roles never hit localhost.
     """
     settings = get_settings()
+    _openai_is_local: dict[str, bool] = {
+        "pm_model": settings.pm_is_local,
+        "researcher_model": settings.researcher_is_local,
+        "lead_model": settings.lead_is_local,
+        "dev_model": settings.dev_is_local,
+        "backend_dev_model": settings.backend_dev_is_local,
+        "frontend_dev_model": settings.frontend_dev_is_local,
+        "grader_model": settings.grader_is_local,
+    }
     rows: list[tuple[str, str]] = [
         ("pm_model", settings.pm_model),
         ("researcher_model", settings.researcher_model),
@@ -127,12 +167,22 @@ def log_resolved_llm_routing() -> None:
     base = (settings.openai_base_url or "").strip()
     for label, slug in rows:
         provider, model_name = _split_slug(slug)
-        if provider == "openai" and base:
-            target = f"OpenAI-compatible {base} (model={model_name!r})"
-        elif provider == "openai":
-            target = f"OpenAI platform API (model={model_name!r})"
+        if provider == "openai":
+            eff_base: str | None
+            if label == "researcher_model":
+                eff_base = _openai_base_url_for_client(settings, host_override="researcher")
+            elif label == "grader_model":
+                eff_base = _openai_base_url_for_client(settings, host_override="grader")
+            else:
+                eff_base = _openai_base_url_for_client(settings, host_override="none")
+            if eff_base:
+                target = f"OpenAI-compatible {eff_base} (model={model_name!r})"
+            else:
+                target = f"OpenAI platform API (model={model_name!r})"
         else:
             target = f"Anthropic API (model={model_name!r})"
+        if provider == "openai":
+            target = f"{target}; IS_LOCAL={_openai_is_local[label]}"
         _logger.info("LLM routing %s=%s -> %s", label, slug, target)
 
     if base:
@@ -145,7 +195,13 @@ def log_resolved_llm_routing() -> None:
             )
 
 
-def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> BaseChatModel:
+def get_chat_model(
+    model_slug: str,
+    *,
+    temperature: float = 0.0,
+    openai_host_override: OpenaiHostOverride = "none",
+    **kwargs,
+) -> BaseChatModel:
     """Resolve a ``provider/model`` slug to a rate-limited chat model.
 
     Inline retry is *not* applied here so that callers can still call
@@ -172,7 +228,10 @@ def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> Ba
             "max_tokens": settings.max_output_tokens,
             **common,
         }
-        base = (settings.openai_base_url or "").strip()
+        base = _openai_base_url_for_client(
+            settings,
+            host_override=openai_host_override,
+        )
         if base:
             kwargs_openai["base_url"] = base
             # Local OpenAI-compatible servers usually ignore the key but require a value.
@@ -202,7 +261,12 @@ def pm_model() -> BaseChatModel:
 
 
 def researcher_model() -> BaseChatModel:
-    return get_chat_model(get_settings().researcher_model)
+    s = get_settings()
+    provider, _ = _split_slug(s.researcher_model)
+    return get_chat_model(
+        s.researcher_model,
+        openai_host_override="researcher" if provider == "openai" else "none",
+    )
 
 
 def lead_model() -> BaseChatModel:
@@ -226,4 +290,9 @@ def frontend_dev_model() -> BaseChatModel:
 
 
 def grader_model() -> BaseChatModel:
-    return get_chat_model(get_settings().grader_model)
+    s = get_settings()
+    provider, _ = _split_slug(s.grader_model)
+    return get_chat_model(
+        s.grader_model,
+        openai_host_override="grader" if provider == "openai" else "none",
+    )

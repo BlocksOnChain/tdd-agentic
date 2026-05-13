@@ -3,7 +3,11 @@ from __future__ import annotations
 
 from langchain_core.messages import HumanMessage
 
-from backend.agents.runner import build_specialist_focused_messages, specialist_closing_instruction
+from backend.agents.runner import (
+    build_specialist_focused_messages,
+    format_pm_assignment_message,
+    specialist_closing_instruction,
+)
 from backend.agents.state import SystemState
 
 
@@ -41,6 +45,22 @@ def test_researcher_keeps_original_goal_when_project_context_set() -> None:
     assert any(
         isinstance(m, HumanMessage) and "[original project goal]" in str(m.content) for m in out
     )
+
+
+def test_format_pm_assignment_surfaces_phase_and_body() -> None:
+    message = format_pm_assignment_message(
+        HumanMessage(
+            content=(
+                "[from project_manager → researcher]\n"
+                '{"phase":"research"}\n'
+                "Write docs/tech-stack.md and ingest into RAG."
+            )
+        )
+    )
+    text = str(message.content)
+    assert text.startswith("[current PM assignment]")
+    assert "phase: research" in text
+    assert "Write docs/tech-stack.md" in text
 
 
 def test_researcher_skips_prior_self_handoff_summary() -> None:

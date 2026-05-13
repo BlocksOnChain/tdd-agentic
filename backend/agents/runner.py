@@ -81,6 +81,38 @@ def _truncate(s: str, limit: int) -> str:
     return s[:limit] + f"\n…[truncated {len(s) - limit} chars]"
 
 
+def format_pm_assignment_message(message: HumanMessage) -> HumanMessage:
+    """Make the latest PM handoff easier for tool models to follow."""
+    content = message.content if isinstance(message.content, str) else str(message.content)
+    if not content.startswith("[from project_manager →"):
+        return message
+
+    lines = content.split("\n", 2)
+    if len(lines) < 2:
+        return message
+
+    meta_line = lines[1].strip()
+    body = lines[2].strip() if len(lines) > 2 else ""
+    phase = ""
+    if meta_line:
+        try:
+            parsed = json.loads(meta_line)
+        except json.JSONDecodeError:
+            parsed = {}
+        if isinstance(parsed, dict):
+            phase = str(parsed.get("phase") or "").strip()
+
+    parts = ["[current PM assignment]"]
+    if phase:
+        parts.append(f"phase: {phase}")
+    if body:
+        parts.append(body)
+    elif meta_line and not phase:
+        parts.append(meta_line)
+
+    return HumanMessage(content="\n".join(parts))
+
+
 def resolve_project_context(state: SystemState) -> str:
     """Return the best available project brief for relevance checks and prompts."""
     ctx = (state.project_context or "").strip()
@@ -166,7 +198,8 @@ def build_specialist_focused_messages(state: SystemState, agent_name: str) -> li
         c = s.content if isinstance(s.content, str) else str(s.content)
         out.append(HumanMessage(content=_truncate(c, 2000)))
     if pm_instruction is not None:
-        c = pm_instruction.content if isinstance(pm_instruction.content, str) else str(pm_instruction.content)
+        c = format_pm_assignment_message(pm_instruction).content
+        c = c if isinstance(c, str) else str(c)
         out.append(HumanMessage(content=_truncate(c, MAX_HANDOFF_INSTRUCTION_CHARS)))
     elif not handoff_summaries:
         out.append(HumanMessage(content="(No explicit instruction. Inspect state and proceed with your role.)"))

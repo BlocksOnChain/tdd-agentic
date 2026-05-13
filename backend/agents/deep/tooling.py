@@ -1,13 +1,12 @@
-"""Deep-agent tool wiring and activity telemetry."""
+"""Deep-agent tool wiring."""
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from langchain_core.messages import AIMessage, BaseMessage, ToolMessage
+from langchain_core.messages import ToolMessage
 from langchain_core.tools import BaseTool, StructuredTool
 from pydantic import create_model
-from backend.agents.common import emit
 
 
 def _tool_field_names(tool: BaseTool) -> set[str]:
@@ -66,76 +65,4 @@ def bind_tools_to_project(tools: Sequence[BaseTool], project_id: str) -> list[Ba
     return bound
 
 
-def _preview_tool_content(content: object, limit: int = 300) -> str:
-    text = content if isinstance(content, str) else str(content)
-    return text if len(text) <= limit else text[:limit] + "…"
-
-
-def _iter_stream_messages(update: object) -> list[BaseMessage]:
-    if not isinstance(update, dict):
-        return []
-    messages = update.get("messages")
-    if not isinstance(messages, list):
-        return []
-    return [message for message in messages if isinstance(message, BaseMessage)]
-
-
-async def invoke_deep_agent_with_tool_telemetry(
-    agent: Any,
-    *,
-    agent_name: str,
-    project_id: str,
-    input_state: dict[str, Any],
-    config: dict[str, Any],
-) -> tuple[dict[str, Any], list[ToolMessage]]:
-    """Run a deep agent, emitting tool activity and collecting tool results."""
-    tool_messages: list[ToolMessage] = []
-    seen_tool_results: set[str] = set()
-    final_state: dict[str, Any] = {}
-
-    async for mode, chunk in agent.astream(
-        input_state,
-        config=config,
-        stream_mode=["values", "updates"],
-    ):
-        if mode == "values" and isinstance(chunk, dict):
-            final_state = chunk
-            continue
-        if mode != "updates" or not isinstance(chunk, dict):
-            continue
-        for update in chunk.values():
-            for message in _iter_stream_messages(update):
-                if isinstance(message, AIMessage):
-                    for call in message.tool_calls or []:
-                        await emit(
-                            agent_name,
-                            "tool_call",
-                            {
-                                "name": call.get("name"),
-                                "args": call.get("args") or {},
-                            },
-                            project_id,
-                        )
-                if not isinstance(message, ToolMessage):
-                    continue
-                tool_call_id = message.tool_call_id or ""
-                if tool_call_id and tool_call_id in seen_tool_results:
-                    continue
-                if tool_call_id:
-                    seen_tool_results.add(tool_call_id)
-                tool_messages.append(message)
-                await emit(
-                    agent_name,
-                    "tool_result",
-                    {
-                        "name": message.name,
-                        "preview": _preview_tool_content(message.content),
-                    },
-                    project_id,
-                )
-
-    if not final_state:
-        raise RuntimeError(
-            f"Deep agent {agent_name!r} finished without emitting a final state snapshot."
-        )
-    return final_state, tool_messages
+__all__ = ["bind_tools_to_project"]

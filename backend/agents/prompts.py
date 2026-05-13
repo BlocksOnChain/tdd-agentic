@@ -126,6 +126,13 @@ RESEARCHER_DEEP_TOOLING_ADDENDUM = """Deep-agent filesystem tools (CRITICAL):
 - Call rag_ingest_text(source=<workspace path>, text=<full markdown>) for each doc you author.
 - project_id is injected automatically for project-scoped tools."""
 
+RESEARCHER_AUTHORING_INSTRUCTION = """[research authoring]
+Turn the PM assignment into separate project docs.
+- Write or update docs/tech-stack.md, docs/architecture.md, docs/conventions.md, and docs/api-contracts.md with distinct content per file.
+- Call web_search again when a doc topic still lacks sources.
+- Call rag_ingest_text for each file after writing it.
+- Do not paste the same raw search block into every file."""
+
 RESEARCHER_DEEP_CLOSING_INSTRUCTION = """Use tools as needed. Stay anchored to PROJECT_CONTEXT and the PM assignment.
 
 Required before you stop:

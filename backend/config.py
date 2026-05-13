@@ -38,6 +38,26 @@ class Settings(BaseSettings):
         default="",
         validation_alias=AliasChoices("openai_base_url", "openai_api_base"),
     )
+    # Researcher-only OpenAI HTTP host when ``researcher_model`` is ``openai/...``.
+    # Use when ``OPENAI_BASE_URL`` points at a local server but the researcher should
+    # call OpenAI's cloud API. Non-empty ``RESEARCHER_OPENAI_BASE_URL`` wins over the flag.
+    researcher_openai_base_url: str = ""
+    researcher_use_platform_openai: bool = False
+    # Grader-only OpenAI HTTP host when ``grader_model`` is ``openai/...`` (same pattern as
+    # the researcher). Non-empty ``GRADER_OPENAI_BASE_URL`` wins over the flag.
+    grader_openai_base_url: str = ""
+    grader_use_platform_openai: bool = False
+    # Per-role: set true when that role's ``openai/...`` traffic goes to a local or
+    # non-standard OpenAI-compatible server (e.g. llama.cpp) where ``tool_choice`` and
+    # tool schemas may differ. Leave false when ``OPENAI_BASE_URL`` points at the real
+    # OpenAI API or another fully compatible host.
+    pm_is_local: bool = False
+    researcher_is_local: bool = False
+    lead_is_local: bool = False
+    dev_is_local: bool = False
+    backend_dev_is_local: bool = False
+    frontend_dev_is_local: bool = False
+    grader_is_local: bool = False
     # Seconds; raise for slow local inference.
     openai_request_timeout: float = 120.0
     anthropic_api_key: str = ""
@@ -142,6 +162,13 @@ class Settings(BaseSettings):
             return _default_workspace_root()
         return Path(value)
 
+    @field_validator("openai_api_key", mode="before")
+    @classmethod
+    def _strip_openai_api_key(cls, value: object) -> object:
+        if isinstance(value, str):
+            return value.strip()
+        return value
+
 
 def log_settings_warnings(settings: Settings | None = None) -> None:
     """Emit configuration warnings once at startup."""
@@ -164,6 +191,43 @@ def log_settings_warnings(settings: Settings | None = None) -> None:
         _logger.warning(
             "Researcher web_search has no backend: set TAVILY_API_KEY and/or ANTHROPIC_API_KEY."
         )
+    if settings.researcher_model.lower().startswith("openai/"):
+        r_url = (settings.researcher_openai_base_url or "").strip()
+        uses_researcher_cloud = bool(r_url or settings.researcher_use_platform_openai)
+        if settings.openai_base_url.strip() and not uses_researcher_cloud:
+            if settings.researcher_is_local:
+                _logger.warning(
+                    "Researcher model %s uses OPENAI_BASE_URL with RESEARCHER_IS_LOCAL=true; "
+                    "first-hop OpenAI tool_choice forcing is disabled for compatibility.",
+                    settings.researcher_model,
+                )
+            else:
+                _logger.info(
+                    "Researcher model %s inherits OPENAI_BASE_URL (same host as other openai/ roles). "
+                    "For cloud OpenAI while keeping a local OPENAI_BASE_URL for others, set "
+                    "RESEARCHER_USE_PLATFORM_OPENAI=true or RESEARCHER_OPENAI_BASE_URL=https://api.openai.com/v1.",
+                    settings.researcher_model,
+                )
+        elif uses_researcher_cloud and settings.openai_base_url.strip():
+            _logger.info(
+                "Researcher OpenAI calls use RESEARCHER_OPENAI_BASE_URL / "
+                "RESEARCHER_USE_PLATFORM_OPENAI, not OPENAI_BASE_URL.",
+            )
+    if settings.grader_model.lower().startswith("openai/"):
+        g_url = (settings.grader_openai_base_url or "").strip()
+        uses_grader_cloud = bool(g_url or settings.grader_use_platform_openai)
+        if settings.openai_base_url.strip() and not uses_grader_cloud:
+            _logger.info(
+                "Grader model %s inherits OPENAI_BASE_URL (same host as other openai/ roles). "
+                "For cloud OpenAI while keeping a local OPENAI_BASE_URL for others, set "
+                "GRADER_USE_PLATFORM_OPENAI=true or GRADER_OPENAI_BASE_URL=https://api.openai.com/v1.",
+                settings.grader_model,
+            )
+        elif uses_grader_cloud and settings.openai_base_url.strip():
+            _logger.info(
+                "Grader OpenAI calls use GRADER_OPENAI_BASE_URL / "
+                "GRADER_USE_PLATFORM_OPENAI, not OPENAI_BASE_URL.",
+            )
 
 
 @lru_cache(maxsize=1)

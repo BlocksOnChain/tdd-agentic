@@ -135,16 +135,6 @@ def build_researcher_handoff_summary(
     return structured
 
 
-RESEARCHER_CONTINUATION_NUDGE = (
-    "The previous research pass did not produce substantive project documentation. "
-    "Call web_search for the project's stack and deliverables, write or refresh "
-    "docs/tech-stack.md, docs/architecture.md, docs/conventions.md, and "
-    "docs/api-contracts.md with project-specific content using write_file or "
-    "edit_file, and call rag_ingest_text for each authored file before finishing. "
-    "Auto-scaffolded placeholders do not satisfy project_manager routing."
-)
-
-
 def build_researcher_deep_assignment_messages(project_id: str) -> list[HumanMessage]:
     """Warn the deep researcher about placeholder docs that must be replaced."""
     refresh_authored_scaffold_paths(project_id)
