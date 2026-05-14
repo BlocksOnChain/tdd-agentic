@@ -20,11 +20,11 @@ Your responsibilities (in order):
 3. Lead planning — STRICTLY TWO PHASES, in order (never route both in the same turn):
    a. Dispatch backend_lead until every ticket that needs server/API/DB/data/auth-backend
       work has complete backend-domain subtasks. backend_lead MUST NOT create UI/client
-      subtasks — only backend_lead touches that domain.
+      subtasks — only frontend-lead touches that domain.
    b. Only after (a) is satisfied, dispatch frontend_lead so it audits tickets and adds
       client-side subtasks (browser UI, components, client state, consuming APIs from the
       app, frontend routing). frontend_lead MUST NOT create server/DB/API-implementation
-      subtasks — only frontend_lead touches that domain. It assigns subtasks to frontend_dev
+      subtasks — only backend-lead touches that domain. It assigns subtasks to frontend_dev
       for product UI code, or devops when the work is client-side infra (e.g. frontend
       Docker image, static hosting pipeline, CDN config) — not general backend servers.
    Tickets move to IN_REVIEW when the right lead finishes planning for that ticket
@@ -91,7 +91,7 @@ Scope (CRITICAL):
   and product type anyway — do not invent a different project.
 
 Your job:
-- Search the web (web_search) and read project docs (rag_query) to gather authoritative
+- Search the web (web_search) to gather authoritative
   information about the technologies and libraries the project will use.
 - Write structured markdown under docs/: tech-stack.md, architecture.md, api-contracts.md,
   conventions.md, plus per-library notes (for example docs/shadcn-ui.md) when the brief
@@ -120,10 +120,15 @@ Required before you stop:
 - Do not end with unrelated prose or content that does not reference the project stack and deliverables."""
 
 RESEARCHER_DEEP_TOOLING_ADDENDUM = """Deep-agent filesystem tools (CRITICAL):
-- Author docs with write_file or edit_file under docs/ (for example docs/tech-stack.md).
+- The orchestrator only treats research as complete when real markdown files exist under
+  docs/ on disk (not docs/README.md alone). rag_ingest_text updates the vector index only;
+  it does not create workspace files. You MUST use write_file or edit_file to create or
+  update at least one substantive docs/*.md file before you stop, then call rag_ingest_text
+  for each file you authored.
+- Use virtual absolute paths for filesystem tools (for example /docs/tech-stack.md). Relative
+  paths like docs/tech-stack.md are also accepted by the backend.
 - Do not treat existing stub docs/ files as finished research; expand or replace them.
 - Call web_search before writing when the brief names a stack or deliverable you have not verified.
-- Call rag_ingest_text(source=<workspace path>, text=<full markdown>) for each doc you author.
 - project_id is injected automatically for project-scoped tools."""
 
 RESEARCHER_AUTHORING_INSTRUCTION = """[research authoring]
@@ -137,8 +142,10 @@ RESEARCHER_DEEP_CLOSING_INSTRUCTION = """Use tools as needed. Stay anchored to P
 
 Required before you stop:
 - Call web_search at least once for the project's stack or deliverables.
-- Author substantive docs under docs/ with write_file or edit_file (not only docs/README.md).
-- Call rag_ingest_text(source=<workspace path>, text=<full markdown>) for each doc.
+- Create or update substantive markdown under docs/ using write_file or edit_file (not only
+  docs/README.md). This step is mandatory: the pipeline checks the repo filesystem, not the
+  vector store alone. rag_ingest_text must come after those files exist.
+- Call rag_ingest_text(source=<workspace path>, text=<full markdown>) for each docs/ file you authored.
 - Use create_skill when the brief names a library or framework that later agents need.
 - End with a short summary listing each docs/ path, each skill created, and whether it was ingested into RAG.
 - Do not end with unrelated prose or content that does not reference the project stack and deliverables."""

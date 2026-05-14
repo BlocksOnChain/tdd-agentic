@@ -1,3 +1,4 @@
+
 """Optional Langfuse callback handler for LangGraph traces.
 
 Returns ``None`` when Langfuse credentials aren't configured so callers can

@@ -1,3 +1,4 @@
+
 """Skill registry.
 
 A skill is a small markdown file describing a focused capability (a library,

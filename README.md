@@ -79,7 +79,8 @@ docker compose up --build
 Services:
 
 - **Backend** — http://localhost:8000 (FastAPI + WebSocket at `/ws`)
-- **Frontend** — http://localhost:3000 (Next.js monitoring client)
+
+)
 - **PostgreSQL** — `localhost:5432` (tickets + LangGraph checkpointer)
 - **Qdrant** — http://localhost:6333 (per-project vector collections)
 - **Langfuse** — http://localhost:3001 (optional LLM tracing)

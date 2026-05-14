@@ -167,14 +167,21 @@ def build_researcher_deep_assignment_messages(project_id: str) -> list[HumanMess
 
 
 def substantive_research_docs_present(project_id: str) -> bool:
+    """True when at least one non-README markdown file exists under docs/ in the workspace.
+
+    This gate intentionally reflects **repository files**, not RAG tool calls alone:
+    :func:`rag_ingest_text` only updates the vector store and does not create ``docs/*.md``.
+    Paths still listed in the scaffold manifest as placeholder templates are ignored until
+    :func:`refresh_authored_scaffold_paths` clears them after substantive edits.
+    """
     refresh_authored_scaffold_paths(project_id)
     for row in list_research_markdown(project_id):
-        path = str(row.get("path") or "")
+        path = str(row.get("path") or "").replace("\\", "/")
         if int(row.get("bytes") or 0) <= 0:
             continue
-        if not path.startswith("docs/") or not path.endswith(".md"):
+        if not path.lower().startswith("docs/") or not path.lower().endswith(".md"):
             continue
-        if path == "docs/README.md":
+        if path.lower() == "docs/readme.md":
             continue
         if is_scaffolded_path(project_id, path):
             continue
@@ -183,7 +190,11 @@ def substantive_research_docs_present(project_id: str) -> bool:
 
 
 def researcher_turn_incomplete(project_id: str, tool_msgs: list[ToolMessage]) -> bool:
-    """True when the researcher still owes substantive docs/ for PM routing."""
+    """True when no substantive ``docs/*.md`` exists on disk (see substantive_research_docs_present).
+
+    Tool messages are intentionally ignored here: a model can call rag_ingest_text with full
+    markdown and still leave the workspace without qualifying files; the PM gate is filesystem-based.
+    """
     del tool_msgs
     refresh_authored_scaffold_paths(project_id)
     return not substantive_research_docs_present(project_id)

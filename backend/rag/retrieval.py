@@ -1,3 +1,4 @@
+
 """CRAG-style retrieval pipeline: retrieve → grade → (rewrite | return).
 
 Implemented directly against ``AsyncQdrantClient`` for full async control.

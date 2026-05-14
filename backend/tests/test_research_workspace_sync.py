@@ -56,9 +56,64 @@ async def test_ingest_research_workspace_indexes_docs(monkeypatch, tmp_path: Pat
 
     report = await workspace_sync.ingest_research_workspace(project_id)
     assert report["file_count"] == 2
-    assert report["total_chunks"] >= 2
+    assert report["total_chunks"] >= 1
     sources = {source for _, source, _ in calls}
-    assert sources == {"AGENTS.md", "docs/tech-stack.md"}
+    assert sources == {"docs/tech-stack.md"}
+    skipped = [row for row in report["files"] if row.get("skipped") == "scaffold_placeholder"]
+    assert len(skipped) == 1
+    assert skipped[0]["path"] == "AGENTS.md"
+
+
+@pytest.mark.asyncio
+async def test_rag_ingest_text_skips_placeholder_workspace_source(monkeypatch, tmp_path: Path) -> None:
+    """Tool must not push auto-scaffold stub text into Qdrant when source looks like a doc path."""
+    import json
+
+    from backend.tools import rag_tools
+
+    project_id = "proj-rag-skip"
+    root = tmp_path / project_id
+    (root / "docs").mkdir(parents=True)
+    monkeypatch.setattr(researcher_finalize, "project_workspace_root", lambda pid: root)
+    monkeypatch.setattr(researcher_scaffold, "project_workspace_root", lambda pid: root)
+
+    researcher_finalize.ensure_research_docs_scaffold(project_id, "Todo app with Next.js")
+    stub = (root / "docs" / "tech-stack.md").read_text(encoding="utf-8")
+
+    called: list[tuple[str, str, str]] = []
+
+    async def capture_ingest(pid: str, text: str, *, source: str) -> int:
+        called.append((pid, source, text))
+        return 1
+
+    monkeypatch.setattr(rag_tools.ingestion, "ingest_text", capture_ingest)
+
+    raw = await rag_tools.rag_ingest_text.ainvoke(
+        {"project_id": project_id, "source": "docs/tech-stack.md", "text": stub}
+    )
+    assert called == []
+    payload = json.loads(raw)
+    assert payload.get("chunks_written") == 0
+    assert payload.get("skipped") == "placeholder_or_non_research_workspace_doc"
+
+
+@pytest.mark.asyncio
+async def test_rag_ingest_text_allows_substantive_docs_path(monkeypatch, tmp_path: Path) -> None:
+    from backend.tools import rag_tools
+
+    called: list[tuple[str, str, str]] = []
+
+    async def capture_ingest(pid: str, text: str, *, source: str) -> int:
+        called.append((pid, source, text))
+        return 3
+
+    monkeypatch.setattr(rag_tools.ingestion, "ingest_text", capture_ingest)
+
+    body = "# Stack\n\n" + ("Detailed Next.js 15 notes with citations.\n" * 80)
+    await rag_tools.rag_ingest_text.ainvoke(
+        {"project_id": "proj-ok", "source": "docs/tech-stack.md", "text": body}
+    )
+    assert len(called) == 1
 
 
 def test_refresh_authored_scaffold_paths_clears_rewritten_docs(monkeypatch, tmp_path: Path) -> None:

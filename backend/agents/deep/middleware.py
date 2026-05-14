@@ -60,20 +60,31 @@ def _ls_provider(model: BaseChatModel) -> str | None:
     return v if isinstance(v, str) and v else None
 
 
+def should_force_openai_first_tool_call(model: BaseChatModel, *, role_is_local: bool) -> bool:
+    """True when this role uses OpenAI and we should force a first-hop tool call.
+
+    OpenAI-compatible local servers often reject ``tool_choice=required``; callers
+    pass ``role_is_local=True`` from settings (``*_is_local``) to skip forcing.
+    """
+    if role_is_local:
+        return False
+    return _ls_provider(model) == "openai"
+
+
 def openai_first_model_call_tool_choice(request: Any) -> Any | None:
     """Return ``\"required\"`` when the next model hop should force a tool call.
 
-    Used by the researcher deep-agent middleware. Returns ``None`` to keep the
-    agent default (typically no forcing).
+    Used by deep-agent middleware for roles that use OpenAI's chat API. Returns
+    ``None`` to keep the agent default (typically no forcing).
     """
     if not getattr(request, "tools", None):
         return None
     messages = getattr(request, "messages", None) or []
     if any(isinstance(m, ToolMessage) for m in messages):
         return None
-    if get_settings().researcher_is_local:
-        return None
-    if _ls_provider(request.model) != "openai":
+    if not should_force_openai_first_tool_call(
+        request.model, role_is_local=get_settings().researcher_is_local
+    ):
         return None
     return "required"
 

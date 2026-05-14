@@ -12,6 +12,7 @@ from typing import Any
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from qdrant_client import AsyncQdrantClient
+from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.http.models import Distance, PointStruct, VectorParams
 
 from backend.config import get_settings
@@ -34,18 +35,33 @@ def _stable_id(text: str, source: str) -> str:
     return str(uuid.uuid5(_RAG_NAMESPACE, f"{source}::{text}"))
 
 
+def _is_collection_already_exists_error(exc: UnexpectedResponse) -> bool:
+    if exc.status_code == 409:
+        return True
+    body = exc.content or b""
+    return exc.status_code == 400 and b"already exists" in body
+
+
 async def ensure_collection(project_id: str) -> str:
-    """Create the Qdrant collection for a project if it doesn't exist."""
+    """Return the Qdrant collection name for ``project_id``, creating it if missing.
+
+    Creation is idempotent: concurrent creates or a stale ``get_collections`` view
+    may yield 409 / \"already exists\" from Qdrant; those are treated as success.
+    """
     settings = get_settings()
     client = AsyncQdrantClient(url=settings.qdrant_url)
     try:
         name = collection_name(project_id)
         existing = {c.name for c in (await client.get_collections()).collections}
         if name not in existing:
-            await client.create_collection(
-                collection_name=name,
-                vectors_config=VectorParams(size=embedding_dim(), distance=Distance.COSINE),
-            )
+            try:
+                await client.create_collection(
+                    collection_name=name,
+                    vectors_config=VectorParams(size=embedding_dim(), distance=Distance.COSINE),
+                )
+            except UnexpectedResponse as exc:
+                if not _is_collection_already_exists_error(exc):
+                    raise
         return name
     finally:
         await client.close()

@@ -10,6 +10,11 @@ from langchain_openai import ChatOpenAI
 from backend.agents.deep import middleware as mw
 
 
+def test_should_force_openai_first_tool_respects_role_local(openai_model) -> None:
+    assert mw.should_force_openai_first_tool_call(openai_model, role_is_local=True) is False
+    assert mw.should_force_openai_first_tool_call(openai_model, role_is_local=False) is True
+
+
 @pytest.fixture
 def openai_model() -> ChatOpenAI:
     return ChatOpenAI(model="gpt-4o", api_key="sk-test", rate_limiter=None, max_retries=0)

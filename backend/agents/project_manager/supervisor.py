@@ -14,6 +14,7 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, Tool
 from pydantic import BaseModel, Field
 
 from backend.agents.common import emit, run_tool_calls
+from backend.agents.deep.middleware import should_force_openai_first_tool_call
 from backend.agents.llm_audit import (
     log_llm_invoke_exception_context,
     log_llm_invoke_start,
@@ -24,8 +25,12 @@ from backend.agents.session_memory import SessionMemory
 from backend.agents.skills.loader import inject_skills
 from backend.agents.state import SystemState
 from backend.db.session import AsyncSessionLocal
-from backend.agents.researcher.scaffold import is_scaffolded_path
+from backend.agents.researcher.scaffold import (
+    is_scaffolded_path,
+    normalize_workspace_relative_path,
+)
 from backend.rag.workspace_sync import list_research_markdown
+from backend.config import get_settings
 from backend.tools.hitl_tools import ask_human
 from backend.tools.rag_tools import rag_query
 from backend.tools.ticket_tools import PM_TICKET_TOOLS
@@ -73,6 +78,18 @@ class RoutingDecision(BaseModel):
 
 PM_TOOLS = [*PM_TICKET_TOOLS, rag_query, ask_human]
 TOOLS_BY_NAME = {t.name: t for t in PM_TOOLS}
+
+
+def _pm_openai_first_tool_bind_kwargs(messages: list) -> dict[str, str]:
+    """Map ``tool_choice=any`` (→ OpenAI ``required``) only on the first hop for cloud OpenAI PM."""
+    settings = get_settings()
+    if not should_force_openai_first_tool_call(
+        pm_model(), role_is_local=settings.pm_is_local
+    ):
+        return {}
+    if any(isinstance(m, ToolMessage) for m in messages):
+        return {}
+    return {"tool_choice": "any"}
 
 
 def _truncate(s: str, limit: int) -> str:
@@ -433,12 +450,13 @@ def _research_materials_ready(project_id: str | None) -> bool:
     if not project_id:
         return False
     for row in list_research_markdown(project_id):
-        path = str(row.get("path") or "")
+        path = normalize_workspace_relative_path(str(row.get("path") or ""))
         if int(row.get("bytes") or 0) <= 0:
             continue
-        if not path.startswith("docs/") or not path.endswith(".md"):
+        low = path.lower()
+        if not low.startswith("docs/") or not low.endswith(".md"):
             continue
-        if path == "docs/README.md":
+        if low == "docs/readme.md":
             continue
         if is_scaffolded_path(project_id, path):
             continue
@@ -539,9 +557,6 @@ async def _run_pm_ticket_backlog_phase(
     if await _list_project_tickets(state.project_id):
         return True
 
-    tool_llm = with_retry(
-        pm_model().bind_tools(PM_TICKET_BACKLOG_TOOLS, tool_choice="any")
-    )
     messages: list = [SystemMessage(content=system_prompt), *condensed]
     if not any(getattr(m, "type", None) == "human" for m in messages):
         messages.append(HumanMessage(content="(start)"))
@@ -552,6 +567,11 @@ async def _run_pm_ticket_backlog_phase(
             step_index=step_i + 1,
             step_cap=8,
             project_id=state.project_id,
+        )
+        tool_llm = with_retry(
+            pm_model().bind_tools(
+                PM_TICKET_BACKLOG_TOOLS, **_pm_openai_first_tool_bind_kwargs(messages)
+            )
         )
         try:
             ai: AIMessage = await tool_llm.ainvoke(messages)
@@ -685,7 +705,6 @@ def build_project_manager_node():
         # If there is developer work ready, route deterministically even if the
         # LLM later fails or emits invalid routing JSON.
         ready_dev = await _infer_next_dev_route(state.project_id)
-        llm = with_retry(pm_model().bind_tools(PM_TOOLS))
         system_prompt = _build_system_prompt(state)
 
         # Condense state.messages to just the human/handoff turns so we
@@ -702,22 +721,27 @@ def build_project_manager_node():
             and not await _list_project_tickets(state.project_id)
             and not _research_materials_ready(state.project_id)
         ):
-            decision = _pm_research_redispatch_decision()
+            redispatch_decision = _pm_research_redispatch_decision()
             events.append(
                 await emit(
                     "project_manager",
                     "route",
-                    {"next_agent": decision.next_agent, "rationale": decision.rationale},
+                    {
+                        "next_agent": redispatch_decision.next_agent,
+                        "rationale": redispatch_decision.rationale,
+                    },
                     state.project_id,
                 )
             )
             return {
                 "messages": [
                     HumanMessage(
-                        content=_format_pm_handoff(decision.next_agent, decision)
+                        content=_format_pm_handoff(
+                            redispatch_decision.next_agent, redispatch_decision
+                        )
                     )
                 ],
-                "next_agent": decision.next_agent,
+                "next_agent": redispatch_decision.next_agent,
                 "active_ticket_id": state.active_ticket_id,
             }
 
@@ -753,6 +777,9 @@ def build_project_manager_node():
                 project_id=state.project_id,
             )
             try:
+                llm = with_retry(
+                    pm_model().bind_tools(PM_TOOLS, **_pm_openai_first_tool_bind_kwargs(messages))
+                )
                 ai: AIMessage = await llm.ainvoke(messages)
             except Exception as exc:
                 log_llm_invoke_exception_context(
