@@ -12,7 +12,7 @@ import { useEventStream, WSEvent } from "@/lib/websocket";
  * of the layout tree so every page sees live state.
  */
 export function EventBridge() {
-  const { appendLog, pushInterrupt, setTickets, selectedProjectId, setCrash, setLogsFromHistory } =
+  const { appendLog, pushInterrupt, setTickets, selectedProjectId, setCrash, setLogsFromHistory, setActiveAgents, activeAgents } =
     useUIStore();
 
   useEventStream((e: WSEvent) => {
@@ -20,6 +20,17 @@ export function EventBridge() {
       const p = e.payload as Record<string, unknown>;
       const node = (p.node as string) ?? (p.agent as string) ?? "system";
       const kind = (p.kind as string) ?? "log";
+      const store = useUIStore.getState();
+      store.updateAgentLastSeen(node);
+      // Track active agents; evict stale ones (15 min)
+      const now = Date.now() / 1000;
+      const updated = [
+        ...new Set([
+          ...store.activeAgents.filter((a) => now - (store.agentLastSeen[a] ?? 0) < 900),
+          node,
+        ]),
+      ];
+      setActiveAgents(updated);
       appendLog({
         ts: e.ts ?? Date.now() / 1000,
         agent: node,
@@ -50,6 +61,9 @@ export function EventBridge() {
         question: (p.question as string) ?? "(no question text)",
         asked_by: p.asked_by as string | undefined,
         receivedAt: Date.now(),
+        kind: (p.kind as string) ?? "ask_human",
+        dismissed: false,
+        answered: false,
       });
     }
     if (e.type === "ticket" && selectedProjectId) {

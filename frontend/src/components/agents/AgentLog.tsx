@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { api, LogItemResponse } from "@/lib/api";
 import { useUIStore } from "@/lib/store";
+import { LogFilterBar } from "@/components/logs/LogFilterBar";
 
 const colorFor = (agent: string) => {
   switch (agent) {
@@ -25,8 +26,17 @@ const colorFor = (agent: string) => {
   }
 };
 
+function formatRelativeTime(ts: number): string {
+  const now = Date.now() / 1000;
+  const diff = now - ts;
+  if (diff < 60) return "just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return new Date(ts * 1000).toLocaleString();
+}
+
 export function AgentLog() {
-  const { logs, clearLogs, selectedProjectId } = useUIStore();
+  const { logs, clearLogs, selectedProjectId, logSearch, logKindFilter, autoScrollEnabled, setAutoScrollEnabled } = useUIStore();
   const [pending, setPending] = useState<string | null>(null);
   const [selected, setSelected] = useState<LogItemResponse | null>(null);
   const [selectedLoading, setSelectedLoading] = useState(false);
@@ -34,6 +44,19 @@ export function AgentLog() {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
+
+  // Filter logs
+  const filteredLogs = logs.filter((l) => {
+    if (logKindFilter !== "all" && l.kind !== logKindFilter) return false;
+    if (logSearch) {
+      const q = logSearch.toLowerCase();
+      return (
+        l.agent.toLowerCase().includes(q) ||
+        l.detail.toLowerCase().includes(q)
+      );
+    }
+    return true;
+  });
 
   const recomputeIsAtBottom = () => {
     const el = scrollerRef.current;
@@ -46,6 +69,11 @@ export function AgentLog() {
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (autoScrollEnabled && isAtBottom) scrollToBottom();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [logs.length, autoScrollEnabled]);
 
   const resumeFrom = async (checkpointId: string) => {
     if (!selectedProjectId) return;
@@ -72,42 +100,62 @@ export function AgentLog() {
     }
   };
 
-  useEffect(() => {
-    if (isAtBottom) scrollToBottom();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [logs.length]);
-
   return (
     <div className="rounded border border-border bg-surface">
+      {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
         <div className="text-sm font-medium">Agent activity</div>
-        <button onClick={clearLogs} className="text-xs text-zinc-400 hover:text-zinc-200">
-          Clear
-        </button>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-zinc-500">
+            {filteredLogs.length} / {logs.length}
+          </span>
+          <button
+            onClick={() => setAutoScrollEnabled(!autoScrollEnabled)}
+            className="rounded border border-border px-2 py-1 text-xs text-zinc-400 hover:bg-muted hover:text-zinc-200"
+            title={autoScrollEnabled ? "Auto-scroll on" : "Auto-scroll off"}
+          >
+            {autoScrollEnabled ? "↓ Auto" : "↓ Paused"}
+          </button>
+          <button onClick={clearLogs} className="text-xs text-zinc-400 hover:text-zinc-200">
+            Clear
+          </button>
+        </div>
       </div>
+
+      {/* Filter bar */}
+      <LogFilterBar />
+
+      {/* Log list */}
       <div className="relative">
         <div
           ref={scrollerRef}
           onScroll={recomputeIsAtBottom}
           className="max-h-[60vh] overflow-y-auto scrollbar p-3 font-mono text-xs leading-relaxed"
         >
-          {logs.length === 0 && <div className="text-zinc-500">Waiting for events…</div>}
-          {logs.map((l, i) => (
+          {filteredLogs.length === 0 && (
+            <div className="text-zinc-500">
+              {logs.length === 0 ? "Waiting for events…" : "No logs match current filters."}
+            </div>
+          )}
+          {filteredLogs.map((l, i) => (
             <div
               key={l.id ?? `live-${l.ts}-${i}-${l.agent}`}
               className="group flex cursor-pointer gap-2 rounded px-1 py-0.5 hover:bg-muted/40"
               onClick={() => void openDetails(l.id)}
             >
-              <span className="text-zinc-600 shrink-0">
-                {new Date(l.ts * 1000).toLocaleTimeString()}
+              <span className="text-zinc-600 shrink-0 tabular-nums">
+                {formatRelativeTime(l.ts)}
               </span>
-              <span className={`shrink-0 ${colorFor(l.agent)}`}>{l.agent}</span>
+              <span className={`shrink-0 font-medium ${colorFor(l.agent)}`}>{l.agent}</span>
               <span className="text-zinc-500 shrink-0">{l.kind}</span>
-              <span className="text-zinc-300 break-all flex-1">{l.detail}</span>
+              <span className="text-zinc-300 break-all flex-1 min-w-0">{l.detail}</span>
               {l.checkpoint_id && selectedProjectId && (
                 <button
                   title={`Resume from checkpoint ${l.checkpoint_id}`}
-                  onClick={() => resumeFrom(l.checkpoint_id!)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    resumeFrom(l.checkpoint_id!);
+                  }}
                   disabled={pending === l.checkpoint_id}
                   className="shrink-0 self-start rounded border border-border px-1.5 py-0.5 text-[10px] text-zinc-400 opacity-0 hover:bg-muted hover:text-zinc-200 group-hover:opacity-100 disabled:opacity-50"
                 >
@@ -119,7 +167,7 @@ export function AgentLog() {
           <div ref={bottomRef} />
         </div>
 
-        {!isAtBottom && logs.length > 0 && (
+        {!isAtBottom && filteredLogs.length > 0 && autoScrollEnabled && (
           <button
             type="button"
             onClick={scrollToBottom}
@@ -131,6 +179,7 @@ export function AgentLog() {
         )}
       </div>
 
+      {/* Loading / error states */}
       {selectedLoading && (
         <div className="border-t border-border px-3 py-2 text-xs text-zinc-500">
           Loading details…
@@ -142,6 +191,7 @@ export function AgentLog() {
         </div>
       )}
 
+      {/* Detail modal */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-6">
           <div className="w-full max-w-3xl rounded border border-border bg-surface shadow-lg">

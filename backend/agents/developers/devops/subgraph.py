@@ -17,4 +17,5 @@ def build_devops_subgraph():
         tools=[*DEV_TICKET_TOOLS, *CODE_TOOLS, rag_query],
         base_system_prompt=DEVOPS_SYSTEM,
         max_steps=18,
+        verify_completion=True,
     )

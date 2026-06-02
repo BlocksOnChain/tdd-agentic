@@ -6,7 +6,6 @@ can make resume-from-checkpoint fail.
 """
 from __future__ import annotations
 
-import operator
 from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -36,14 +35,19 @@ class SystemState(BaseModel):
     active_ticket_id: str | None = None
     active_subtask_id: str | None = None
 
-    # Legacy fields retained for older checkpoints; not written by current nodes.
-    pending_questions: Annotated[list[str], operator.add] = Field(default_factory=list)
-    human_responses: Annotated[list[str], operator.add] = Field(default_factory=list)
+    # Legacy fields retained for older checkpoint compat — no longer written.
+    # operator.add would accumulate unbounded; use identity lambda to drop new writes.
+    pending_questions: Annotated[list[str], lambda _a, _b: _a or []] = Field(default_factory=list)
+    human_responses: Annotated[list[str], lambda _a, _b: _a or []] = Field(default_factory=list)
 
     next_agent: str | None = None  # supervisor routing decision
 
     # Streamed via WS and stored in agent_logs; not duplicated in checkpoints.
     events: Annotated[list[AgentEvent], lambda _a, _b: []] = Field(default_factory=list)
+
+    # Cross-agent context store (keyed "ctx_N" → ContextEntry).
+    # Not persisted in checkpoints — cleared between graph runs.
+    context_store: dict[str, Any] = Field(default_factory=dict)
 
 
 __all__ = ["SystemState", "AgentEvent"]

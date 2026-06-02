@@ -3,6 +3,11 @@
 Implemented directly against ``AsyncQdrantClient`` for full async control.
 A small grader LLM filters out irrelevant chunks. If nothing relevant
 survives, the query is rewritten and we retry once before giving up.
+
+Query expansion: for single-word queries, auto-expand with related terms
+for better recall.
+
+TTL-aware cache with LRU eviction.
 """
 from __future__ import annotations
 
@@ -132,26 +137,81 @@ def _cache_put(project_id: str, query: str, k: int, docs: list[Document]) -> Non
     _CRAG_CACHE[key] = (time.time(), docs)
 
 
+def _expand_query(query: str) -> list[str]:
+    """Expand short queries (<=2 words) with common synonyms for better recall.
+
+    Longer queries are assumed to be specific enough.
+    """
+    words = query.strip().split()
+    if len(words) > 2:
+        return [query]
+
+    synonyms: dict[str, list[str]] = {
+        "auth": ["authentication", "login", "authorization"],
+        "jwt": ["jsonwebtoken", "token", "bearer"],
+        "cors": ["cross-origin", "preflight", "headers"],
+        "db": ["database", "postgres", "postgresql", "pg"],
+        "api": ["endpoint", "route", "handler", "rest"],
+        "css": ["style", "stylesheet", "tailwind", "styling"],
+        "react": ["component", "hook", "jsx", "render"],
+        "next": ["nextjs", "app-router", "ssr", "ssg"],
+        "test": ["spec", "specification", "jest", "vitest", "pytest"],
+        "deploy": ["deploying", "deployment", "pipeline", "ci/cd"],
+        "docker": ["container", "containerization", "compose", "image"],
+    }
+
+    expanded: list[str] = [query]
+    for w in words:
+        w_lower = w.lower()
+        for syn in synonyms.get(w_lower, []):
+            expanded.append(f"{query} {syn}")
+    return expanded
+
+
 async def crag_retrieve(project_id: str, query: str, k: int | None = None) -> list[Document]:
-    """Retrieve and grade. On total miss, rewrite once and retry."""
+    """Retrieve and grade. Expands short queries for better recall.
+
+    Deduplicates across expanded queries. Falls back to query rewrite
+    only when no cached or graded results are found.
+    """
     settings = get_settings()
     limit = k if k is not None else settings.rag_default_k
-    cached = _cache_get(project_id, query, limit)
-    if cached is not None:
-        return cached
 
-    initial = await _vector_search(project_id, query, limit)
+    # Try expanded queries for better recall
+    expanded = _expand_query(query)
+    all_results: list[Document] = []
+    seen_content: set[str] = set()
+
+    for exp_query in expanded:
+        cached = _cache_get(project_id, exp_query, limit)
+        if cached is not None:
+            for doc in cached:
+                if doc.page_content not in seen_content:
+                    all_results.append(doc)
+                    seen_content.add(doc.page_content)
+            continue
+
+        initial = await _vector_search(project_id, exp_query, limit)
+        relevant = await _grade(exp_query, initial)
+        if relevant:
+            for doc in relevant:
+                if doc.page_content not in seen_content:
+                    all_results.append(doc)
+                    seen_content.add(doc.page_content)
+            _cache_put(project_id, exp_query, limit, relevant)
+            if len(all_results) >= limit:
+                break
+
+    if all_results:
+        return all_results[:limit]
+
+    # Total miss — rewrite and retry (may cost 2 extra LLM calls)
+    rewritten = await _rewrite(query)
     log_rag_crag_llm_targets(
-        docs_to_grade=len(initial),
+        docs_to_grade=limit * len(expanded),
         grader_slug=settings.grader_model,
         rewriter_slug=settings.researcher_model,
     )
-    relevant = await _grade(query, initial)
-    if relevant:
-        _cache_put(project_id, query, limit, relevant)
-        return relevant
-
-    rewritten = await _rewrite(query)
     second = await _vector_search(project_id, rewritten, limit)
     graded = await _grade(rewritten, second)
     _cache_put(project_id, query, limit, graded)

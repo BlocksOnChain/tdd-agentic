@@ -22,6 +22,13 @@ def get_embeddings() -> Embeddings:
         )
 
     if provider == "local":
+        import importlib.util
+
+        if importlib.util.find_spec("sentence_transformers") is None:
+            raise RuntimeError(
+                "EMBEDDING_PROVIDER=local requires optional local embedding dependencies. "
+                "Run: python scripts/install_backend.py --local-embeddings"
+            )
         from langchain_community.embeddings import HuggingFaceEmbeddings
 
         return HuggingFaceEmbeddings(model_name=settings.local_embedding_model)

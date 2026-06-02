@@ -81,12 +81,13 @@ def _build_specialist_input(state: SystemState, agent_name: str) -> list[BaseMes
     """Assemble the minimal message list a specialist needs to act.
 
     Strategy:
-      - Keep the FIRST HumanMessage in shared state (the original project goal).
       - Keep the most recent ``[from project_manager → <agent_name>]``
         HumanMessage (this specialist's actual assignment).
       - For most specialists: keep up to 2 recent specialist→PM hand-off summaries
         for minimal cross-agent context. For backend_dev / frontend_dev, omit these
         so each run relies on DB subtasks + the current PM instruction only.
+      - The project goal lives in ``state.project_context`` (set at start_run),
+        not in this focused history — it's injected by the system prompt builder.
       - Drop everything else (PM AIMessages with tool calls, prior
         specialists' tool transcripts, etc.).
 
@@ -96,12 +97,6 @@ def _build_specialist_input(state: SystemState, agent_name: str) -> list[BaseMes
     msgs = list(state.messages)
     if not msgs:
         return []
-
-    first_human: HumanMessage | None = None
-    for m in msgs:
-        if isinstance(m, HumanMessage):
-            first_human = m
-            break
 
     pm_instruction: HumanMessage | None = None
     handoff_summaries: list[HumanMessage] = []
@@ -116,23 +111,13 @@ def _build_specialist_input(state: SystemState, agent_name: str) -> list[BaseMes
             pm_instruction = m
             continue
         if collect_handoffs and content.startswith("[from ") and "→ project_manager" in content:
-            if len(handoff_summaries) < 2 and m is not first_human:
+            if len(handoff_summaries) < 2:
                 handoff_summaries.append(m)
 
     out: list[BaseMessage] = []
-    if not (state.project_context or "").strip():
-        initial_goal = first_human
-        if initial_goal is not None:
-            truncated_goal = (
-                initial_goal.content
-                if isinstance(initial_goal.content, str)
-                else str(initial_goal.content)
-            )
-            out.append(
-                HumanMessage(
-                    content=f"[original project goal]\n{_truncate(truncated_goal, 4000)}"
-                )
-            )
+    # project_context is always set at start_run (to goal or explicit project_context),
+    # so we never need to re-add the goal from first_human here. The goal is read
+    # from project_context by the specialist's system prompt builder directly.
     for s in reversed(handoff_summaries):
         c = s.content if isinstance(s.content, str) else str(s.content)
         out.append(HumanMessage(content=_truncate(c, 2000)))
@@ -160,6 +145,68 @@ def _latest_subtask_id_from_tools(tool_msgs: list[ToolMessage]) -> str | None:
     return None
 
 
+def _verification_outcome(tool_msgs: list[ToolMessage]) -> tuple[str, str]:
+    """Classify the turn's verification signal from ``run_tests`` results.
+
+    Returns ``(status, detail)`` where status is ``"passed"`` | ``"failed"`` |
+    ``"none"``. Only ``run_tests`` counts as the gate — plain ``shell_run`` is
+    used for diagnostics/installs (``node --version`` etc.) and intentionally
+    isn't treated as proof the infrastructure works.
+    """
+    last: tuple[str, str] | None = None
+    for tm in tool_msgs:
+        if getattr(tm, "name", None) != "run_tests":
+            continue
+        try:
+            data = json.loads(str(tm.content))
+        except (json.JSONDecodeError, TypeError):
+            last = ("failed", "run_tests returned an unparseable result")
+            continue
+        if data.get("ok") is True:
+            last = ("passed", "")
+        else:
+            err = str(data.get("stderr") or data.get("error") or "").strip().replace("\n", " ")
+            code = data.get("exit_code")
+            detail = f"run_tests failed (exit_code={code})"
+            if err:
+                detail += f": {err[:300]}"
+            last = ("failed", detail)
+    return last or ("none", "")
+
+
+def _subtasks_marked_done(tool_msgs: list[ToolMessage]) -> list[str]:
+    """IDs of subtasks the agent flipped to ``done`` via update_subtask_status."""
+    done_ids: list[str] = []
+    for tm in tool_msgs:
+        if getattr(tm, "name", None) != "update_subtask_status":
+            continue
+        try:
+            data = json.loads(str(tm.content))
+        except (json.JSONDecodeError, TypeError):
+            continue
+        if data.get("status") == "done" and data.get("id"):
+            done_ids.append(str(data["id"]))
+    return done_ids
+
+
+async def _revert_subtasks_to_blocked(subtask_ids: list[str]) -> None:
+    """Force subtasks back to ``blocked`` (used when a completion gate fails)."""
+    if not subtask_ids:
+        return
+    from backend.db.session import AsyncSessionLocal
+    from backend.ticket_system import schemas, service
+    from backend.ticket_system.models import SubtaskStatus
+
+    async with AsyncSessionLocal() as db:
+        for sid in subtask_ids:
+            try:
+                await service.update_subtask(
+                    db, sid, schemas.SubtaskUpdate(status=SubtaskStatus.BLOCKED)
+                )
+            except Exception:  # noqa: BLE001 — best-effort guardrail
+                continue
+
+
 PromptBuilder = Callable[[SystemState], str]
 
 
@@ -171,8 +218,16 @@ def build_specialist_subgraph(
     tools: list[BaseTool],
     base_system_prompt: str,
     max_steps: int = 12,
+    verify_completion: bool = False,
 ):
-    """Build and compile a tool-using specialist subgraph."""
+    """Build and compile a tool-using specialist subgraph.
+
+    When ``verify_completion`` is set, a deterministic gate runs at end-of-turn:
+    if the agent engaged a subtask but no ``run_tests`` invocation passed, the
+    subtask is forced back to ``blocked`` and the hand-off to the PM is rewritten
+    as BLOCKED. This stops roles like devops from declaring infrastructure
+    "complete" while the verifying tests/commands are still failing.
+    """
     tools_by_name: dict[str, BaseTool] = {t.name: t for t in tools}
 
     async def specialist(state: SystemState) -> dict[str, Any]:
@@ -241,13 +296,50 @@ def build_specialist_subgraph(
 
         summary = _last_text(local_ai_msgs) or "turn complete"
         summary = _truncate(summary, MAX_SUMMARY_CHARS)
+
+        subtask_id = _latest_subtask_id_from_tools(local_tool_msgs)
+
+        # Completion gate: a verify-required role (e.g. devops) may only report a
+        # subtask complete when a run_tests invocation actually passed this turn.
+        if verify_completion and subtask_id:
+            status, detail = _verification_outcome(local_tool_msgs)
+            if status != "passed":
+                reverted = _subtasks_marked_done(local_tool_msgs)
+                await _revert_subtasks_to_blocked(reverted)
+                await emit(
+                    name,
+                    "verification_gate_failed",
+                    {
+                        "subtask_id": subtask_id,
+                        "status": status,
+                        "detail": detail,
+                        "reverted_done": reverted,
+                    },
+                    state.project_id,
+                )
+                if status == "failed":
+                    gate = (
+                        "[BLOCKED — verification FAILED] The infrastructure is NOT "
+                        f"complete. {detail} The subtask was kept/flipped to 'blocked'. "
+                        "Resolve the environment/test failure (install the missing "
+                        "toolchain or fix the config) and re-run run_tests until it "
+                        "exits 0, or report the blocker — do not claim completion."
+                    )
+                else:  # "none"
+                    gate = (
+                        "[BLOCKED — UNVERIFIED] No passing test proved the "
+                        "infrastructure works this turn. The subtask was kept/flipped "
+                        "to 'blocked'. Author an infra smoke/verification test and run "
+                        "it with run_tests until it exits 0 before marking the subtask done."
+                    )
+                summary = _truncate(f"{gate}\n\nOriginal summary:\n{summary}", MAX_SUMMARY_CHARS)
+
         handoff = HumanMessage(
             content=f"[from {name} → project_manager]\n{summary}"
         )
 
         await emit(name, "turn_end", {}, state.project_id)
         update: dict[str, Any] = {"messages": [handoff]}
-        subtask_id = _latest_subtask_id_from_tools(local_tool_msgs)
         if subtask_id:
             update["active_subtask_id"] = subtask_id
         return update

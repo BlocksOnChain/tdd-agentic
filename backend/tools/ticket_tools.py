@@ -33,9 +33,11 @@ def _dump(obj: Any) -> str:
 async def list_tickets(project_id: str) -> str:
     """List every ticket in a project as compact rows (id, title, status).
 
-    This intentionally omits full descriptions, requirements, and subtask
-    payloads so the result is not truncated mid-list. Use ``get_ticket``
-    for detailed work on a single ticket.
+    USE WHEN: You need a backlog overview — ticket UUIDs, titles, statuses, subtask counts.
+    AVOID WHEN: You need subtask details or RITE test cases — use get_ticket(ticket_id, detail='full') instead.
+    AVOID WHEN: You just called this in a previous turn with the same project_id — skip and use cached results.
+    Cost: Always returns the full roster (lightweight, ~200-500 bytes).
+    RETURNS: Array of {id, title, status, subtask_count} objects.
     """
     async with AsyncSessionLocal() as db:
         tickets = await service.list_tickets(db, project_id=project_id)
@@ -45,7 +47,19 @@ async def list_tickets(project_id: str) -> str:
 
 @tool
 async def get_ticket(ticket_id: str, detail: str = "summary") -> str:
-    """Fetch one ticket. ``detail='summary'`` omits RITE trees; use ``full`` for specs."""
+    """Fetch one ticket by UUID.
+
+    USE WHEN: You need to read subtasks or RITE test cases.
+    AVOID WHEN: You just need status/subtask_count (use list_tickets instead — avoid this tool call entirely).
+    AVOID WHEN: You have a UUID from list_tickets — never guess UUIDs.
+    AVOID WHEN: You are the PM making a routing decision — use list_tickets + get_ticket_summary instead.
+
+    detail='summary' returns: {id, title, status, subtask_count, business_requirements, technical_requirements} (cheap, ~500 bytes).
+    detail='full' returns: complete subtask trees with RITE test case specs (heavy, ~5-10KB per ticket).
+
+    RETURNS: {id, title, status, subtask_count?, subtasks?, business_requirements?, technical_requirements?}
+    ON ERROR (invalid UUID): {error: "No ticket with id ...", suggested_next_tool: "list_tickets"}
+    """
     from sqlalchemy.exc import NoResultFound
 
     mode = (detail or "summary").strip().lower()
@@ -76,6 +90,35 @@ async def get_ticket(ticket_id: str, detail: str = "summary") -> str:
 
 
 @tool
+async def get_ticket_summary(ticket_id: str) -> str:
+    """Fetch one ticket's summary — no subtask trees, no full RITE specs.
+
+    USE WHEN: You need to inspect a ticket's requirements without loading subtasks.
+    AVOID WHEN: You need subtask details — use get_ticket(ticket_id, detail='full') instead.
+    AVOID WHEN: You have the UUID — never guess UUIDs; call list_tickets first.
+
+    RETURNS: {id, title, status, business_requirements, technical_requirements}
+    """
+    from sqlalchemy.exc import NoResultFound
+
+    async with AsyncSessionLocal() as db:
+        try:
+            ticket = await service.get_ticket(db, ticket_id)
+        except NoResultFound:
+            return _dump(
+                {
+                    "error": (
+                        f"No ticket with id '{ticket_id}' exists. UUIDs cannot be "
+                        "guessed — call list_tickets(project_id) to get the real "
+                        "ids first, then retry get_ticket_summary with one from that list."
+                    ),
+                    "suggested_next_tool": "list_tickets",
+                }
+            )
+        return _dump(await service.to_dict_ticket_summary(ticket))
+
+
+@tool
 async def create_ticket(
     project_id: str,
     title: str,
@@ -83,7 +126,17 @@ async def create_ticket(
     business_requirements: list[str],
     technical_requirements: list[str],
 ) -> str:
-    """Create a new ticket in DRAFT status owned by the given project."""
+    """Create a new ticket in DRAFT status owned by the given project.
+
+    USE WHEN: You are creating a new piece of work from the backlog.
+    AVOID WHEN: A ticket with the same title already exists — call list_tickets first; create_ticket is idempotent on (project_id, title).
+
+    Common errors to avoid:
+    - Missing business_requirements or technical_requirements — both must be non-empty lists.
+    - Using vague titles — be specific, e.g. "Implement JWT auth middleware" not "Add auth".
+
+    RETURNS: {id: "<uuid>", status: "draft", title: "<title>"}
+    """
     async with AsyncSessionLocal() as db:
         ticket = await service.create_ticket(
             db,
@@ -100,7 +153,17 @@ async def create_ticket(
 
 @tool
 async def update_ticket_status(ticket_id: str, status: str) -> str:
-    """Transition a ticket to a new status. Valid: draft, in_review, questions_pending, todo, in_progress, done, blocked."""
+    """Transition a ticket to a new status. Valid: draft, in_review, questions_pending, todo, in_progress, done, blocked.
+
+    USE WHEN: You need to advance a ticket's lifecycle (e.g. after planning, after all subtasks done).
+    AVOID WHEN: You're not the ticket's planner or the ticket is already in the target status.
+
+    Common errors:
+    - Skipping in_review → tickets should pass in_review before going to done.
+    - Using invalid status values → only the seven listed above.
+
+    RETURNS: {id: "<uuid>", status: "<new_status>"}
+    """
     async with AsyncSessionLocal() as db:
         ticket = await service.update_ticket(
             db,
@@ -206,9 +269,23 @@ async def create_subtask(
 ) -> str:
     """Create an ordered subtask under a ticket using RITE-format test cases.
 
-    Idempotent on (ticket_id, order_index). test_cases must be a list of objects
-    with {given, should, expected, test_type?, notes?}. The dev will translate each spec into one
-    assert({given, should, actual, expected}) call.
+    USE WHEN: You are the lead planning subtasks for a ticket.
+    AVOID WHEN: A subtask with the same (ticket_id, order_index) already exists — call get_ticket first; this tool is idempotent on that pair.
+
+    REQUIRED fields (must be supplied in every call):
+      - ticket_id: UUID from list_tickets (never guess)
+      - title: short imperative, e.g. "Implement auth middleware"
+      - test_cases: non-empty list of RITE objects for backend_dev/frontend_dev; empty/None OK for qa/devops
+      - assigned_to: exactly one of backend_dev, frontend_dev, devops, qa
+
+    Common errors to avoid:
+    - Forgetting assigned_to → always include it
+    - Using empty test_cases for dev subtasks → include at least one spec
+    - Using invalid role names → only backend_dev, frontend_dev, devops, qa
+    - Using non-existent ticket_ids → always copy from list_tickets
+
+    RETURNS: {id: "<uuid>", ticket_id: "<uuid>", order_index: 0, assigned_to: "backend_dev", test_case_count: 3}
+    ON ERROR: {error: "..."}
     """
     try:
         role = AgentRole(assigned_to)
@@ -418,7 +495,14 @@ async def next_pending_subtask(ticket_id: str, role: str | None = None) -> str:
 async def next_pending_subtask_in_project(project_id: str, role: str) -> str:
     """Return the next pending subtask for a role across the whole project.
 
-    Uses ticket.order_index first, then subtask.order_index.
+    USE WHEN: You are a developer starting your turn — fetch the next work item.
+    AVOID WHEN: You've already fetched a subtask this turn — call it once per turn.
+    AVOID WHEN: The role doesn't match your agent type — use your actual role.
+
+    ORDERING: Uses ticket.order_index first, then subtask.order_index.
+    RETURNS: {ticket: {id, title, status, order_index}, subtask: {id, ticket_id, title, description, required_functionality, test_cases, assigned_to, order_index, status}}
+    ON NO MORE WORK: {ticket: null, subtask: null}
+    ON ERROR (invalid role): {error: "role='...' is not a valid role..."}
     """
     try:
         r = AgentRole(role)

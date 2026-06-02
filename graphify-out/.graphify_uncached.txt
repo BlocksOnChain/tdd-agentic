@@ -1,0 +1,1 @@
+{"files": ["/Users/esra/tdd-agentic/docker-compose.dev.yml", "/Users/esra/tdd-agentic/README.md", "/Users/esra/tdd-agentic/docker-compose.yml", "/Users/esra/tdd-agentic/backend/workspace_seed/AGENTS.md", "/Users/esra/tdd-agentic/backend/workspace_seed/docs/README.md", "/Users/esra/tdd-agentic/docs/agent-context-and-workflow.md"], "chunk": 1, "total_chunks": 1}

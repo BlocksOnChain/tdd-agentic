@@ -1,0 +1,12 @@
+# Optional third overlay: NVIDIA GPU passthrough (same PyTorch image as docker-compose.pytorch.yml).
+#   docker compose -f docker-compose.yml -f docker-compose.pytorch.yml -f docker-compose.pytorch-gpu.yml up --build
+
+services:
+  backend:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

@@ -34,11 +34,14 @@ dependencies = [
     "python-dotenv>=1.0.1",
     "httpx>=0.27.0",
     "tiktoken>=0.8.0",
-    "sentence-transformers>=3.0.0",
     "tenacity>=9.0.0",
 ]
 
 [project.optional-dependencies]
+# Local RAG embeddings (sentence-transformers). Install PyTorch first — see scripts/install_backend.py
+local-embeddings = [
+    "sentence-transformers>=3.0.0",
+]
 dev = [
     "pytest>=8.3.0",
     "pytest-asyncio>=0.24.0",

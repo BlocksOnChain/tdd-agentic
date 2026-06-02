@@ -1,0 +1,20 @@
+# Overlay: build backend FROM official pytorch/pytorch (torch pre-baked, no pip CUDA stack).
+#
+#   docker compose -f docker-compose.yml -f docker-compose.pytorch.yml up --build
+#
+# GPU (NVIDIA Container Toolkit on Linux; Docker Desktop GPU where supported):
+#   docker compose -f docker-compose.yml -f docker-compose.pytorch.yml -f docker-compose.pytorch-gpu.yml up --build
+#
+# Requires EMBEDDING_PROVIDER=local in .env.
+#
+# Note: Hub tags are CUDA-named (e.g. cuda12.4-cudnn9-runtime) but work on Mac/CPU Docker too.
+
+x-pytorch-image: &pytorch_image pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
+
+services:
+  backend:
+    build:
+      target: pytorch-local
+      args:
+        INSTALL_LOCAL_EMBEDDINGS: "true"
+        PYTORCH_BASE_IMAGE: *pytorch_image

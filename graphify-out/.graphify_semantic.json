@@ -1,0 +1,360 @@
+{
+  "nodes": [
+    {
+      "id": "docker_compose",
+      "label": "Docker Compose",
+      "file_type": "document",
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docker_compose_dev",
+      "label": "Docker Compose Dev",
+      "file_type": "document",
+      "source_file": "docker-compose.dev.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "agent_context_doc",
+      "label": "Agent Context and Workflow",
+      "file_type": "document",
+      "source_file": "docs/agent-context-and-workflow.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "agent_workspace_readme",
+      "label": "Agent Workspace Readme",
+      "file_type": "document",
+      "source_file": "backend/workspace_seed/docs/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "agent_notes",
+      "label": "Agent Notes",
+      "file_type": "document",
+      "source_file": "backend/workspace_seed/AGENTS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "tdd_agentic_readme",
+      "label": "TDD Agentic README",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "postgres_db",
+      "label": "PostgreSQL Database",
+      "file_type": "concept",
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "qdrant_rag",
+      "label": "Qdrant Vector Store",
+      "file_type": "concept",
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "langfuse_tracing",
+      "label": "Langfuse Tracing",
+      "file_type": "concept",
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "langgraph_graph",
+      "label": "LangGraph Orchestration",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "crag_pipeline",
+      "label": "CRAG Retrieval Pipeline",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "ticket_lifecycle",
+      "label": "Ticket Lifecycle State Machine",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "hitl_interface",
+      "label": "Human-in-the-Loop Interface",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "skills_system",
+      "label": "Skills Registry System",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "multi_provider_llm",
+      "label": "Multi-Provider LLM",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "agent_hierarchy",
+      "label": "Agent Hierarchy",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "tdd_agentic_readme",
+      "target": "langgraph_graph",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "tdd_agentic_readme",
+      "target": "crag_pipeline",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "tdd_agentic_readme",
+      "target": "ticket_lifecycle",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "tdd_agentic_readme",
+      "target": "hitl_interface",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "tdd_agentic_readme",
+      "target": "skills_system",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "tdd_agentic_readme",
+      "target": "multi_provider_llm",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "tdd_agentic_readme",
+      "target": "agent_hierarchy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docker_compose",
+      "target": "postgres_db",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docker_compose",
+      "target": "qdrant_rag",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docker_compose",
+      "target": "langfuse_tracing",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "agent_context_doc",
+      "target": "langgraph_graph",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/agent-context-and-workflow.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "agent_context_doc",
+      "target": "crag_pipeline",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/agent-context-and-workflow.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "agent_context_doc",
+      "target": "hitl_interface",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/agent-context-and-workflow.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "agent_context_doc",
+      "target": "skills_system",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/agent-context-and-workflow.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "agent_context_doc",
+      "target": "agent_hierarchy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/agent-context-and-workflow.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "agent_notes",
+      "target": "skills_system",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.85,
+      "source_file": "backend/workspace_seed/AGENTS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "agent_notes",
+      "target": "qdrant_rag",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "backend/workspace_seed/AGENTS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "agent_workspace_readme",
+      "target": "qdrant_rag",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/workspace_seed/docs/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docker_compose_dev",
+      "target": "docker_compose",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.dev.yml",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

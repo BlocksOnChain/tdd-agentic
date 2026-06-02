@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { InterruptPanel } from "@/components/hitl/InterruptPanel";
 import { cn } from "@/lib/cn";
 import { useUIStore } from "@/lib/store";
 
@@ -11,11 +10,21 @@ const NAV = [
   { href: "/", label: "Dashboard" },
   { href: "/tickets", label: "Tickets" },
   { href: "/logs", label: "Logs" },
+  { href: "/hitl", label: "HITL" },
 ];
+
+function HitlBadge() {
+  const hitlPending = useUIStore((s) => s.interrupts.filter((i) => !i.dismissed && !i.answered).length);
+  if (hitlPending <= 0) return null;
+  return (
+    <span className="ml-1.5 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-amber-400 px-1.5 text-[10px] font-bold text-amber-900">
+      {hitlPending}
+    </span>
+  );
+}
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const hitlPending = useUIStore((s) => s.interrupts.length > 0);
   return (
     <div className="grid min-h-screen grid-cols-[220px_1fr]">
       <aside className="border-r border-border bg-surface p-4 flex flex-col gap-2">
@@ -26,28 +35,17 @@ export function Shell({ children }: { children: React.ReactNode }) {
               key={item.href}
               href={item.href}
               className={cn(
-                "rounded px-3 py-2 text-sm hover:bg-muted",
+                "rounded px-3 py-2 text-sm hover:bg-muted flex items-center justify-between",
                 pathname === item.href && "bg-muted text-accent"
               )}
             >
-              {item.label}
+              <span>{item.label}</span>
+              {item.label === "HITL" && <HitlBadge />}
             </Link>
           ))}
         </nav>
       </aside>
       <main className="overflow-y-auto p-6 scrollbar">
-        {hitlPending && (
-          <div className="mb-6 rounded-lg border border-amber-500/50 bg-amber-950/40 p-4">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-amber-300">
-              Human input required — the agent graph is paused until you answer below
-            </div>
-            <p className="mb-3 text-xs text-amber-100/80">
-              Type your reply and press <span className="font-medium">Send &amp; resume</span>. Works
-              from any page (Dashboard, Tickets, Logs).
-            </p>
-            <InterruptPanel />
-          </div>
-        )}
         {children}
       </main>
     </div>

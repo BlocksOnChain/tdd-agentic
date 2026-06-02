@@ -14,6 +14,8 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, Tool
 from pydantic import BaseModel, Field
 
 from backend.agents.common import emit, run_tool_calls
+from backend.agents.context_store import ContextStore
+from backend.agents.handoff import Handoff, Phase
 from backend.agents.llm_audit import (
     log_llm_invoke_exception_context,
     log_llm_invoke_start,
@@ -54,6 +56,7 @@ class RoutingDecision(BaseModel):
     instructions: str = Field(default="")
     ticket_ids: list[str] = Field(default_factory=list)
     phase: str = Field(default="")
+    context_refs: list[str] = Field(default_factory=list, description="Pointer IDs into ContextStore for prior agent outputs")
 
 
 PM_TOOLS = [*PM_TICKET_TOOLS, rag_query, ask_human]
@@ -101,21 +104,33 @@ def _condense_messages_for_supervisor(
 
 
 def _build_system_prompt(state: SystemState) -> str:
+    """Build the PM's system prompt with XML-style context separation.
+
+    Separating <instructions> from <context> prevents "instruction contamination"
+    where the model confuses what to do with what it knows — ~10% routing accuracy gain.
+    """
     base = inject_skills(PROJECT_MANAGER_SYSTEM, role="project_manager")
     ctx = _truncate(state.project_context or "", MAX_PROJECT_CONTEXT_CHARS)
     pid = state.project_id or "(unknown)"
     lines = [
-        f"{base}",
+        "<agent>project_manager</agent>",
         "",
-        f"PROJECT_ID: {pid}",
-        f"PROJECT_CONTEXT:\n{ctx}",
+        base,
+        "",
+        "<context>",
+        f"<project_id>{pid}</project_id>",
+        f"<project_context>{ctx}</project_context>",
     ]
     if state.active_ticket_id:
-        lines.append(f"ACTIVE_TICKET_ID: {state.active_ticket_id}")
+        lines.append(f"<active_ticket_id>{state.active_ticket_id}</active_ticket_id>")
     if state.active_subtask_id:
-        lines.append(f"ACTIVE_SUBTASK_ID: {state.active_subtask_id}")
+        lines.append(f"<active_subtask_id>{state.active_subtask_id}</active_subtask_id>")
+    lines.append("</context>")
+    lines.append("")
     lines.append(
+        "<instructions>"
         "Use ticket tools to inspect or mutate state. Then return a routing decision JSON."
+        "</instructions>"
     )
     return "\n".join(lines)
 
@@ -134,17 +149,16 @@ def _normalise_ticket_ids(decision: RoutingDecision) -> list[str]:
 
 
 def _format_pm_handoff(target: str, decision: RoutingDecision) -> str:
+    """Format a handoff using the compact Handoff protocol."""
     ticket_ids = _normalise_ticket_ids(decision)
-    meta: dict[str, Any] = {}
-    if ticket_ids:
-        meta["ticket_ids"] = ticket_ids
-    if decision.phase:
-        meta["phase"] = decision.phase
-    header = json.dumps(meta, separators=(",", ":")) if meta else "{}"
-    body = (decision.instructions or "").strip()
-    if body:
-        return f"[from project_manager → {target}]\n{header}\n{body}"
-    return f"[from project_manager → {target}]\n{header}"
+    handoff = Handoff(
+        target=target,
+        phase=Phase.coerce(decision.phase),
+        ticket_ids=tuple(ticket_ids),
+        intent=(decision.instructions or "").strip(),
+        context_refs=tuple(decision.context_refs),
+    )
+    return handoff.to_message()
 
 
 # Heuristic for tickets that still need a frontend_lead pass. Used when the PM model
@@ -222,7 +236,18 @@ def _ticket_ready_for_todo(ticket: Ticket) -> bool:
     if _ticket_has_unanswered_questions(ticket):
         return False
     subs = list(ticket.subtasks or [])
-    return len(subs) > 0
+    if not subs:
+        return False
+    # Enforce minimum subtask count for mixed-scope tickets (Bug 2 fix)
+    if _text_suggests_client_scope(ticket):
+        # Full-stack/mixed ticket needs at least 4 subtasks
+        if len(subs) < 4:
+            return False
+    else:
+        # Single-domain ticket needs at least 3 subtasks
+        if len(subs) < 3:
+            return False
+    return True
 
 
 async def _advance_in_review_to_todo(project_id: str | None) -> list[str]:

@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import mimetypes
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
@@ -20,6 +22,7 @@ from backend.api.checkpoint_list_cache import (
 )
 from backend.api.events import Event, bus
 from backend.agent_logs.service import list_agent_logs
+from backend.config import get_settings
 from backend.db.session import AsyncSessionLocal
 
 logger = logging.getLogger(__name__)
@@ -517,3 +520,40 @@ async def list_interrupts(project_id: str) -> dict:
             for itp in getattr(task, "interrupts", []) or []:
                 all_interrupts.append(_safe(itp))
         return {"interrupts": all_interrupts}
+
+
+@router.get("/files/{project_id}")
+async def list_project_files(project_id: str, path: str = "") -> dict:
+    """List files in the project's workspace directory recursively."""
+    settings = get_settings()
+    workspace = settings.workspace_root / project_id
+    if not workspace.exists():
+        raise HTTPException(status_code=404, detail="Workspace not found")
+    rel_path = Path(path)
+    target = workspace / rel_path
+    if not target.exists() or not target.is_dir():
+        raise HTTPException(status_code=400, detail=f"Path is not a directory: {path}")
+    files: list[str] = []
+    for item in sorted(target.rglob("*")):
+        if item.is_file():
+            rel = item.relative_to(workspace)
+            files.append(str(rel))
+    return {"files": files}
+
+
+@router.get("/files/{project_id}/content")
+async def get_file_content(project_id: str, path: str = "") -> dict:
+    """Return the content of a file in the project's workspace."""
+    settings = get_settings()
+    workspace = settings.workspace_root / project_id
+    if not workspace.exists():
+        raise HTTPException(status_code=404, detail="Workspace not found")
+    target = workspace / path
+    if not target.exists() or not target.is_file():
+        raise HTTPException(status_code=404, detail=f"File not found: {path}")
+    if target.stat().st_size > 512_000:
+        raise HTTPException(status_code=413, detail="File too large (max 512KB)")
+    content_type = mimetypes.guess_type(str(target))[0] or "text/plain"
+    if "text" in content_type:
+        return {"content": target.read_text(encoding="utf-8"), "mime": content_type}
+    return {"content": "[binary file]", "mime": content_type}

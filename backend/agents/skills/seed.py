@@ -169,4 +169,263 @@ async def seed_builtin_skills() -> None:
         )
 
 
+# ================================================================
+# compact-output — teach agents to produce structured, compact summaries
+# ================================================================
+
+COMPACT_OUTPUT_NAME = "compact-output"
+COMPACT_OUTPUT_DESCRIPTION = (
+    "Produce compact, structured handoff summaries that other agents can consume "
+    "efficiently. Defines the output format, context_refs pattern, and size limits."
+)
+COMPACT_OUTPUT_ROLES = [
+    "project_manager",
+    "researcher",
+    "backend_lead",
+    "frontend_lead",
+    "backend_dev",
+    "frontend_dev",
+    "devops",
+    "qa",
+]
+
+COMPACT_OUTPUT_CONTENT = """# Compact Output — Structured Handoff Format
+
+When producing summaries for other agents, use this compact format to
+minimise token cost and maximise downstream agent efficiency.
+
+## Handoff Summary Format
+
+```
+[from <agent_name> → <target_agent>]
+{"t":"<target>","p":"<phase>","tik":["<uuid>"],"c":["ctx_<n>"]}
+<one-line intent>
+```
+
+## Rules
+
+1. **One line per handoff** — the intent (what to do) should fit in one line.
+2. **Use context_refs** — instead of pasting full summaries, reference them:
+   `ctx_<n>` is a pointer into the shared ContextStore.
+3. **Keep handoffs under 200 chars** — if the intent is longer, split into
+   multiple subtasks or write to workspace/rag.
+4. **No re-stating the obvious** — don't repeat ticket bodies that are
+   already in the DB. Reference the ticket UUID and let the agent look it up.
+
+## Context Store Pattern
+
+The PM maintains a shared ContextStore (in-memory). Agents write entries;
+other agents reference by ID:
+
+    ctx_id = context_store.add("researcher", "research_findings", ("uuid1",),
+                               "Auth uses JWT with python-jose, 15min expiry")
+    → returns "ctx_1"
+
+Other agents receive {"context_refs": ("ctx_1",)} and can look up the
+summary via context_store.lookup("ctx_1").
+
+## Summary length
+
+- Handoff intent: max 200 chars
+- ContextStore entry: max 500 chars
+- Full summaries can go to workspace/rag; keep the pointer in handoff
+
+## Examples
+
+Good:
+    [from project_manager → backend_dev]
+    {"t":"backend_dev","p":"implement","tik":["uuid1"],"c":["ctx_3"]}
+    Implement JWT auth per ctx_3 (research) and ctx_7 (tech spec).
+
+Bad:
+    [from project_manager → backend_dev]
+    {"ticket_ids":["uuid1"]}
+    Implement JWT auth. The auth system should use JWT tokens with 15min expiry,
+    refresh tokens with 7day expiry, stored in HTTP-only cookies. See research
+    findings about using python-jose for JWT handling. The backend should also
+    include middleware, endpoints, and validation...
+
+The bad example is 4x the token cost of the good one for the same information.
+"""
+
+# ================================================================
+# state-before-action — always check what's already done
+# ================================================================
+
+STATE_BEFORE_ACTION_NAME = "state-before-action"
+STATE_BEFORE_ACTION_DESCRIPTION = (
+    "Before starting any work, check current DB state to avoid duplicating effort. "
+    "Defines the inspection pattern for tickets, subtasks, and workspace state."
+)
+STATE_BEFORE_ACTION_ROLES = [
+    "project_manager",
+    "backend_lead",
+    "frontend_lead",
+    "backend_dev",
+    "frontend_dev",
+    "devops",
+    "qa",
+]
+
+STATE_BEFORE_ACTION_CONTENT = """# State Before Action — Avoid Duplication
+
+Before acting, ALWAYS check current state. The DB is the ground truth —
+never rely on what you "remember" from earlier turns.
+
+## Inspection Checklist
+
+### Before creating tickets
+1. Call `list_tickets(project_id)` — if a ticket with the same title exists,
+   use the existing one (create_ticket is idempotent on project_id + title).
+
+### Before creating subtasks
+1. Call `get_ticket(ticket_id, detail='summary')` — check existing subtasks.
+2. `create_subtask` is idempotent on (ticket_id, order_index) — each ticket
+   may have only one subtask per order_index.
+
+### Before starting implementation
+1. Call `next_pending_subtask_in_project(project_id, role)` — get the next item.
+2. Check `workspace/docs/` for existing architecture docs.
+3. Use `rag_query` for library/pattern context.
+
+### Before writing a summary
+1. Check if a prior summary for this subtask exists in agent_logs.
+2. If the DB already shows the subtask as "done", no need to summarise again.
+
+## Pattern
+
+    // 1. Check state
+    list_tickets(project_id)
+    get_ticket(ticket_id)
+
+    // 2. Act only if needed
+    create_subtask(...)  // only if state shows nothing exists
+
+    // 3. Reference, don't repeat
+    // Instead of pasting ticket body, reference by UUID
+    "Implement per ticket <uuid>"
+
+## Cost of not checking
+
+- Each duplicate ticket: ~500 tokens wasted in tool output
+- Each redundant summary: ~2000 tokens wasted in handoff
+- Each re-created subtask: ~1000 tokens wasted + DB inconsistency
+
+Always check before acting. It takes one tool call but saves hundreds of tokens.
+"""
+
+# ================================================================
+# efficient-rag — smart context retrieval patterns
+# ================================================================
+
+EFFICIENT_RAG_NAME = "efficient-rag"
+EFFICIENT_RAG_DESCRIPTION = (
+    "Use RAG efficiently: query patterns, when to read from workspace vs vector store, "
+    "and how to write high-quality docs that others can retrieve."
+)
+EFFICIENT_RAG_ROLES = [
+    "project_manager",
+    "researcher",
+    "backend_lead",
+    "frontend_lead",
+    "backend_dev",
+    "frontend_dev",
+    "devops",
+    "qa",
+]
+
+EFFICIENT_RAG_CONTENT = """# Efficient RAG Usage — Query and Ingest Patterns
+
+Use RAG for cross-agent knowledge transfer. Follow these patterns to
+maximise retrieval quality and minimise token cost.
+
+## Query Patterns
+
+### Best queries (high recall)
+- "JWT auth middleware implementation pattern" → finds auth docs
+- "Next.js data fetching patterns" → finds architecture docs
+- "database migration naming convention" → finds conventions docs
+
+### Poor queries (low recall)
+- "info" → too vague, returns noise
+- "everything about auth" → too broad, wastes context budget
+- "how to do auth" → generic, may miss project-specific docs
+
+## When to Query vs Read
+
+| Use case | Tool | Reason |
+|----------|------|--------|
+| Library/pattern search | `rag_query` | Vector search finds relevant chunks |
+| Known file path | `fs_read` | Direct, no embedding cost |
+| Project conventions | `rag_query` | May span multiple docs |
+| Specific API contract | `rag_query` | Content indexed by vector similarity |
+
+## Writing for Retrieval
+
+When writing docs that others will need:
+
+1. **Use descriptive titles** — "JWT + Refresh Token Auth Flow" not "Auth"
+2. **Include key terms in the first 100 chars** — vector similarity weights early content
+3. **Use consistent naming** — "Next.js" not "next" or "NextJS"
+4. **Link related content** — reference other docs by path in prose
+5. **Ingest after writing** — call `rag_ingest_text` immediately
+
+## Chunk Quality
+
+- Minimum ~200 chars per chunk for meaningful retrieval
+- Avoid chunking single-line docs
+- Use source path as metadata (appears in retrieval results)
+
+## Cost Awareness
+
+Each `rag_query` call:
+- Embeds the query (vector operation)
+- Runs relevance grader (small LLM call)
+- May rewrite and re-query (additional LLM call)
+
+Total: ~1-3 LLM calls per query. Use sparingly. Prefer `fs_read` when you
+know the file path.
+"""
+
+
+async def seed_builtin_skills() -> None:
+    """Seed/refresh built-in skills. Safe to call on every startup."""
+    if get_skill_content(TDD_RITE_NAME) != TDD_RITE_CONTENT:
+        upsert_skill(
+            name=TDD_RITE_NAME,
+            description=TDD_RITE_DESCRIPTION,
+            content=TDD_RITE_CONTENT,
+            roles=TDD_RITE_ROLES,
+            project_id=None,
+        )
+
+    # New efficiency skills
+    if get_skill_content(COMPACT_OUTPUT_NAME) != COMPACT_OUTPUT_CONTENT:
+        upsert_skill(
+            name=COMPACT_OUTPUT_NAME,
+            description=COMPACT_OUTPUT_DESCRIPTION,
+            content=COMPACT_OUTPUT_CONTENT,
+            roles=COMPACT_OUTPUT_ROLES,
+            project_id=None,
+        )
+
+    if get_skill_content(STATE_BEFORE_ACTION_NAME) != STATE_BEFORE_ACTION_CONTENT:
+        upsert_skill(
+            name=STATE_BEFORE_ACTION_NAME,
+            description=STATE_BEFORE_ACTION_DESCRIPTION,
+            content=STATE_BEFORE_ACTION_CONTENT,
+            roles=STATE_BEFORE_ACTION_ROLES,
+            project_id=None,
+        )
+
+    if get_skill_content(EFFICIENT_RAG_NAME) != EFFICIENT_RAG_CONTENT:
+        upsert_skill(
+            name=EFFICIENT_RAG_NAME,
+            description=EFFICIENT_RAG_DESCRIPTION,
+            content=EFFICIENT_RAG_CONTENT,
+            roles=EFFICIENT_RAG_ROLES,
+            project_id=None,
+        )
+
+
 __all__ = ["seed_builtin_skills"]

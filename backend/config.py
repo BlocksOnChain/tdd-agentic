@@ -95,6 +95,7 @@ class Settings(BaseSettings):
 
     # Agent context budgets
     checkpoint_max_human_messages: int = 12
+    checkpoint_max_ai_messages: int = 10
     skill_inject_max_chars: int = 2_000
     rag_default_k: int = 4
     rag_grade_cache_ttl_seconds: float = 300.0

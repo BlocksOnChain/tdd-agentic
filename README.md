@@ -159,7 +159,7 @@ Slugs are `provider/model`. Add new providers by extending `backend/agents/llm.p
 2. Grade each doc with a small LLM (`GRADER_MODEL`) for relevance.
 3. If nothing relevant survives, **rewrite** the query and retry once.
 
-Embeddings default to OpenAI `text-embedding-3-small`. Set `EMBEDDING_PROVIDER=local` to use sentence-transformers locally.
+Embeddings default to OpenAI `text-embedding-3-small`. Set `EMBEDDING_PROVIDER=local` to use sentence-transformers locally (optional install — see below).
 
 ---
 
@@ -195,12 +195,45 @@ Researchers can call the `create_skill` tool to author a focused skill brief and
 
 ## Local development without Docker
 
+Core backend (OpenAI embeddings, no PyTorch):
+
 ```bash
-pip install -e .[dev]
-# create the DB and Qdrant manually, then:
+python scripts/install_backend.py --dev
+```
+
+Local embeddings (`EMBEDDING_PROVIDER=local`) — PyTorch is chosen from your hardware (`auto` = NVIDIA GPU → CUDA wheels, otherwise CPU on Linux/Windows, PyPI on macOS):
+
+```bash
+python scripts/install_backend.py --local-embeddings --dev
+# Force CPU everywhere:  python scripts/install_backend.py --local-embeddings --torch cpu
+# Force CUDA (NVIDIA):   TORCH_DEVICE=cuda python scripts/install_backend.py --local-embeddings
+```
+
+Then start services (create the DB and Qdrant manually):
+
+```bash
 uvicorn backend.api.main:app --reload
 cd frontend && npm install && npm run dev
 ```
+
+Docker with local embeddings (two options):
+
+**A. Official PyTorch image as backend base** (recommended in Docker — torch is pre-installed, no pip CUDA download):
+
+```bash
+# Set EMBEDDING_PROVIDER=local in .env first
+docker compose -f docker-compose.yml -f docker-compose.pytorch.yml up --build
+# NVIDIA GPU in container:
+docker compose -f docker-compose.yml -f docker-compose.pytorch.yml -f docker-compose.pytorch-gpu.yml up --build
+```
+
+**B. Slim Python image + pip-installed CPU/CUDA torch:**
+
+```bash
+INSTALL_LOCAL_EMBEDDINGS=true TORCH_DEVICE=cpu docker compose build backend
+```
+
+A separate `pytorch` service in Compose cannot share Python imports with the backend — PyTorch must live in the **same container** as uvicorn (or you run a dedicated embedding HTTP server and point the backend at it).
 
 Run migrations:
 

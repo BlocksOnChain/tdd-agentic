@@ -219,4 +219,21 @@ export const api = {
     http<{ logs: PersistedAgentLog[] }>(`/api/agents/logs/${projectId}?limit=${limit}`),
   getAgentLogItem: (logId: string) =>
     http<LogItemResponse>(`/api/agents/logs/item/${logId}`),
+  listInterrupts: (projectId: string) =>
+    http<{ interrupts: Array<{ kind?: string; question?: string; ticket_id?: string; asked_by?: string }> }>(
+      `/api/agents/interrupts/${projectId}`,
+    ),
+  getAgentState: (projectId: string) =>
+    http<{ values: Record<string, unknown>; next: string[]; tasks: any[] }>(
+      `/api/agents/state/${projectId}`,
+    ),
+  createFile: (projectId: string, path: string, content: string) =>
+    http<{ written: string }>(`/api/files/${projectId}`, {
+      method: "POST",
+      body: JSON.stringify({ path, content }),
+    }),
+  listFiles: (projectId: string, path: string = "") =>
+    http<{ files: string[] }>(`/api/files/${projectId}?path=${encodeURIComponent(path)}`),
+  getFileContent: (projectId: string, filePath: string) =>
+    http<{ content: string }>(`/api/files/${projectId}/content?path=${encodeURIComponent(filePath)}`),
 };
