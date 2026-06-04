@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { api, CheckpointT } from "@/lib/api";
 import { useUIStore } from "@/lib/store";
+import { agentLabel, agentPillClasses } from "@/lib/logFormat";
 
 const POLL_MS = 12000;
 
@@ -105,10 +106,23 @@ export function CheckpointsPanel() {
             className="rounded border border-border bg-muted p-2 text-xs"
           >
             <div className="flex items-center justify-between gap-2">
-              <div className="text-zinc-300">
-                {cp.created_at ? new Date(cp.created_at).toLocaleString() : "—"}
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                {(() => {
+                  const agent = cp.agent ?? cp.wrote_nodes[0] ?? null;
+                  return agent ? (
+                    <span
+                      className={`shrink-0 ${agentPillClasses(agent)}`}
+                      title="Agent that produced this checkpoint"
+                    >
+                      {agentLabel(agent)}
+                    </span>
+                  ) : null;
+                })()}
+                <span className="text-zinc-300">
+                  {cp.created_at ? new Date(cp.created_at).toLocaleString() : "—"}
+                </span>
                 {cp.step !== null && (
-                  <span className="ml-2 text-zinc-500">step {cp.step}</span>
+                  <span className="text-zinc-500">step {cp.step}</span>
                 )}
               </div>
               {cp.checkpoint_id && (

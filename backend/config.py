@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     # Seconds; raise for slow local inference.
     openai_request_timeout: float = 120.0
     anthropic_api_key: str = ""
+    # OpenRouter (OpenAI-compatible): https://openrouter.ai/api/v1
+    openrouter_api_key: str = ""
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
     pm_model: str = "anthropic/claude-sonnet-4-6"
     researcher_model: str = "openai/gpt-4o"
     lead_model: str = "anthropic/claude-sonnet-4-6"
@@ -53,6 +56,8 @@ class Settings(BaseSettings):
     anthropic_burst: int = 1
     openai_requests_per_second: float = 1.0      # 60 RPM
     openai_burst: int = 2
+    openrouter_requests_per_second: float = 1.0
+    openrouter_burst: int = 2
 
     # Inline retry policy for transient LLM errors (429, 5xx, network).
     llm_max_retries: int = 4

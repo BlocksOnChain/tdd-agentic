@@ -32,6 +32,9 @@ def describe_llm_slug(slug: str) -> tuple[str, str, str]:
             completions = f"{base}/chat/completions"
             return provider, model_name, f"OpenAI-compatible POST {completions}"
         return provider, model_name, "OpenAI platform API (chat.completions)"
+    if provider == "openrouter":
+        base = (settings.openrouter_base_url or "https://openrouter.ai/api/v1").strip().rstrip("/")
+        return provider, model_name, f"OpenRouter POST {base}/chat/completions"
     return provider, model_name, "Anthropic Messages API"
 
 

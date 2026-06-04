@@ -19,6 +19,40 @@ logger = logging.getLogger(__name__)
 _cache: dict[tuple[str, int], tuple[float, dict[str, Any], float]] = {}
 _locks: dict[str, asyncio.Lock] = {}
 
+# Graph nodes that correspond to actual agents (used to label a checkpoint
+# with the agent that produced it). Internal channels like ``__start__`` /
+# ``__interrupt__`` are intentionally excluded.
+_AGENT_NODES = frozenset(
+    {
+        "project_manager",
+        "researcher",
+        "backend_lead",
+        "frontend_lead",
+        "backend_dev",
+        "frontend_dev",
+        "devops",
+        "qa",
+    }
+)
+
+
+def _agent_from_wrote_nodes(wrote_nodes: list[str], source: Any) -> str | None:
+    """Pick the agent that produced a checkpoint from its write set.
+
+    LangGraph keys ``metadata.writes`` by the node name that ran, so the
+    write keys ARE the agent/node names. Prefer a recognised agent node;
+    otherwise fall back to the first non-internal node, or the run source.
+    """
+    for node in wrote_nodes:
+        if node in _AGENT_NODES:
+            return node
+    for node in wrote_nodes:
+        if node and not node.startswith("__"):
+            return node
+    if source == "input":
+        return "system"
+    return None
+
 # Cache safety limits (best-effort; prevents unbounded growth under polling).
 # We keep these small because the payload is "UI summary" only.
 _MAX_CACHE_ITEMS = 128
@@ -104,15 +138,17 @@ async def _fetch_checkpoints(project_id: str, limit: int) -> dict[str, Any]:
             meta = meta or {}
             writes = meta.get("writes") or {}
             wrote_nodes = list(writes.keys()) if isinstance(writes, dict) else []
+            source = meta.get("source")
             out.append(
                 {
                     "checkpoint_id": checkpoint_id,
                     "parent_checkpoint_id": None,
                     # Frontend expects a value new Date(...) can parse; ISO-8601 is fine.
                     "created_at": ts,
-                    "source": meta.get("source"),
+                    "source": source,
                     "step": meta.get("step"),
                     "wrote_nodes": wrote_nodes,
+                    "agent": _agent_from_wrote_nodes(wrote_nodes, source),
                     "next": [],
                 }
             )
@@ -137,6 +173,8 @@ async def _fetch_checkpoints(project_id: str, limit: int) -> dict[str, Any]:
                 meta = snap.metadata or {}
                 writes = meta.get("writes") or {}
                 wrote_nodes = list(writes.keys()) if isinstance(writes, dict) else []
+                source = meta.get("source")
+                next_nodes = list(snap.next or [])
                 out.append(
                     {
                         "checkpoint_id": cfg_conf.get("checkpoint_id"),
@@ -148,10 +186,12 @@ async def _fetch_checkpoints(project_id: str, limit: int) -> dict[str, Any]:
                             else None
                         ),
                         "created_at": getattr(snap, "created_at", None),
-                        "source": meta.get("source"),
+                        "source": source,
                         "step": meta.get("step"),
                         "wrote_nodes": wrote_nodes,
-                        "next": list(snap.next or []),
+                        "agent": _agent_from_wrote_nodes(wrote_nodes, source)
+                        or (next_nodes[0] if next_nodes else None),
+                        "next": next_nodes,
                     }
                 )
                 if len(out) >= limit:

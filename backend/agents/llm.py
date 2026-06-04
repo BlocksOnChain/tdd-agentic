@@ -9,10 +9,11 @@ Adds two production-grade behaviours on top of plain LangChain integrations:
    retry inside the same node instead of crashing the whole graph turn.
 
 Slug format: ``provider/model`` (``openai/gpt-4o``,
-``anthropic/claude-sonnet-4-6``).
+``anthropic/claude-sonnet-4-6``, ``openrouter/anthropic/claude-sonnet-4``).
 
 ``OPENAI_BASE_URL`` applies **only** to ``openai/...`` slugs. Roles still set to
 ``anthropic/...`` call Anthropic's API regardless of ``OPENAI_BASE_URL``.
+``openrouter/...`` slugs use ``OPENROUTER_API_KEY`` and ``OPENROUTER_BASE_URL``.
 """
 from __future__ import annotations
 
@@ -46,6 +47,9 @@ def _limiter_for(provider: str) -> InMemoryRateLimiter:
         elif provider == "openai":
             rps = settings.openai_requests_per_second
             burst = settings.openai_burst
+        elif provider == "openrouter":
+            rps = settings.openrouter_requests_per_second
+            burst = settings.openrouter_burst
         else:
             rps, burst = 1.0, 2
         limiter = InMemoryRateLimiter(
@@ -131,6 +135,9 @@ def log_resolved_llm_routing() -> None:
             target = f"OpenAI-compatible {base} (model={model_name!r})"
         elif provider == "openai":
             target = f"OpenAI platform API (model={model_name!r})"
+        elif provider == "openrouter":
+            or_base = (settings.openrouter_base_url or "").strip().rstrip("/")
+            target = f"OpenRouter {or_base} (model={model_name!r})"
         else:
             target = f"Anthropic API (model={model_name!r})"
         _logger.info("LLM routing %s=%s -> %s", label, slug, target)
@@ -163,21 +170,26 @@ def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> Ba
         **kwargs,
     }
 
-    if provider == "openai":
+    if provider in ("openai", "openrouter"):
         common.pop("max_tokens", None)  # ChatOpenAI uses ``max_tokens`` differently
         kwargs_openai: dict = {
             "model": name,
-            "api_key": settings.openai_api_key or None,
             "max_retries": settings.llm_max_retries,
             "timeout": settings.openai_request_timeout,
             **common,
         }
-        base = (settings.openai_base_url or "").strip()
-        if base:
-            kwargs_openai["base_url"] = base
-            # Local OpenAI-compatible servers usually ignore the key but require a value.
-            if not kwargs_openai.get("api_key"):
-                kwargs_openai["api_key"] = "not-needed"
+        if provider == "openai":
+            kwargs_openai["api_key"] = settings.openai_api_key or None
+            base = (settings.openai_base_url or "").strip()
+            if base:
+                kwargs_openai["base_url"] = base
+                if not kwargs_openai.get("api_key"):
+                    kwargs_openai["api_key"] = "not-needed"
+        else:
+            kwargs_openai["api_key"] = settings.openrouter_api_key or None
+            or_base = (settings.openrouter_base_url or "https://openrouter.ai/api/v1").strip()
+            if or_base:
+                kwargs_openai["base_url"] = or_base
         return ChatOpenAI(**kwargs_openai)
     if provider == "anthropic":
         return ChatAnthropic(
@@ -188,7 +200,7 @@ def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> Ba
         )
 
     raise ValueError(
-        f"Unsupported LLM provider '{provider}'. Supported: openai, anthropic."
+        f"Unsupported LLM provider '{provider}'. Supported: openai, anthropic, openrouter."
     )
 
 

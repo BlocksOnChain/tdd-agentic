@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/cn";
 import { useUIStore } from "@/lib/store";
+import { agentLabel, agentTextColor } from "@/lib/logFormat";
 
 const KIND_OPTIONS = [
   "all",
@@ -13,30 +14,15 @@ const KIND_OPTIONS = [
   "handoff",
   "turn_start",
   "turn_end",
+  "verification_gate_failed",
   "crash",
   "error",
   "route",
   "route_fallback",
   "transient_error",
   "hitl_response",
+  "stopped",
 ];
-
-// Assign consistent colors to agent roles
-const AGENT_COLORS: Record<string, string> = {
-  project_manager: "text-blue-400",
-  researcher: "text-green-400",
-  backend_lead: "text-purple-400",
-  frontend_lead: "text-pink-400",
-  backend_dev: "text-amber-400",
-  frontend_dev: "text-cyan-400",
-  devops: "text-orange-400",
-  qa: "text-lime-400",
-  human: "text-yellow-300",
-};
-
-function getAgentColor(agent: string): string {
-  return AGENT_COLORS[agent] ?? "text-zinc-300";
-}
 
 export function LogFilterBar() {
   const { logSearch, setLogSearch, logKindFilter, setLogKindFilter, autoScrollEnabled, setAutoScrollEnabled, logs } =
@@ -158,8 +144,8 @@ export function LogFilterBar() {
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
           <span className="text-zinc-500">Agents:</span>
           {agents.map((agent) => (
-            <span key={agent} className={cn("font-medium", getAgentColor(agent))}>
-              {agent}
+            <span key={agent} className={cn("font-medium", agentTextColor(agent))}>
+              {agentLabel(agent)}
             </span>
           ))}
         </div>

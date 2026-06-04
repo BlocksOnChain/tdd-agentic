@@ -558,7 +558,7 @@
       "source_file": "frontend/src/app/tickets/page.tsx",
       "source_location": "L1",
       "id": "frontend_src_app_tickets_page_tsx",
-      "community": 63,
+      "community": 3,
       "norm_label": "page.tsx"
     },
     {
@@ -567,7 +567,7 @@
       "source_file": "frontend/src/app/tickets/page.tsx",
       "source_location": "L4",
       "id": "tickets_page_ticketspage",
-      "community": 63,
+      "community": 3,
       "norm_label": "ticketspage()"
     },
     {
@@ -594,7 +594,7 @@
       "source_file": "frontend/src/app/logs/page.tsx",
       "source_location": "L1",
       "id": "frontend_src_app_logs_page_tsx",
-      "community": 63,
+      "community": 65,
       "norm_label": "page.tsx"
     },
     {
@@ -603,7 +603,7 @@
       "source_file": "frontend/src/app/logs/page.tsx",
       "source_location": "L3",
       "id": "logs_page_logspage",
-      "community": 63,
+      "community": 65,
       "norm_label": "logspage()"
     },
     {
@@ -612,7 +612,7 @@
       "source_file": "frontend/src/components/Shell.tsx",
       "source_location": "L1",
       "id": "frontend_src_components_shell_tsx",
-      "community": 78,
+      "community": 76,
       "norm_label": "shell.tsx"
     },
     {
@@ -621,7 +621,7 @@
       "source_file": "frontend/src/components/Shell.tsx",
       "source_location": "L9",
       "id": "components_shell_nav",
-      "community": 78,
+      "community": 76,
       "norm_label": "nav"
     },
     {
@@ -630,7 +630,7 @@
       "source_file": "frontend/src/components/Shell.tsx",
       "source_location": "L16",
       "id": "components_shell_hitlbadge",
-      "community": 78,
+      "community": 76,
       "norm_label": "hitlbadge()"
     },
     {
@@ -639,7 +639,7 @@
       "source_file": "frontend/src/components/Shell.tsx",
       "source_location": "L26",
       "id": "components_shell_shell",
-      "community": 72,
+      "community": 76,
       "norm_label": "shell()"
     },
     {
@@ -648,7 +648,7 @@
       "source_file": "frontend/src/components/ProjectPicker.tsx",
       "source_location": "L1",
       "id": "frontend_src_components_projectpicker_tsx",
-      "community": 63,
+      "community": 3,
       "norm_label": "projectpicker.tsx"
     },
     {
@@ -657,7 +657,7 @@
       "source_file": "frontend/src/components/ProjectPicker.tsx",
       "source_location": "L8",
       "id": "components_projectpicker_projectpicker",
-      "community": 63,
+      "community": 3,
       "norm_label": "projectpicker()"
     },
     {
@@ -691,7 +691,7 @@
       "label": "CheckpointsPanel()",
       "file_type": "code",
       "source_file": "frontend/src/components/CheckpointsPanel.tsx",
-      "source_location": "L11",
+      "source_location": "L10",
       "id": "components_checkpointspanel_checkpointspanel",
       "community": 63,
       "norm_label": "checkpointspanel()"
@@ -756,7 +756,7 @@
       "source_file": "frontend/src/components/tickets/TicketBoard.tsx",
       "source_location": "L49",
       "id": "tickets_ticketboard_ticketboard",
-      "community": 63,
+      "community": 3,
       "norm_label": "ticketboard()"
     },
     {
@@ -783,7 +783,7 @@
       "source_file": "frontend/src/components/hitl/InterruptPanel.tsx",
       "source_location": "L1",
       "id": "frontend_src_components_hitl_interruptpanel_tsx",
-      "community": 78,
+      "community": 76,
       "norm_label": "interruptpanel.tsx"
     },
     {
@@ -792,7 +792,7 @@
       "source_file": "frontend/src/components/hitl/InterruptPanel.tsx",
       "source_location": "L8",
       "id": "hitl_interruptpanel_interruptpanel",
-      "community": 78,
+      "community": 76,
       "norm_label": "interruptpanel()"
     },
     {
@@ -859,75 +859,30 @@
       "norm_label": "agentlog.tsx"
     },
     {
+      "label": "colorFor()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/agents/AgentLog.tsx",
+      "source_location": "L9",
+      "id": "agents_agentlog_colorfor",
+      "community": 65,
+      "norm_label": "colorfor()"
+    },
+    {
       "label": "formatRelativeTime()",
       "file_type": "code",
       "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L16",
+      "source_location": "L29",
       "id": "agents_agentlog_formatrelativetime",
       "community": 65,
       "norm_label": "formatrelativetime()"
     },
     {
-      "label": "formatAbsoluteTime()",
-      "file_type": "code",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L25",
-      "id": "agents_agentlog_formatabsolutetime",
-      "community": 65,
-      "norm_label": "formatabsolutetime()"
-    },
-    {
-      "label": "LogRow()",
-      "file_type": "code",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L30",
-      "id": "agents_agentlog_logrow",
-      "community": 65,
-      "norm_label": "logrow()"
-    },
-    {
-      "label": "DetailModal()",
-      "file_type": "code",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L93",
-      "id": "agents_agentlog_detailmodal",
-      "community": 65,
-      "norm_label": "detailmodal()"
-    },
-    {
-      "label": "Meta()",
-      "file_type": "code",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L192",
-      "id": "agents_agentlog_meta",
-      "community": 65,
-      "norm_label": "meta()"
-    },
-    {
-      "label": "Section()",
-      "file_type": "code",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L203",
-      "id": "agents_agentlog_section",
-      "community": 65,
-      "norm_label": "section()"
-    },
-    {
-      "label": "FieldHighlights()",
-      "file_type": "code",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L215",
-      "id": "agents_agentlog_fieldhighlights",
-      "community": 65,
-      "norm_label": "fieldhighlights()"
-    },
-    {
       "label": "AgentLog()",
       "file_type": "code",
       "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L247",
+      "source_location": "L38",
       "id": "agents_agentlog_agentlog",
-      "community": 63,
+      "community": 65,
       "norm_label": "agentlog()"
     },
     {
@@ -943,16 +898,34 @@
       "label": "KIND_OPTIONS",
       "file_type": "code",
       "source_file": "frontend/src/components/logs/LogFilterBar.tsx",
-      "source_location": "L9",
+      "source_location": "L8",
       "id": "logs_logfilterbar_kind_options",
       "community": 65,
       "norm_label": "kind_options"
     },
     {
+      "label": "AGENT_COLORS",
+      "file_type": "code",
+      "source_file": "frontend/src/components/logs/LogFilterBar.tsx",
+      "source_location": "L25",
+      "id": "logs_logfilterbar_agent_colors",
+      "community": 65,
+      "norm_label": "agent_colors"
+    },
+    {
+      "label": "getAgentColor()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/logs/LogFilterBar.tsx",
+      "source_location": "L37",
+      "id": "logs_logfilterbar_getagentcolor",
+      "community": 65,
+      "norm_label": "getagentcolor()"
+    },
+    {
       "label": "LogFilterBar()",
       "file_type": "code",
       "source_file": "frontend/src/components/logs/LogFilterBar.tsx",
-      "source_location": "L27",
+      "source_location": "L41",
       "id": "logs_logfilterbar_logfilterbar",
       "community": 65,
       "norm_label": "logfilterbar()"
@@ -1075,159 +1048,6 @@
       "norm_label": "useeventstream()"
     },
     {
-      "label": "logFormat.ts",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L1",
-      "id": "frontend_src_lib_logformat_ts",
-      "community": 65,
-      "norm_label": "logformat.ts"
-    },
-    {
-      "label": "LogTone",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L10",
-      "id": "lib_logformat_logtone",
-      "community": 65,
-      "norm_label": "logtone"
-    },
-    {
-      "label": "HumanizedLog",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L12",
-      "id": "lib_logformat_humanizedlog",
-      "community": 65,
-      "norm_label": "humanizedlog"
-    },
-    {
-      "label": "AGENT_LABELS",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L21",
-      "id": "lib_logformat_agent_labels",
-      "community": 65,
-      "norm_label": "agent_labels"
-    },
-    {
-      "label": "agentLabel()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L35",
-      "id": "lib_logformat_agentlabel",
-      "community": 65,
-      "norm_label": "agentlabel()"
-    },
-    {
-      "label": "AGENT_TEXT",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L39",
-      "id": "lib_logformat_agent_text",
-      "community": 65,
-      "norm_label": "agent_text"
-    },
-    {
-      "label": "agentTextColor()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L52",
-      "id": "lib_logformat_agenttextcolor",
-      "community": 65,
-      "norm_label": "agenttextcolor()"
-    },
-    {
-      "label": "agentPillClasses()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L57",
-      "id": "lib_logformat_agentpillclasses",
-      "community": 65,
-      "norm_label": "agentpillclasses()"
-    },
-    {
-      "label": "TONE_TEXT",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L63",
-      "id": "lib_logformat_tone_text",
-      "community": 65,
-      "norm_label": "tone_text"
-    },
-    {
-      "label": "toneTextColor()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L72",
-      "id": "lib_logformat_tonetextcolor",
-      "community": 65,
-      "norm_label": "tonetextcolor()"
-    },
-    {
-      "label": "kindMeta",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L99",
-      "id": "lib_logformat_kindmeta",
-      "community": 65,
-      "norm_label": "kindmeta"
-    },
-    {
-      "label": "KIND_META",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L82",
-      "id": "lib_logformat_kind_meta",
-      "community": 65,
-      "norm_label": "kind_meta"
-    },
-    {
-      "label": "asString()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L103",
-      "id": "lib_logformat_asstring",
-      "community": 65,
-      "norm_label": "asstring()"
-    },
-    {
-      "label": "squeeze()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L114",
-      "id": "lib_logformat_squeeze",
-      "community": 65,
-      "norm_label": "squeeze()"
-    },
-    {
-      "label": "messageText()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L120",
-      "id": "lib_logformat_messagetext",
-      "community": 65,
-      "norm_label": "messagetext()"
-    },
-    {
-      "label": "describeUpdate()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L139",
-      "id": "lib_logformat_describeupdate",
-      "community": 65,
-      "norm_label": "describeupdate()"
-    },
-    {
-      "label": "humanizeLog()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L159",
-      "id": "lib_logformat_humanizelog",
-      "community": 65,
-      "norm_label": "humanizelog()"
-    },
-    {
       "label": "cn.ts",
       "file_type": "code",
       "source_file": "frontend/src/lib/cn.ts",
@@ -1341,7 +1161,7 @@
       "source_file": "frontend/src/lib/api.ts",
       "source_location": "L77",
       "id": "lib_api_projectt",
-      "community": 63,
+      "community": 3,
       "norm_label": "projectt"
     },
     {
@@ -1357,7 +1177,7 @@
       "label": "PersistedAgentLog",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.ts",
-      "source_location": "L100",
+      "source_location": "L95",
       "id": "lib_api_persistedagentlog",
       "community": 3,
       "norm_label": "persistedagentlog"
@@ -1366,16 +1186,16 @@
       "label": "LogItemResponse",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.ts",
-      "source_location": "L110",
+      "source_location": "L105",
       "id": "lib_api_logitemresponse",
-      "community": 3,
+      "community": 65,
       "norm_label": "logitemresponse"
     },
     {
       "label": "persistedLogToEntry()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.ts",
-      "source_location": "L129",
+      "source_location": "L124",
       "id": "lib_api_persistedlogtoentry",
       "community": 72,
       "norm_label": "persistedlogtoentry()"
@@ -1384,7 +1204,7 @@
       "label": "http()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.ts",
-      "source_location": "L151",
+      "source_location": "L145",
       "id": "lib_api_http",
       "community": 3,
       "norm_label": "http()"
@@ -1393,16 +1213,16 @@
       "label": "CheckpointT",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.ts",
-      "source_location": "L161",
+      "source_location": "L155",
       "id": "lib_api_checkpointt",
-      "community": 3,
+      "community": 63,
       "norm_label": "checkpointt"
     },
     {
       "label": "api",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.ts",
-      "source_location": "L173",
+      "source_location": "L165",
       "id": "lib_api_api",
       "community": 63,
       "norm_label": "api"
@@ -1449,7 +1269,7 @@
       "source_file": "frontend/src/lib/store.ts",
       "source_location": "L68",
       "id": "lib_store_useuistore",
-      "community": 63,
+      "community": 76,
       "norm_label": "useuistore"
     },
     {
@@ -1510,7 +1330,7 @@
       "label": ".cors_origins_list()",
       "file_type": "code",
       "source_file": "backend/config.py",
-      "source_location": "L122",
+      "source_location": "L117",
       "id": "backend_config_settings_cors_origins_list",
       "community": 86,
       "norm_label": ".cors_origins_list()"
@@ -1519,7 +1339,7 @@
       "label": "str",
       "file_type": "code",
       "source_file": "backend/config.py",
-      "source_location": "L122",
+      "source_location": "L117",
       "id": "backend_config_py_str",
       "community": 86,
       "norm_label": "str"
@@ -1528,7 +1348,7 @@
       "label": "get_settings()",
       "file_type": "code",
       "source_file": "backend/config.py",
-      "source_location": "L127",
+      "source_location": "L122",
       "id": "backend_config_get_settings",
       "community": 1,
       "norm_label": "get_settings()"
@@ -1638,7 +1458,7 @@
       "source_file": "backend/agent_logs/persist.py",
       "source_location": "L1",
       "id": "backend_agent_logs_persist_py",
-      "community": 2,
+      "community": 7,
       "norm_label": "persist.py"
     },
     {
@@ -1647,7 +1467,7 @@
       "source_file": "backend/agent_logs/persist.py",
       "source_location": "L14",
       "id": "agent_logs_persist_payload_for_storage",
-      "community": 2,
+      "community": 7,
       "norm_label": "_payload_for_storage()"
     },
     {
@@ -1656,7 +1476,7 @@
       "source_file": "backend/agent_logs/persist.py",
       "source_location": "L14",
       "id": "backend_agent_logs_persist_py_str",
-      "community": 2,
+      "community": 7,
       "norm_label": "str"
     },
     {
@@ -1665,7 +1485,7 @@
       "source_file": "backend/agent_logs/persist.py",
       "source_location": "L14",
       "id": "backend_agent_logs_persist_py_any",
-      "community": 2,
+      "community": 7,
       "norm_label": "any"
     },
     {
@@ -1674,7 +1494,7 @@
       "source_file": "backend/agent_logs/persist.py",
       "source_location": "L35",
       "id": "agent_logs_persist_persist_agent_event",
-      "community": 2,
+      "community": 7,
       "norm_label": "persist_agent_event()"
     },
     {
@@ -1683,7 +1503,7 @@
       "source_file": "backend/agent_logs/persist.py",
       "source_location": "L35",
       "id": "event",
-      "community": 2,
+      "community": 7,
       "norm_label": "event"
     },
     {
@@ -1692,7 +1512,7 @@
       "source_file": "backend/agent_logs/persist.py",
       "source_location": "L1",
       "id": "agent_logs_persist_rationale_1",
-      "community": 2,
+      "community": 7,
       "norm_label": "persist agent-scoped events from the eventbus to ``agent_logs`` for replay."
     },
     {
@@ -1701,7 +1521,7 @@
       "source_file": "backend/agent_logs/persist.py",
       "source_location": "L15",
       "id": "agent_logs_persist_rationale_15",
-      "community": 2,
+      "community": 7,
       "norm_label": "return a json-serialisable copy of the payload."
     },
     {
@@ -1710,7 +1530,7 @@
       "source_file": "backend/agent_logs/persist.py",
       "source_location": "L36",
       "id": "agent_logs_persist_rationale_36",
-      "community": 2,
+      "community": 7,
       "norm_label": "write one ``agent`` bus event to postgres (best-effort, non-blocking graph)."
     },
     {
@@ -1737,7 +1557,7 @@
       "source_file": "backend/tools/hitl_tools.py",
       "source_location": "L1",
       "id": "backend_tools_hitl_tools_py",
-      "community": 88,
+      "community": 79,
       "norm_label": "hitl_tools.py"
     },
     {
@@ -1746,7 +1566,7 @@
       "source_file": "backend/tools/hitl_tools.py",
       "source_location": "L14",
       "id": "tools_hitl_tools_ask_human",
-      "community": 88,
+      "community": 79,
       "norm_label": "ask_human()"
     },
     {
@@ -1755,7 +1575,7 @@
       "source_file": "backend/tools/hitl_tools.py",
       "source_location": "L14",
       "id": "backend_tools_hitl_tools_py_str",
-      "community": 88,
+      "community": 79,
       "norm_label": "str"
     },
     {
@@ -1764,7 +1584,7 @@
       "source_file": "backend/tools/hitl_tools.py",
       "source_location": "L1",
       "id": "tools_hitl_tools_rationale_1",
-      "community": 88,
+      "community": 79,
       "norm_label": "human-in-the-loop tool that pauses graph execution via ``interrupt()``.  calling"
     },
     {
@@ -1773,7 +1593,7 @@
       "source_file": "backend/tools/hitl_tools.py",
       "source_location": "L15",
       "id": "tools_hitl_tools_rationale_15",
-      "community": 88,
+      "community": 79,
       "norm_label": "ask the human supervisor a question and wait for the answer.      use sparingly"
     },
     {
@@ -1782,7 +1602,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L1",
       "id": "backend_tools_rag_tools_py",
-      "community": 4,
+      "community": 77,
       "norm_label": "rag_tools.py"
     },
     {
@@ -1791,7 +1611,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L12",
       "id": "tools_rag_tools_rag_ingest_text",
-      "community": 4,
+      "community": 77,
       "norm_label": "rag_ingest_text()"
     },
     {
@@ -1800,7 +1620,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L12",
       "id": "backend_tools_rag_tools_py_str",
-      "community": 4,
+      "community": 77,
       "norm_label": "str"
     },
     {
@@ -1809,7 +1629,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L27",
       "id": "tools_rag_tools_rag_query",
-      "community": 4,
+      "community": 77,
       "norm_label": "rag_query()"
     },
     {
@@ -1818,7 +1638,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L27",
       "id": "backend_tools_rag_tools_py_int",
-      "community": 4,
+      "community": 77,
       "norm_label": "int"
     },
     {
@@ -1827,7 +1647,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L1",
       "id": "tools_rag_tools_rationale_1",
-      "community": 4,
+      "community": 77,
       "norm_label": "langchain tools for rag ingestion and crag-style retrieval."
     },
     {
@@ -1836,7 +1656,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L13",
       "id": "tools_rag_tools_rationale_13",
-      "community": 4,
+      "community": 77,
       "norm_label": "add a document to the project's rag vector store.      use when: you wrote docum"
     },
     {
@@ -1845,7 +1665,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L28",
       "id": "tools_rag_tools_rationale_28",
-      "community": 4,
+      "community": 77,
       "norm_label": "retrieve relevant project documents using the crag pipeline.      use when: you"
     },
     {
@@ -1872,7 +1692,7 @@
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L26",
       "id": "backend_tools_ticket_tools_py_any",
-      "community": 13,
+      "community": 2,
       "norm_label": "any"
     },
     {
@@ -1944,7 +1764,7 @@
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L184",
       "id": "tools_ticket_tools_testcaseinput",
-      "community": 89,
+      "community": 2,
       "norm_label": "testcaseinput"
     },
     {
@@ -1953,7 +1773,7 @@
       "source_file": "",
       "source_location": "",
       "id": "basemodel",
-      "community": 13,
+      "community": 2,
       "norm_label": "basemodel"
     },
     {
@@ -1962,7 +1782,7 @@
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L224",
       "id": "tools_ticket_tools_createsubtaskargs",
-      "community": 13,
+      "community": 2,
       "norm_label": "createsubtaskargs"
     },
     {
@@ -1998,7 +1818,7 @@
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L346",
       "id": "tools_ticket_tools_updatesubtaskargs",
-      "community": 13,
+      "community": 2,
       "norm_label": "updatesubtaskargs"
     },
     {
@@ -2133,7 +1953,7 @@
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L185",
       "id": "tools_ticket_tools_rationale_185",
-      "community": 89,
+      "community": 2,
       "norm_label": "a single rite-format test case the lead must specify per subtask."
     },
     {
@@ -2142,7 +1962,7 @@
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L225",
       "id": "tools_ticket_tools_rationale_225",
-      "community": 13,
+      "community": 2,
       "norm_label": "arguments for create_subtask. every field labelled required must be supplied."
     },
     {
@@ -2169,7 +1989,7 @@
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L347",
       "id": "tools_ticket_tools_rationale_347",
-      "community": 13,
+      "community": 2,
       "norm_label": "lead-only patch tool for fixing an existing subtask in place."
     },
     {
@@ -2250,7 +2070,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L1",
       "id": "backend_tools_code_tools_py",
-      "community": 4,
+      "community": 13,
       "norm_label": "code_tools.py"
     },
     {
@@ -2259,7 +2079,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L19",
       "id": "tools_code_tools_project_root",
-      "community": 4,
+      "community": 13,
       "norm_label": "_project_root()"
     },
     {
@@ -2268,7 +2088,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L19",
       "id": "backend_tools_code_tools_py_str",
-      "community": 4,
+      "community": 13,
       "norm_label": "str"
     },
     {
@@ -2277,7 +2097,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L19",
       "id": "backend_tools_code_tools_py_path",
-      "community": 4,
+      "community": 13,
       "norm_label": "path"
     },
     {
@@ -2286,7 +2106,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L26",
       "id": "tools_code_tools_resolve",
-      "community": 4,
+      "community": 13,
       "norm_label": "_resolve()"
     },
     {
@@ -2295,7 +2115,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L35",
       "id": "tools_code_tools_fs_write",
-      "community": 4,
+      "community": 13,
       "norm_label": "fs_write()"
     },
     {
@@ -2304,7 +2124,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L44",
       "id": "tools_code_tools_fs_read",
-      "community": 4,
+      "community": 13,
       "norm_label": "fs_read()"
     },
     {
@@ -2313,7 +2133,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L66",
       "id": "tools_code_tools_fs_list",
-      "community": 4,
+      "community": 13,
       "norm_label": "fs_list()"
     },
     {
@@ -2322,7 +2142,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L78",
       "id": "tools_code_tools_fs_delete",
-      "community": 4,
+      "community": 13,
       "norm_label": "fs_delete()"
     },
     {
@@ -2331,7 +2151,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L91",
       "id": "tools_code_tools_shell_run",
-      "community": 4,
+      "community": 13,
       "norm_label": "shell_run()"
     },
     {
@@ -2340,7 +2160,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L91",
       "id": "backend_tools_code_tools_py_int",
-      "community": 4,
+      "community": 13,
       "norm_label": "int"
     },
     {
@@ -2349,7 +2169,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L126",
       "id": "tools_code_tools_run_tests",
-      "community": 4,
+      "community": 13,
       "norm_label": "run_tests()"
     },
     {
@@ -2358,7 +2178,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L1",
       "id": "tools_code_tools_rationale_1",
-      "community": 4,
+      "community": 13,
       "norm_label": "filesystem + subprocess tools for developer agents.  all paths are resolved rela"
     },
     {
@@ -2367,7 +2187,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L36",
       "id": "tools_code_tools_rationale_36",
-      "community": 4,
+      "community": 13,
       "norm_label": "write a file inside the project workspace. creates parent dirs."
     },
     {
@@ -2376,7 +2196,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L45",
       "id": "tools_code_tools_rationale_45",
-      "community": 4,
+      "community": 13,
       "norm_label": "read a file inside the project workspace (bounded by fs_read_max_bytes)."
     },
     {
@@ -2385,7 +2205,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L67",
       "id": "tools_code_tools_rationale_67",
-      "community": 4,
+      "community": 13,
       "norm_label": "list files and directories inside the project workspace."
     },
     {
@@ -2394,7 +2214,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L79",
       "id": "tools_code_tools_rationale_79",
-      "community": 4,
+      "community": 13,
       "norm_label": "delete a file or empty directory inside the project workspace."
     },
     {
@@ -2403,7 +2223,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L92",
       "id": "tools_code_tools_rationale_92",
-      "community": 4,
+      "community": 13,
       "norm_label": "run a shell command inside the project workspace. captures stdout/stderr."
     },
     {
@@ -2412,7 +2232,7 @@
       "source_file": "backend/tools/code_tools.py",
       "source_location": "L127",
       "id": "tools_code_tools_rationale_127",
-      "community": 4,
+      "community": 13,
       "norm_label": "run a focused test command (default stops after the first failure)."
     },
     {
@@ -3015,7 +2835,7 @@
       "source_file": "backend/tests/test_ticket_state_machine.py",
       "source_location": "L1",
       "id": "backend_tests_test_ticket_state_machine_py",
-      "community": 87,
+      "community": 2,
       "norm_label": "test_ticket_state_machine.py"
     },
     {
@@ -3024,7 +2844,7 @@
       "source_file": "backend/tests/test_ticket_state_machine.py",
       "source_location": "L27",
       "id": "tests_test_ticket_state_machine_test_transition_allowed",
-      "community": 87,
+      "community": 2,
       "norm_label": "test_transition_allowed()"
     },
     {
@@ -3033,7 +2853,7 @@
       "source_file": "backend/tests/test_ticket_state_machine.py",
       "source_location": "L27",
       "id": "ticketstatus",
-      "community": 87,
+      "community": 2,
       "norm_label": "ticketstatus"
     },
     {
@@ -3042,7 +2862,7 @@
       "source_file": "backend/tests/test_ticket_state_machine.py",
       "source_location": "L27",
       "id": "backend_tests_test_ticket_state_machine_py_bool",
-      "community": 87,
+      "community": 2,
       "norm_label": "bool"
     },
     {
@@ -3051,7 +2871,7 @@
       "source_file": "backend/tests/test_ticket_state_machine.py",
       "source_location": "L1",
       "id": "tests_test_ticket_state_machine_rationale_1",
-      "community": 87,
+      "community": 2,
       "norm_label": "smoke tests for the ticket-system state-machine logic.  these exercise the pure-"
     },
     {
@@ -3748,51 +3568,6 @@
       "norm_label": "subtask order_index idempotency helpers."
     },
     {
-      "label": "test_runtime_env.py",
-      "file_type": "code",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L1",
-      "id": "backend_tests_test_runtime_env_py",
-      "community": 23,
-      "norm_label": "test_runtime_env.py"
-    },
-    {
-      "label": "test_detect_agent_runtime_has_core_keys()",
-      "file_type": "code",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L12",
-      "id": "tests_test_runtime_env_test_detect_agent_runtime_has_core_keys",
-      "community": 23,
-      "norm_label": "test_detect_agent_runtime_has_core_keys()"
-    },
-    {
-      "label": "test_prompt_section_documents_execution_host()",
-      "file_type": "code",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L19",
-      "id": "tests_test_runtime_env_test_prompt_section_documents_execution_host",
-      "community": 23,
-      "norm_label": "test_prompt_section_documents_execution_host()"
-    },
-    {
-      "label": "test_agents_md_section_covers_distro_and_mongodb()",
-      "file_type": "code",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L27",
-      "id": "tests_test_runtime_env_test_agents_md_section_covers_distro_and_mongodb",
-      "community": 23,
-      "norm_label": "test_agents_md_section_covers_distro_and_mongodb()"
-    },
-    {
-      "label": "Agent runtime environment detection and prompt injection.",
-      "file_type": "rationale",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L1",
-      "id": "tests_test_runtime_env_rationale_1",
-      "community": 23,
-      "norm_label": "agent runtime environment detection and prompt injection."
-    },
-    {
       "label": "test_pm_routing_parser.py",
       "file_type": "code",
       "source_file": "backend/tests/test_pm_routing_parser.py",
@@ -3879,7 +3654,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L1",
       "id": "backend_tests_test_state_changes_py",
-      "community": 76,
+      "community": 4,
       "norm_label": "test_state_changes.py"
     },
     {
@@ -3888,7 +3663,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L7",
       "id": "tests_test_state_changes_test_system_state_has_context_store_field",
-      "community": 76,
+      "community": 4,
       "norm_label": "test_system_state_has_context_store_field()"
     },
     {
@@ -3897,7 +3672,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L14",
       "id": "tests_test_state_changes_test_context_store_defaults_to_empty_dict",
-      "community": 76,
+      "community": 4,
       "norm_label": "test_context_store_defaults_to_empty_dict()"
     },
     {
@@ -3906,7 +3681,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L20",
       "id": "tests_test_state_changes_test_context_store_can_be_set",
-      "community": 76,
+      "community": 4,
       "norm_label": "test_context_store_can_be_set()"
     },
     {
@@ -3915,7 +3690,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L26",
       "id": "tests_test_state_changes_test_project_context_canonical",
-      "community": 76,
+      "community": 4,
       "norm_label": "test_project_context_canonical()"
     },
     {
@@ -3924,7 +3699,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L32",
       "id": "tests_test_state_changes_test_active_fields_exist",
-      "community": 76,
+      "community": 4,
       "norm_label": "test_active_fields_exist()"
     },
     {
@@ -3933,7 +3708,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L42",
       "id": "tests_test_state_changes_test_dead_fields_do_not_accumulate",
-      "community": 76,
+      "community": 4,
       "norm_label": "test_dead_fields_do_not_accumulate()"
     },
     {
@@ -3942,7 +3717,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L1",
       "id": "tests_test_state_changes_rationale_1",
-      "community": 76,
+      "community": 4,
       "norm_label": "tests for systemstate changes (dead fields neutralized, context_store added)."
     },
     {
@@ -3951,7 +3726,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L8",
       "id": "tests_test_state_changes_rationale_8",
-      "community": 76,
+      "community": 4,
       "norm_label": "systemstate has a context_store field."
     },
     {
@@ -3960,7 +3735,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L15",
       "id": "tests_test_state_changes_rationale_15",
-      "community": 76,
+      "community": 4,
       "norm_label": "context_store defaults to an empty dict."
     },
     {
@@ -3969,7 +3744,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L21",
       "id": "tests_test_state_changes_rationale_21",
-      "community": 76,
+      "community": 4,
       "norm_label": "context_store can be set to a dict."
     },
     {
@@ -3978,7 +3753,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L27",
       "id": "tests_test_state_changes_rationale_27",
-      "community": 76,
+      "community": 4,
       "norm_label": "project_context exists and can hold the project goal."
     },
     {
@@ -3987,7 +3762,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L33",
       "id": "tests_test_state_changes_rationale_33",
-      "community": 76,
+      "community": 4,
       "norm_label": "active_ticket_id and active_subtask_id exist."
     },
     {
@@ -3996,7 +3771,7 @@
       "source_file": "backend/tests/test_state_changes.py",
       "source_location": "L43",
       "id": "tests_test_state_changes_rationale_43",
-      "community": 76,
+      "community": 4,
       "norm_label": "dead fields (pending_questions, human_responses) use identity lambdas."
     },
     {
@@ -4671,14 +4446,14 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L1",
       "id": "backend_agents_runner_py",
-      "community": 61,
+      "community": 20,
       "norm_label": "runner.py"
     },
     {
       "label": "_last_text()",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L51",
+      "source_location": "L50",
       "id": "agents_runner_last_text",
       "community": 20,
       "norm_label": "_last_text()"
@@ -4687,7 +4462,7 @@
       "label": "BaseMessage",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L51",
+      "source_location": "L50",
       "id": "backend_agents_runner_py_basemessage",
       "community": 20,
       "norm_label": "basemessage"
@@ -4696,7 +4471,7 @@
       "label": "str",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L51",
+      "source_location": "L50",
       "id": "backend_agents_runner_py_str",
       "community": 20,
       "norm_label": "str"
@@ -4705,7 +4480,7 @@
       "label": "_truncate()",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L70",
+      "source_location": "L69",
       "id": "agents_runner_truncate",
       "community": 20,
       "norm_label": "_truncate()"
@@ -4714,16 +4489,16 @@
       "label": "int",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L70",
+      "source_location": "L69",
       "id": "backend_agents_runner_py_int",
-      "community": 20,
+      "community": 23,
       "norm_label": "int"
     },
     {
       "label": "_build_specialist_input()",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L81",
+      "source_location": "L80",
       "id": "agents_runner_build_specialist_input",
       "community": 20,
       "norm_label": "_build_specialist_input()"
@@ -4732,7 +4507,7 @@
       "label": "SystemState",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L81",
+      "source_location": "L80",
       "id": "backend_agents_runner_py_systemstate",
       "community": 20,
       "norm_label": "systemstate"
@@ -4741,7 +4516,7 @@
       "label": "_latest_subtask_id_from_tools()",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L134",
+      "source_location": "L133",
       "id": "agents_runner_latest_subtask_id_from_tools",
       "community": 20,
       "norm_label": "_latest_subtask_id_from_tools()"
@@ -4750,7 +4525,7 @@
       "label": "ToolMessage",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L134",
+      "source_location": "L133",
       "id": "backend_agents_runner_py_toolmessage",
       "community": 20,
       "norm_label": "toolmessage"
@@ -4759,7 +4534,7 @@
       "label": "_verification_outcome()",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L149",
+      "source_location": "L148",
       "id": "agents_runner_verification_outcome",
       "community": 20,
       "norm_label": "_verification_outcome()"
@@ -4768,7 +4543,7 @@
       "label": "_subtasks_marked_done()",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L178",
+      "source_location": "L177",
       "id": "agents_runner_subtasks_marked_done",
       "community": 20,
       "norm_label": "_subtasks_marked_done()"
@@ -4777,7 +4552,7 @@
       "label": "_revert_subtasks_to_blocked()",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L193",
+      "source_location": "L192",
       "id": "agents_runner_revert_subtasks_to_blocked",
       "community": 20,
       "norm_label": "_revert_subtasks_to_blocked()"
@@ -4786,36 +4561,36 @@
       "label": "build_specialist_subgraph()",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L214",
+      "source_location": "L213",
       "id": "agents_runner_build_specialist_subgraph",
-      "community": 4,
+      "community": 23,
       "norm_label": "build_specialist_subgraph()"
     },
     {
       "label": "BaseChatModel",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L214",
+      "source_location": "L213",
       "id": "backend_agents_runner_py_basechatmodel",
-      "community": 4,
+      "community": 23,
       "norm_label": "basechatmodel"
     },
     {
       "label": "BaseTool",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L214",
+      "source_location": "L213",
       "id": "backend_agents_runner_py_basetool",
-      "community": 4,
+      "community": 23,
       "norm_label": "basetool"
     },
     {
       "label": "bool",
       "file_type": "code",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L214",
+      "source_location": "L213",
       "id": "backend_agents_runner_py_bool",
-      "community": 4,
+      "community": 23,
       "norm_label": "bool"
     },
     {
@@ -4824,15 +4599,15 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L1",
       "id": "agents_runner_rationale_1",
-      "community": 61,
+      "community": 20,
       "norm_label": "generic tool-using agent runner shared by specialist subgraphs.  each specialist"
     },
     {
       "label": "Best-effort textual summary of the final AIMessage in ``messages``.",
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L52",
-      "id": "agents_runner_rationale_52",
+      "source_location": "L51",
+      "id": "agents_runner_rationale_51",
       "community": 20,
       "norm_label": "best-effort textual summary of the final aimessage in ``messages``."
     },
@@ -4840,8 +4615,8 @@
       "label": "Assemble the minimal message list a specialist needs to act.      Strategy:",
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L82",
-      "id": "agents_runner_rationale_82",
+      "source_location": "L81",
+      "id": "agents_runner_rationale_81",
       "community": 20,
       "norm_label": "assemble the minimal message list a specialist needs to act.      strategy:"
     },
@@ -4849,8 +4624,8 @@
       "label": "Classify the turn's verification signal from ``run_tests`` results.      Returns",
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L150",
-      "id": "agents_runner_rationale_150",
+      "source_location": "L149",
+      "id": "agents_runner_rationale_149",
       "community": 20,
       "norm_label": "classify the turn's verification signal from ``run_tests`` results.      returns"
     },
@@ -4858,8 +4633,8 @@
       "label": "IDs of subtasks the agent flipped to ``done`` via update_subtask_status.",
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L179",
-      "id": "agents_runner_rationale_179",
+      "source_location": "L178",
+      "id": "agents_runner_rationale_178",
       "community": 20,
       "norm_label": "ids of subtasks the agent flipped to ``done`` via update_subtask_status."
     },
@@ -4867,8 +4642,8 @@
       "label": "Force subtasks back to ``blocked`` (used when a completion gate fails).",
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L194",
-      "id": "agents_runner_rationale_194",
+      "source_location": "L193",
+      "id": "agents_runner_rationale_193",
       "community": 20,
       "norm_label": "force subtasks back to ``blocked`` (used when a completion gate fails)."
     },
@@ -4876,9 +4651,9 @@
       "label": "Build and compile a tool-using specialist subgraph.      When ``verify_completio",
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L224",
-      "id": "agents_runner_rationale_224",
-      "community": 4,
+      "source_location": "L223",
+      "id": "agents_runner_rationale_223",
+      "community": 23,
       "norm_label": "build and compile a tool-using specialist subgraph.      when ``verify_completio"
     },
     {
@@ -4912,7 +4687,7 @@
       "label": "resolve_model_slug_for_node()",
       "file_type": "code",
       "source_file": "backend/agents/llm_audit.py",
-      "source_location": "L41",
+      "source_location": "L38",
       "id": "agents_llm_audit_resolve_model_slug_for_node",
       "community": 61,
       "norm_label": "resolve_model_slug_for_node()"
@@ -4921,7 +4696,7 @@
       "label": "log_llm_invoke_start()",
       "file_type": "code",
       "source_file": "backend/agents/llm_audit.py",
-      "source_location": "L49",
+      "source_location": "L46",
       "id": "agents_llm_audit_log_llm_invoke_start",
       "community": 61,
       "norm_label": "log_llm_invoke_start()"
@@ -4930,7 +4705,7 @@
       "label": "int",
       "file_type": "code",
       "source_file": "backend/agents/llm_audit.py",
-      "source_location": "L49",
+      "source_location": "L46",
       "id": "backend_agents_llm_audit_py_int",
       "community": 61,
       "norm_label": "int"
@@ -4939,7 +4714,7 @@
       "label": "log_rag_crag_llm_targets()",
       "file_type": "code",
       "source_file": "backend/agents/llm_audit.py",
-      "source_location": "L74",
+      "source_location": "L71",
       "id": "agents_llm_audit_log_rag_crag_llm_targets",
       "community": 61,
       "norm_label": "log_rag_crag_llm_targets()"
@@ -4948,7 +4723,7 @@
       "label": "log_llm_invoke_exception_context()",
       "file_type": "code",
       "source_file": "backend/agents/llm_audit.py",
-      "source_location": "L89",
+      "source_location": "L86",
       "id": "agents_llm_audit_log_llm_invoke_exception_context",
       "community": 61,
       "norm_label": "log_llm_invoke_exception_context()"
@@ -4975,8 +4750,8 @@
       "label": "Call from inside an ``except`` block \u2014 attaches stack trace via ``exception()``.",
       "file_type": "rationale",
       "source_file": "backend/agents/llm_audit.py",
-      "source_location": "L95",
-      "id": "agents_llm_audit_rationale_95",
+      "source_location": "L92",
+      "id": "agents_llm_audit_rationale_92",
       "community": 61,
       "norm_label": "call from inside an ``except`` block \u2014 attaches stack trace via ``exception()``."
     },
@@ -5094,7 +4869,7 @@
       "source_file": "backend/agents/handoff.py",
       "source_location": "L95",
       "id": "agents_handoff_handoff_to_message",
-      "community": 52,
+      "community": 60,
       "norm_label": ".to_message()"
     },
     {
@@ -5157,7 +4932,7 @@
       "source_file": "backend/agents/handoff.py",
       "source_location": "L96",
       "id": "agents_handoff_rationale_96",
-      "community": 52,
+      "community": 60,
       "norm_label": "serialize to a compact message format for the agent."
     },
     {
@@ -5184,7 +4959,7 @@
       "source_file": "backend/agents/graph.py",
       "source_location": "L1",
       "id": "backend_agents_graph_py",
-      "community": 4,
+      "community": 84,
       "norm_label": "graph.py"
     },
     {
@@ -5193,7 +4968,7 @@
       "source_file": "backend/agents/graph.py",
       "source_location": "L33",
       "id": "agents_graph_route_from_pm",
-      "community": 76,
+      "community": 84,
       "norm_label": "_route_from_pm()"
     },
     {
@@ -5202,7 +4977,7 @@
       "source_file": "backend/agents/graph.py",
       "source_location": "L33",
       "id": "backend_agents_graph_py_systemstate",
-      "community": 76,
+      "community": 84,
       "norm_label": "systemstate"
     },
     {
@@ -5211,7 +4986,7 @@
       "source_file": "backend/agents/graph.py",
       "source_location": "L33",
       "id": "backend_agents_graph_py_str",
-      "community": 76,
+      "community": 84,
       "norm_label": "str"
     },
     {
@@ -5220,7 +4995,7 @@
       "source_file": "backend/agents/graph.py",
       "source_location": "L48",
       "id": "agents_graph_build_root_graph",
-      "community": 4,
+      "community": 85,
       "norm_label": "build_root_graph()"
     },
     {
@@ -5229,7 +5004,7 @@
       "source_file": "backend/agents/graph.py",
       "source_location": "L48",
       "id": "basecheckpointsaver",
-      "community": 4,
+      "community": 85,
       "norm_label": "basecheckpointsaver"
     },
     {
@@ -5238,7 +5013,7 @@
       "source_file": "backend/agents/graph.py",
       "source_location": "L1",
       "id": "agents_graph_rationale_1",
-      "community": 4,
+      "community": 84,
       "norm_label": "root langgraph orchestration graph.  the project manager acts as the supervisor;"
     },
     {
@@ -5247,7 +5022,7 @@
       "source_file": "backend/agents/graph.py",
       "source_location": "L34",
       "id": "agents_graph_rationale_34",
-      "community": 76,
+      "community": 84,
       "norm_label": "conditional edge: dispatch from the project manager based on its decision."
     },
     {
@@ -5256,7 +5031,7 @@
       "source_file": "backend/agents/graph.py",
       "source_location": "L49",
       "id": "agents_graph_rationale_49",
-      "community": 4,
+      "community": 85,
       "norm_label": "compile the full multi-agent orchestration graph."
     },
     {
@@ -5265,7 +5040,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L1",
       "id": "backend_agents_checkpointer_py",
-      "community": 53,
+      "community": 17,
       "norm_label": "checkpointer.py"
     },
     {
@@ -5274,7 +5049,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L31",
       "id": "agents_checkpointer_build_serde",
-      "community": 53,
+      "community": 17,
       "norm_label": "_build_serde()"
     },
     {
@@ -5283,7 +5058,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L31",
       "id": "jsonplusserializer",
-      "community": 53,
+      "community": 17,
       "norm_label": "jsonplusserializer"
     },
     {
@@ -5292,7 +5067,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L46",
       "id": "agents_checkpointer_get_pool",
-      "community": 53,
+      "community": 17,
       "norm_label": "get_pool()"
     },
     {
@@ -5301,7 +5076,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L46",
       "id": "asyncconnectionpool",
-      "community": 53,
+      "community": 17,
       "norm_label": "asyncconnectionpool"
     },
     {
@@ -5319,7 +5094,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L69",
       "id": "agents_checkpointer_get_checkpointer",
-      "community": 53,
+      "community": 17,
       "norm_label": "get_checkpointer()"
     },
     {
@@ -5328,7 +5103,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L1",
       "id": "agents_checkpointer_rationale_1",
-      "community": 53,
+      "community": 17,
       "norm_label": "langgraph checkpointer setup using asyncpostgressaver.  we expose a context-mana"
     },
     {
@@ -5337,7 +5112,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L32",
       "id": "agents_checkpointer_rationale_32",
-      "community": 53,
+      "community": 17,
       "norm_label": "return a serializer that knows about our application state types.      ``allowed"
     },
     {
@@ -5346,7 +5121,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L70",
       "id": "agents_checkpointer_rationale_70",
-      "community": 53,
+      "community": 17,
       "norm_label": "async context manager that yields an initialized asyncpostgressaver.      on fir"
     },
     {
@@ -5371,7 +5146,7 @@
       "label": "_limiter_for()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L38",
+      "source_location": "L37",
       "id": "agents_llm_limiter_for",
       "community": 1,
       "norm_label": "_limiter_for()"
@@ -5380,7 +5155,7 @@
       "label": "str",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L38",
+      "source_location": "L37",
       "id": "backend_agents_llm_py_str",
       "community": 1,
       "norm_label": "str"
@@ -5389,7 +5164,7 @@
       "label": "InMemoryRateLimiter",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L38",
+      "source_location": "L37",
       "id": "inmemoryratelimiter",
       "community": 1,
       "norm_label": "inmemoryratelimiter"
@@ -5398,34 +5173,34 @@
       "label": "_transient_exceptions()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L66",
+      "source_location": "L62",
       "id": "agents_llm_transient_exceptions",
-      "community": 79,
+      "community": 1,
       "norm_label": "_transient_exceptions()"
     },
     {
       "label": "BaseException",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L66",
+      "source_location": "L62",
       "id": "backend_agents_llm_py_baseexception",
-      "community": 79,
+      "community": 1,
       "norm_label": "baseexception"
     },
     {
       "label": "_wrap_with_retry()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L93",
+      "source_location": "L89",
       "id": "agents_llm_wrap_with_retry",
-      "community": 79,
+      "community": 1,
       "norm_label": "_wrap_with_retry()"
     },
     {
       "label": "BaseChatModel",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L93",
+      "source_location": "L89",
       "id": "backend_agents_llm_py_basechatmodel",
       "community": 1,
       "norm_label": "basechatmodel"
@@ -5434,16 +5209,16 @@
       "label": "Runnable",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L93",
+      "source_location": "L89",
       "id": "runnable",
-      "community": 79,
+      "community": 1,
       "norm_label": "runnable"
     },
     {
       "label": "_split_slug()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L108",
+      "source_location": "L104",
       "id": "agents_llm_split_slug",
       "community": 61,
       "norm_label": "_split_slug()"
@@ -5452,16 +5227,16 @@
       "label": "log_resolved_llm_routing()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L115",
+      "source_location": "L111",
       "id": "agents_llm_log_resolved_llm_routing",
-      "community": 1,
+      "community": 53,
       "norm_label": "log_resolved_llm_routing()"
     },
     {
       "label": "get_chat_model()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L155",
+      "source_location": "L148",
       "id": "agents_llm_get_chat_model",
       "community": 1,
       "norm_label": "get_chat_model()"
@@ -5470,7 +5245,7 @@
       "label": "float",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L155",
+      "source_location": "L148",
       "id": "backend_agents_llm_py_float",
       "community": 1,
       "norm_label": "float"
@@ -5479,16 +5254,16 @@
       "label": "with_retry()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L207",
+      "source_location": "L195",
       "id": "agents_llm_with_retry",
-      "community": 79,
+      "community": 1,
       "norm_label": "with_retry()"
     },
     {
       "label": "pm_model()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L212",
+      "source_location": "L200",
       "id": "agents_llm_pm_model",
       "community": 1,
       "norm_label": "pm_model()"
@@ -5497,7 +5272,7 @@
       "label": "researcher_model()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L216",
+      "source_location": "L204",
       "id": "agents_llm_researcher_model",
       "community": 1,
       "norm_label": "researcher_model()"
@@ -5506,7 +5281,7 @@
       "label": "lead_model()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L220",
+      "source_location": "L208",
       "id": "agents_llm_lead_model",
       "community": 1,
       "norm_label": "lead_model()"
@@ -5515,7 +5290,7 @@
       "label": "dev_model()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L224",
+      "source_location": "L212",
       "id": "agents_llm_dev_model",
       "community": 1,
       "norm_label": "dev_model()"
@@ -5524,7 +5299,7 @@
       "label": "backend_dev_model()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L228",
+      "source_location": "L216",
       "id": "agents_llm_backend_dev_model",
       "community": 1,
       "norm_label": "backend_dev_model()"
@@ -5533,7 +5308,7 @@
       "label": "frontend_dev_model()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L234",
+      "source_location": "L222",
       "id": "agents_llm_frontend_dev_model",
       "community": 1,
       "norm_label": "frontend_dev_model()"
@@ -5542,7 +5317,7 @@
       "label": "grader_model()",
       "file_type": "code",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L240",
+      "source_location": "L228",
       "id": "agents_llm_grader_model",
       "community": 1,
       "norm_label": "grader_model()"
@@ -5560,26 +5335,26 @@
       "label": "Attach inline retry-with-backoff to a chat model.      The returned object is a",
       "file_type": "rationale",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L94",
-      "id": "agents_llm_rationale_94",
-      "community": 79,
+      "source_location": "L90",
+      "id": "agents_llm_rationale_90",
+      "community": 1,
       "norm_label": "attach inline retry-with-backoff to a chat model.      the returned object is a"
     },
     {
       "label": "Log where each configured role sends traffic (local vs cloud).      Misconfigura",
       "file_type": "rationale",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L116",
-      "id": "agents_llm_rationale_116",
-      "community": 1,
+      "source_location": "L112",
+      "id": "agents_llm_rationale_112",
+      "community": 53,
       "norm_label": "log where each configured role sends traffic (local vs cloud).      misconfigura"
     },
     {
       "label": "Resolve a ``provider/model`` slug to a rate-limited chat model.      Inline retr",
       "file_type": "rationale",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L156",
-      "id": "agents_llm_rationale_156",
+      "source_location": "L149",
+      "id": "agents_llm_rationale_149",
       "community": 1,
       "norm_label": "resolve a ``provider/model`` slug to a rate-limited chat model.      inline retr"
     },
@@ -5587,9 +5362,9 @@
       "label": "Public alias so callers can wrap a tool-bound model in retry logic.",
       "file_type": "rationale",
       "source_file": "backend/agents/llm.py",
-      "source_location": "L208",
-      "id": "agents_llm_rationale_208",
-      "community": 79,
+      "source_location": "L196",
+      "id": "agents_llm_rationale_196",
+      "community": 1,
       "norm_label": "public alias so callers can wrap a tool-bound model in retry logic."
     },
     {
@@ -5650,7 +5425,7 @@
       "label": "get_cached_lead_appendix()",
       "file_type": "code",
       "source_file": "backend/agents/prompts.py",
-      "source_location": "L613",
+      "source_location": "L610",
       "id": "agents_prompts_get_cached_lead_appendix",
       "community": 27,
       "norm_label": "get_cached_lead_appendix()"
@@ -5659,7 +5434,7 @@
       "label": "str",
       "file_type": "code",
       "source_file": "backend/agents/prompts.py",
-      "source_location": "L613",
+      "source_location": "L610",
       "id": "backend_agents_prompts_py_str",
       "community": 27,
       "norm_label": "str"
@@ -5668,7 +5443,7 @@
       "label": "get_cached_role_base()",
       "file_type": "code",
       "source_file": "backend/agents/prompts.py",
-      "source_location": "L619",
+      "source_location": "L616",
       "id": "agents_prompts_get_cached_role_base",
       "community": 56,
       "norm_label": "get_cached_role_base()"
@@ -5686,8 +5461,8 @@
       "label": "Return the RITE + tool contract appendix (cached once).",
       "file_type": "rationale",
       "source_file": "backend/agents/prompts.py",
-      "source_location": "L614",
-      "id": "agents_prompts_rationale_614",
+      "source_location": "L611",
+      "id": "agents_prompts_rationale_611",
       "community": 27,
       "norm_label": "return the rite + tool contract appendix (cached once)."
     },
@@ -5695,118 +5470,10 @@
       "label": "Return the static base for a given role (cached once).      Only called at app s",
       "file_type": "rationale",
       "source_file": "backend/agents/prompts.py",
-      "source_location": "L620",
-      "id": "agents_prompts_rationale_620",
+      "source_location": "L617",
+      "id": "agents_prompts_rationale_617",
       "community": 56,
       "norm_label": "return the static base for a given role (cached once).      only called at app s"
-    },
-    {
-      "label": "runtime_env.py",
-      "file_type": "code",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L1",
-      "id": "backend_agents_runtime_env_py",
-      "community": 23,
-      "norm_label": "runtime_env.py"
-    },
-    {
-      "label": "_parse_os_release()",
-      "file_type": "code",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L15",
-      "id": "agents_runtime_env_parse_os_release",
-      "community": 23,
-      "norm_label": "_parse_os_release()"
-    },
-    {
-      "label": "str",
-      "file_type": "code",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L15",
-      "id": "backend_agents_runtime_env_py_str",
-      "community": 23,
-      "norm_label": "str"
-    },
-    {
-      "label": "detect_agent_runtime()",
-      "file_type": "code",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L29",
-      "id": "agents_runtime_env_detect_agent_runtime",
-      "community": 23,
-      "norm_label": "detect_agent_runtime()"
-    },
-    {
-      "label": "bool",
-      "file_type": "code",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L29",
-      "id": "backend_agents_runtime_env_py_bool",
-      "community": 23,
-      "norm_label": "bool"
-    },
-    {
-      "label": "_mongodb_memory_server_hints()",
-      "file_type": "code",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L51",
-      "id": "agents_runtime_env_mongodb_memory_server_hints",
-      "community": 23,
-      "norm_label": "_mongodb_memory_server_hints()"
-    },
-    {
-      "label": "get_agent_runtime_prompt_section()",
-      "file_type": "code",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L73",
-      "id": "agents_runtime_env_get_agent_runtime_prompt_section",
-      "community": 23,
-      "norm_label": "get_agent_runtime_prompt_section()"
-    },
-    {
-      "label": "get_agent_runtime_agents_md_section()",
-      "file_type": "code",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L109",
-      "id": "agents_runtime_env_get_agent_runtime_agents_md_section",
-      "community": 23,
-      "norm_label": "get_agent_runtime_agents_md_section()"
-    },
-    {
-      "label": "Agent execution host facts for prompts and workspace AGENTS.md.  ``shell_run`` a",
-      "file_type": "rationale",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L1",
-      "id": "agents_runtime_env_rationale_1",
-      "community": 23,
-      "norm_label": "agent execution host facts for prompts and workspace agents.md.  ``shell_run`` a"
-    },
-    {
-      "label": "Best-effort facts about the process that runs agent tools.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L30",
-      "id": "agents_runtime_env_rationale_30",
-      "community": 23,
-      "norm_label": "best-effort facts about the process that runs agent tools."
-    },
-    {
-      "label": "Compact block appended to every agent system prompt.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L74",
-      "id": "agents_runtime_env_rationale_74",
-      "community": 23,
-      "norm_label": "compact block appended to every agent system prompt."
-    },
-    {
-      "label": "Markdown section seeded into every new project AGENTS.md.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L110",
-      "id": "agents_runtime_env_rationale_110",
-      "community": 23,
-      "norm_label": "markdown section seeded into every new project agents.md."
     },
     {
       "label": "common.py",
@@ -6120,7 +5787,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L25",
       "id": "agents_state_systemstate",
-      "community": 76,
+      "community": 4,
       "norm_label": "systemstate"
     },
     {
@@ -6147,7 +5814,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L26",
       "id": "agents_state_rationale_26",
-      "community": 76,
+      "community": 4,
       "norm_label": "root state object shared across the orchestration graph."
     },
     {
@@ -6163,7 +5830,7 @@
       "label": "RoutingDecision",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L54",
+      "source_location": "L53",
       "id": "project_manager_supervisor_routingdecision",
       "community": 5,
       "norm_label": "routingdecision"
@@ -6172,16 +5839,16 @@
       "label": "_truncate()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L67",
+      "source_location": "L66",
       "id": "project_manager_supervisor_truncate",
-      "community": 77,
+      "community": 5,
       "norm_label": "_truncate()"
     },
     {
       "label": "str",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L67",
+      "source_location": "L66",
       "id": "backend_agents_project_manager_supervisor_py_str",
       "community": 5,
       "norm_label": "str"
@@ -6190,43 +5857,43 @@
       "label": "int",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L67",
+      "source_location": "L66",
       "id": "backend_agents_project_manager_supervisor_py_int",
-      "community": 77,
+      "community": 5,
       "norm_label": "int"
     },
     {
       "label": "_condense_messages_for_supervisor()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L75",
+      "source_location": "L74",
       "id": "project_manager_supervisor_condense_messages_for_supervisor",
-      "community": 77,
+      "community": 5,
       "norm_label": "_condense_messages_for_supervisor()"
     },
     {
       "label": "_build_system_prompt()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L107",
+      "source_location": "L106",
       "id": "project_manager_supervisor_build_system_prompt",
-      "community": 77,
+      "community": 5,
       "norm_label": "_build_system_prompt()"
     },
     {
       "label": "SystemState",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L107",
+      "source_location": "L106",
       "id": "backend_agents_project_manager_supervisor_py_systemstate",
-      "community": 77,
+      "community": 52,
       "norm_label": "systemstate"
     },
     {
       "label": "_normalise_ticket_ids()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L148",
+      "source_location": "L144",
       "id": "project_manager_supervisor_normalise_ticket_ids",
       "community": 5,
       "norm_label": "_normalise_ticket_ids()"
@@ -6235,7 +5902,7 @@
       "label": "_format_pm_handoff()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L155",
+      "source_location": "L151",
       "id": "project_manager_supervisor_format_pm_handoff",
       "community": 5,
       "norm_label": "_format_pm_handoff()"
@@ -6244,7 +5911,7 @@
       "label": "_text_suggests_client_scope()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L203",
+      "source_location": "L199",
       "id": "project_manager_supervisor_text_suggests_client_scope",
       "community": 69,
       "norm_label": "_text_suggests_client_scope()"
@@ -6253,7 +5920,7 @@
       "label": "Ticket",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L203",
+      "source_location": "L199",
       "id": "backend_agents_project_manager_supervisor_py_ticket",
       "community": 69,
       "norm_label": "ticket"
@@ -6262,7 +5929,7 @@
       "label": "bool",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L203",
+      "source_location": "L199",
       "id": "backend_agents_project_manager_supervisor_py_bool",
       "community": 69,
       "norm_label": "bool"
@@ -6271,7 +5938,7 @@
       "label": "_ticket_has_unanswered_questions()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L222",
+      "source_location": "L218",
       "id": "project_manager_supervisor_ticket_has_unanswered_questions",
       "community": 69,
       "norm_label": "_ticket_has_unanswered_questions()"
@@ -6280,7 +5947,7 @@
       "label": "_ticket_ready_for_todo()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L231",
+      "source_location": "L227",
       "id": "project_manager_supervisor_ticket_ready_for_todo",
       "community": 69,
       "norm_label": "_ticket_ready_for_todo()"
@@ -6289,16 +5956,16 @@
       "label": "_advance_in_review_to_todo()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L257",
+      "source_location": "L253",
       "id": "project_manager_supervisor_advance_in_review_to_todo",
-      "community": 5,
+      "community": 69,
       "norm_label": "_advance_in_review_to_todo()"
     },
     {
       "label": "_infer_next_dev_route()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L284",
+      "source_location": "L280",
       "id": "project_manager_supervisor_infer_next_dev_route",
       "community": 5,
       "norm_label": "_infer_next_dev_route()"
@@ -6307,7 +5974,7 @@
       "label": "_fallback_routing_decision()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L347",
+      "source_location": "L343",
       "id": "project_manager_supervisor_fallback_routing_decision",
       "community": 68,
       "norm_label": "_fallback_routing_decision()"
@@ -6316,7 +5983,7 @@
       "label": "_infer_fallback_route()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L420",
+      "source_location": "L416",
       "id": "project_manager_supervisor_infer_fallback_route",
       "community": 5,
       "norm_label": "_infer_fallback_route()"
@@ -6325,7 +5992,7 @@
       "label": "_parse_routing()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L440",
+      "source_location": "L436",
       "id": "project_manager_supervisor_parse_routing",
       "community": 70,
       "norm_label": "_parse_routing()"
@@ -6334,7 +6001,7 @@
       "label": "build_project_manager_node()",
       "file_type": "code",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L460",
+      "source_location": "L456",
       "id": "project_manager_supervisor_build_project_manager_node",
       "community": 61,
       "norm_label": "build_project_manager_node()"
@@ -6352,26 +6019,26 @@
       "label": "Drop ALL specialist AI/tool messages and keep only human turns.      The supervi",
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L78",
-      "id": "project_manager_supervisor_rationale_78",
-      "community": 77,
+      "source_location": "L77",
+      "id": "project_manager_supervisor_rationale_77",
+      "community": 5,
       "norm_label": "drop all specialist ai/tool messages and keep only human turns.      the supervi"
     },
     {
       "label": "Build the PM's system prompt with XML-style context separation.      Separating",
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L108",
-      "id": "project_manager_supervisor_rationale_108",
-      "community": 77,
+      "source_location": "L107",
+      "id": "project_manager_supervisor_rationale_107",
+      "community": 5,
       "norm_label": "build the pm's system prompt with xml-style context separation.      separating"
     },
     {
       "label": "Format a handoff using the compact Handoff protocol.",
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L156",
-      "id": "project_manager_supervisor_rationale_156",
+      "source_location": "L152",
+      "id": "project_manager_supervisor_rationale_152",
       "community": 5,
       "norm_label": "format a handoff using the compact handoff protocol."
     },
@@ -6379,8 +6046,8 @@
       "label": "Conservative readiness check for moving IN_REVIEW -> TODO.      User expectation",
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L232",
-      "id": "project_manager_supervisor_rationale_232",
+      "source_location": "L228",
+      "id": "project_manager_supervisor_rationale_228",
       "community": 69,
       "norm_label": "conservative readiness check for moving in_review -> todo.      user expectation"
     },
@@ -6388,17 +6055,17 @@
       "label": "Auto-advance tickets from IN_REVIEW to TODO when they are ready.      Returns th",
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L258",
-      "id": "project_manager_supervisor_rationale_258",
-      "community": 5,
+      "source_location": "L254",
+      "id": "project_manager_supervisor_rationale_254",
+      "community": 69,
       "norm_label": "auto-advance tickets from in_review to todo when they are ready.      returns th"
     },
     {
       "label": "Deterministic routing to a dev role based on ticket/subtask state.      Policy:",
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L285",
-      "id": "project_manager_supervisor_rationale_285",
+      "source_location": "L281",
+      "id": "project_manager_supervisor_rationale_281",
       "community": 5,
       "norm_label": "deterministic routing to a dev role based on ticket/subtask state.      policy:"
     },
@@ -6406,8 +6073,8 @@
       "label": "Pick backend_lead or frontend_lead from DB state when the LLM routing fails.",
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L348",
-      "id": "project_manager_supervisor_rationale_348",
+      "source_location": "L344",
+      "id": "project_manager_supervisor_rationale_344",
       "community": 68,
       "norm_label": "pick backend_lead or frontend_lead from db state when the llm routing fails."
     },
@@ -6415,8 +6082,8 @@
       "label": "Best-effort JSON extraction from the supervisor's final message.",
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L441",
-      "id": "project_manager_supervisor_rationale_441",
+      "source_location": "L437",
+      "id": "project_manager_supervisor_rationale_437",
       "community": 70,
       "norm_label": "best-effort json extraction from the supervisor's final message."
     },
@@ -6424,8 +6091,8 @@
       "label": "Return an async LangGraph node function for the PM supervisor.",
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L461",
-      "id": "project_manager_supervisor_rationale_461",
+      "source_location": "L457",
+      "id": "project_manager_supervisor_rationale_457",
       "community": 61,
       "norm_label": "return an async langgraph node function for the pm supervisor."
     },
@@ -6462,7 +6129,7 @@
       "source_file": "backend/agents/leads/frontend_lead/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_leads_frontend_lead_subgraph_py",
-      "community": 4,
+      "community": 88,
       "norm_label": "subgraph.py"
     },
     {
@@ -6471,7 +6138,7 @@
       "source_file": "backend/agents/leads/frontend_lead/subgraph.py",
       "source_location": "L11",
       "id": "frontend_lead_subgraph_build_frontend_lead_subgraph",
-      "community": 4,
+      "community": 88,
       "norm_label": "build_frontend_lead_subgraph()"
     },
     {
@@ -6480,7 +6147,7 @@
       "source_file": "backend/agents/leads/frontend_lead/subgraph.py",
       "source_location": "L1",
       "id": "frontend_lead_subgraph_rationale_1",
-      "community": 4,
+      "community": 88,
       "norm_label": "frontend lead subgraph \u2014 produces ordered ui subtasks with explicit test cases."
     },
     {
@@ -6498,7 +6165,7 @@
       "source_file": "backend/agents/leads/backend_lead/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_leads_backend_lead_subgraph_py",
-      "community": 4,
+      "community": 23,
       "norm_label": "subgraph.py"
     },
     {
@@ -6507,7 +6174,7 @@
       "source_file": "backend/agents/leads/backend_lead/subgraph.py",
       "source_location": "L11",
       "id": "backend_lead_subgraph_build_backend_lead_subgraph",
-      "community": 4,
+      "community": 23,
       "norm_label": "build_backend_lead_subgraph()"
     },
     {
@@ -6516,7 +6183,7 @@
       "source_file": "backend/agents/leads/backend_lead/subgraph.py",
       "source_location": "L1",
       "id": "backend_lead_subgraph_rationale_1",
-      "community": 4,
+      "community": 23,
       "norm_label": "backend lead subgraph \u2014 produces ordered subtasks with explicit test cases."
     },
     {
@@ -6768,7 +6435,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_researcher_subgraph_py",
-      "community": 4,
+      "community": 77,
       "norm_label": "subgraph.py"
     },
     {
@@ -6777,7 +6444,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L18",
       "id": "researcher_subgraph_create_skill",
-      "community": 4,
+      "community": 77,
       "norm_label": "create_skill()"
     },
     {
@@ -6786,7 +6453,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L18",
       "id": "backend_agents_researcher_subgraph_py_str",
-      "community": 4,
+      "community": 77,
       "norm_label": "str"
     },
     {
@@ -6795,7 +6462,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L55",
       "id": "researcher_subgraph_build_researcher_subgraph",
-      "community": 4,
+      "community": 84,
       "norm_label": "build_researcher_subgraph()"
     },
     {
@@ -6804,7 +6471,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L1",
       "id": "researcher_subgraph_rationale_1",
-      "community": 4,
+      "community": 77,
       "norm_label": "researcher subgraph \u2014 web search, doc writing, rag ingestion, skill creation."
     },
     {
@@ -6813,7 +6480,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L25",
       "id": "researcher_subgraph_rationale_25",
-      "community": 4,
+      "community": 77,
       "norm_label": "create or update a skill (a focused capability brief) and assign it to roles."
     },
     {
@@ -6840,7 +6507,7 @@
       "source_file": "backend/agents/developers/devops/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_developers_devops_subgraph_py",
-      "community": 4,
+      "community": 87,
       "norm_label": "subgraph.py"
     },
     {
@@ -6849,7 +6516,7 @@
       "source_file": "backend/agents/developers/devops/subgraph.py",
       "source_location": "L12",
       "id": "devops_subgraph_build_devops_subgraph",
-      "community": 4,
+      "community": 87,
       "norm_label": "build_devops_subgraph()"
     },
     {
@@ -6858,7 +6525,7 @@
       "source_file": "backend/agents/developers/devops/subgraph.py",
       "source_location": "L1",
       "id": "devops_subgraph_rationale_1",
-      "community": 4,
+      "community": 87,
       "norm_label": "devops subgraph \u2014 docker, ci configs, deployment scripts."
     },
     {
@@ -6876,7 +6543,7 @@
       "source_file": "backend/agents/developers/qa/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_developers_qa_subgraph_py",
-      "community": 4,
+      "community": 84,
       "norm_label": "subgraph.py"
     },
     {
@@ -6885,7 +6552,7 @@
       "source_file": "backend/agents/developers/qa/subgraph.py",
       "source_location": "L12",
       "id": "qa_subgraph_build_qa_subgraph",
-      "community": 4,
+      "community": 84,
       "norm_label": "build_qa_subgraph()"
     },
     {
@@ -6894,7 +6561,7 @@
       "source_file": "backend/agents/developers/qa/subgraph.py",
       "source_location": "L1",
       "id": "qa_subgraph_rationale_1",
-      "community": 4,
+      "community": 84,
       "norm_label": "qa subgraph \u2014 integration / e2e test authoring."
     },
     {
@@ -6912,7 +6579,7 @@
       "source_file": "backend/agents/developers/frontend_dev/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_developers_frontend_dev_subgraph_py",
-      "community": 4,
+      "community": 23,
       "norm_label": "subgraph.py"
     },
     {
@@ -6921,7 +6588,7 @@
       "source_file": "backend/agents/developers/frontend_dev/subgraph.py",
       "source_location": "L12",
       "id": "frontend_dev_subgraph_build_frontend_dev_subgraph",
-      "community": 4,
+      "community": 23,
       "norm_label": "build_frontend_dev_subgraph()"
     },
     {
@@ -6930,7 +6597,7 @@
       "source_file": "backend/agents/developers/frontend_dev/subgraph.py",
       "source_location": "L1",
       "id": "frontend_dev_subgraph_rationale_1",
-      "community": 4,
+      "community": 23,
       "norm_label": "frontend dev subgraph \u2014 tdd red/green/refactor loop for ui work."
     },
     {
@@ -6948,7 +6615,7 @@
       "source_file": "backend/agents/developers/backend_dev/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_developers_backend_dev_subgraph_py",
-      "community": 4,
+      "community": 23,
       "norm_label": "subgraph.py"
     },
     {
@@ -6957,7 +6624,7 @@
       "source_file": "backend/agents/developers/backend_dev/subgraph.py",
       "source_location": "L12",
       "id": "backend_dev_subgraph_build_backend_dev_subgraph",
-      "community": 4,
+      "community": 23,
       "norm_label": "build_backend_dev_subgraph()"
     },
     {
@@ -6966,7 +6633,7 @@
       "source_file": "backend/agents/developers/backend_dev/subgraph.py",
       "source_location": "L1",
       "id": "backend_dev_subgraph_rationale_1",
-      "community": 4,
+      "community": 23,
       "norm_label": "backend dev subgraph \u2014 tdd red/green/refactor loop."
     },
     {
@@ -7362,7 +7029,7 @@
       "source_file": "",
       "source_location": "",
       "id": "valueerror",
-      "community": 56,
+      "community": 9,
       "norm_label": "valueerror"
     },
     {
@@ -7875,7 +7542,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L1",
       "id": "backend_ticket_system_models_py",
-      "community": 84,
+      "community": 2,
       "norm_label": "models.py"
     },
     {
@@ -7884,7 +7551,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L17",
       "id": "ticket_system_models_uuid",
-      "community": 84,
+      "community": 2,
       "norm_label": "_uuid()"
     },
     {
@@ -7893,7 +7560,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L17",
       "id": "backend_ticket_system_models_py_str",
-      "community": 13,
+      "community": 2,
       "norm_label": "str"
     },
     {
@@ -7902,7 +7569,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L21",
       "id": "ticket_system_models_utcnow",
-      "community": 84,
+      "community": 2,
       "norm_label": "_utcnow()"
     },
     {
@@ -7911,7 +7578,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L21",
       "id": "datetime",
-      "community": 84,
+      "community": 2,
       "norm_label": "datetime"
     },
     {
@@ -7920,7 +7587,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L25",
       "id": "ticket_system_models_ticketstatus",
-      "community": 13,
+      "community": 2,
       "norm_label": "ticketstatus"
     },
     {
@@ -7929,7 +7596,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L35",
       "id": "ticket_system_models_subtaskstatus",
-      "community": 13,
+      "community": 2,
       "norm_label": "subtaskstatus"
     },
     {
@@ -7938,7 +7605,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L42",
       "id": "ticket_system_models_todostatus",
-      "community": 13,
+      "community": 2,
       "norm_label": "todostatus"
     },
     {
@@ -7947,7 +7614,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L47",
       "id": "ticket_system_models_agentrole",
-      "community": 13,
+      "community": 2,
       "norm_label": "agentrole"
     },
     {
@@ -7992,7 +7659,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L168",
       "id": "ticket_system_models_agentlog",
-      "community": 2,
+      "community": 7,
       "norm_label": "agentlog"
     },
     {
@@ -8001,7 +7668,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L1",
       "id": "ticket_system_models_rationale_1",
-      "community": 84,
+      "community": 2,
       "norm_label": "sqlalchemy orm models for the ticket platform.  hierarchy: project \u2192 ticket \u2192 su"
     },
     {
@@ -8010,7 +7677,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L169",
       "id": "ticket_system_models_rationale_169",
-      "community": 2,
+      "community": 7,
       "norm_label": "persisted log of every agent action \u2014 duplicates eventbus for replay."
     },
     {
@@ -8028,7 +7695,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L1",
       "id": "backend_ticket_system_schemas_py",
-      "community": 13,
+      "community": 2,
       "norm_label": "schemas.py"
     },
     {
@@ -8037,7 +7704,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L17",
       "id": "ticket_system_schemas_orm",
-      "community": 13,
+      "community": 2,
       "norm_label": "_orm"
     },
     {
@@ -8046,7 +7713,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L25",
       "id": "ticket_system_schemas_testcasespec",
-      "community": 13,
+      "community": 2,
       "norm_label": "testcasespec"
     },
     {
@@ -8055,7 +7722,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L52",
       "id": "ticket_system_schemas_normalise_test_cases",
-      "community": 85,
+      "community": 2,
       "norm_label": "_normalise_test_cases()"
     },
     {
@@ -8064,7 +7731,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L52",
       "id": "object",
-      "community": 85,
+      "community": 2,
       "norm_label": "object"
     },
     {
@@ -8073,7 +7740,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L82",
       "id": "ticket_system_schemas_projectcreate",
-      "community": 13,
+      "community": 2,
       "norm_label": "projectcreate"
     },
     {
@@ -8082,7 +7749,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L88",
       "id": "ticket_system_schemas_projectout",
-      "community": 13,
+      "community": 2,
       "norm_label": "projectout"
     },
     {
@@ -8091,7 +7758,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L99",
       "id": "ticket_system_schemas_todocreate",
-      "community": 13,
+      "community": 2,
       "norm_label": "todocreate"
     },
     {
@@ -8100,7 +7767,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L105",
       "id": "ticket_system_schemas_todoout",
-      "community": 13,
+      "community": 2,
       "norm_label": "todoout"
     },
     {
@@ -8109,7 +7776,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L114",
       "id": "ticket_system_schemas_todoupdate",
-      "community": 13,
+      "community": 2,
       "norm_label": "todoupdate"
     },
     {
@@ -8118,7 +7785,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L122",
       "id": "ticket_system_schemas_subtaskcreate",
-      "community": 13,
+      "community": 2,
       "norm_label": "subtaskcreate"
     },
     {
@@ -8127,7 +7794,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L137",
       "id": "ticket_system_schemas_subtaskcreate_coerce_test_cases",
-      "community": 85,
+      "community": 2,
       "norm_label": "._coerce_test_cases()"
     },
     {
@@ -8136,7 +7803,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L141",
       "id": "ticket_system_schemas_subtaskout",
-      "community": 13,
+      "community": 2,
       "norm_label": "subtaskout"
     },
     {
@@ -8145,7 +7812,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L155",
       "id": "ticket_system_schemas_subtaskout_coerce_test_cases",
-      "community": 85,
+      "community": 2,
       "norm_label": "._coerce_test_cases()"
     },
     {
@@ -8154,7 +7821,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L159",
       "id": "ticket_system_schemas_subtaskupdate",
-      "community": 13,
+      "community": 2,
       "norm_label": "subtaskupdate"
     },
     {
@@ -8163,7 +7830,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L170",
       "id": "ticket_system_schemas_subtaskupdate_coerce_test_cases",
-      "community": 85,
+      "community": 2,
       "norm_label": "._coerce_test_cases()"
     },
     {
@@ -8172,7 +7839,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L177",
       "id": "ticket_system_schemas_ticketcreate",
-      "community": 13,
+      "community": 2,
       "norm_label": "ticketcreate"
     },
     {
@@ -8181,7 +7848,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L186",
       "id": "ticket_system_schemas_ticketquestion",
-      "community": 13,
+      "community": 2,
       "norm_label": "ticketquestion"
     },
     {
@@ -8190,7 +7857,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L194",
       "id": "ticket_system_schemas_ticketout",
-      "community": 13,
+      "community": 2,
       "norm_label": "ticketout"
     },
     {
@@ -8199,7 +7866,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L209",
       "id": "ticket_system_schemas_ticketupdate",
-      "community": 13,
+      "community": 2,
       "norm_label": "ticketupdate"
     },
     {
@@ -8208,7 +7875,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L218",
       "id": "ticket_system_schemas_answerquestion",
-      "community": 13,
+      "community": 2,
       "norm_label": "answerquestion"
     },
     {
@@ -8217,7 +7884,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L1",
       "id": "ticket_system_schemas_rationale_1",
-      "community": 13,
+      "community": 2,
       "norm_label": "pydantic schemas for ticket-system api requests and responses."
     },
     {
@@ -8226,7 +7893,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L26",
       "id": "ticket_system_schemas_rationale_26",
-      "community": 13,
+      "community": 2,
       "norm_label": "a single test case in rite format.      encodes the 5 questions every test must"
     },
     {
@@ -8235,7 +7902,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L53",
       "id": "ticket_system_schemas_rationale_53",
-      "community": 85,
+      "community": 2,
       "norm_label": "accept either plain strings (legacy) or structured dicts and     return a list o"
     },
     {
@@ -8253,7 +7920,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L17",
       "id": "db_session_base",
-      "community": 84,
+      "community": 2,
       "norm_label": "base"
     },
     {
@@ -8262,7 +7929,7 @@
       "source_file": "",
       "source_location": "",
       "id": "declarativebase",
-      "community": 84,
+      "community": 2,
       "norm_label": "declarativebase"
     },
     {
@@ -8271,7 +7938,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L38",
       "id": "db_session_get_db",
-      "community": 53,
+      "community": 7,
       "norm_label": "get_db()"
     },
     {
@@ -8280,7 +7947,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L38",
       "id": "backend_db_session_py_asyncsession",
-      "community": 53,
+      "community": 7,
       "norm_label": "asyncsession"
     },
     {
@@ -8307,7 +7974,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L18",
       "id": "db_session_rationale_18",
-      "community": 84,
+      "community": 2,
       "norm_label": "shared declarative base for all orm models."
     },
     {
@@ -8316,7 +7983,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L39",
       "id": "db_session_rationale_39",
-      "community": 53,
+      "community": 7,
       "norm_label": "fastapi dependency that yields a session and ensures cleanup."
     },
     {
@@ -8406,7 +8073,7 @@
       "source_file": "backend/api/events.py",
       "source_location": "L1",
       "id": "backend_api_events_py",
-      "community": 2,
+      "community": 7,
       "norm_label": "events.py"
     },
     {
@@ -8424,7 +8091,7 @@
       "source_file": "backend/api/events.py",
       "source_location": "L23",
       "id": "api_events_event_to_json",
-      "community": 2,
+      "community": 91,
       "norm_label": ".to_json()"
     },
     {
@@ -8433,7 +8100,7 @@
       "source_file": "backend/api/events.py",
       "source_location": "L23",
       "id": "backend_api_events_py_str",
-      "community": 2,
+      "community": 91,
       "norm_label": "str"
     },
     {
@@ -8442,7 +8109,7 @@
       "source_file": "backend/api/events.py",
       "source_location": "L23",
       "id": "backend_api_events_py_any",
-      "community": 2,
+      "community": 91,
       "norm_label": "any"
     },
     {
@@ -8451,7 +8118,7 @@
       "source_file": "backend/api/events.py",
       "source_location": "L27",
       "id": "api_events_eventbus",
-      "community": 2,
+      "community": 7,
       "norm_label": "eventbus"
     },
     {
@@ -8460,7 +8127,7 @@
       "source_file": "backend/api/events.py",
       "source_location": "L28",
       "id": "api_events_eventbus_init",
-      "community": 2,
+      "community": 7,
       "norm_label": ".__init__()"
     },
     {
@@ -8469,7 +8136,7 @@
       "source_file": "backend/api/events.py",
       "source_location": "L32",
       "id": "api_events_eventbus_publish",
-      "community": 2,
+      "community": 7,
       "norm_label": ".publish()"
     },
     {
@@ -8478,7 +8145,7 @@
       "source_file": "backend/api/events.py",
       "source_location": "L52",
       "id": "api_events_eventbus_subscribe",
-      "community": 2,
+      "community": 7,
       "norm_label": ".subscribe()"
     },
     {
@@ -8487,7 +8154,7 @@
       "source_file": "backend/api/events.py",
       "source_location": "L1",
       "id": "api_events_rationale_1",
-      "community": 2,
+      "community": 7,
       "norm_label": "in-memory pub/sub for realtime agent events broadcast over websockets.  this is"
     },
     {
@@ -8550,86 +8217,77 @@
       "source_file": "backend/api/checkpoint_list_cache.py",
       "source_location": "L1",
       "id": "backend_api_checkpoint_list_cache_py",
-      "community": 53,
+      "community": 17,
       "norm_label": "checkpoint_list_cache.py"
-    },
-    {
-      "label": "_agent_from_wrote_nodes()",
-      "file_type": "code",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L39",
-      "id": "api_checkpoint_list_cache_agent_from_wrote_nodes",
-      "community": 53,
-      "norm_label": "_agent_from_wrote_nodes()"
-    },
-    {
-      "label": "str",
-      "file_type": "code",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L39",
-      "id": "backend_api_checkpoint_list_cache_py_str",
-      "community": 53,
-      "norm_label": "str"
-    },
-    {
-      "label": "Any",
-      "file_type": "code",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L39",
-      "id": "backend_api_checkpoint_list_cache_py_any",
-      "community": 53,
-      "norm_label": "any"
     },
     {
       "label": "_lock()",
       "file_type": "code",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L62",
+      "source_location": "L28",
       "id": "api_checkpoint_list_cache_lock",
-      "community": 53,
+      "community": 17,
       "norm_label": "_lock()"
+    },
+    {
+      "label": "str",
+      "file_type": "code",
+      "source_file": "backend/api/checkpoint_list_cache.py",
+      "source_location": "L28",
+      "id": "backend_api_checkpoint_list_cache_py_str",
+      "community": 17,
+      "norm_label": "str"
     },
     {
       "label": "_estimate_bytes()",
       "file_type": "code",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L65",
+      "source_location": "L31",
       "id": "api_checkpoint_list_cache_estimate_bytes",
-      "community": 53,
+      "community": 17,
       "norm_label": "_estimate_bytes()"
+    },
+    {
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "backend/api/checkpoint_list_cache.py",
+      "source_location": "L31",
+      "id": "backend_api_checkpoint_list_cache_py_any",
+      "community": 17,
+      "norm_label": "any"
     },
     {
       "label": "int",
       "file_type": "code",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L65",
+      "source_location": "L31",
       "id": "backend_api_checkpoint_list_cache_py_int",
-      "community": 53,
+      "community": 17,
       "norm_label": "int"
     },
     {
       "label": "_cache_bytes_total()",
       "file_type": "code",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L86",
+      "source_location": "L52",
       "id": "api_checkpoint_list_cache_cache_bytes_total",
-      "community": 53,
+      "community": 17,
       "norm_label": "_cache_bytes_total()"
     },
     {
       "label": "_evict_cache_if_needed()",
       "file_type": "code",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L90",
+      "source_location": "L56",
       "id": "api_checkpoint_list_cache_evict_cache_if_needed",
-      "community": 53,
+      "community": 17,
       "norm_label": "_evict_cache_if_needed()"
     },
     {
       "label": "invalidate_checkpoint_list_cache()",
       "file_type": "code",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L103",
+      "source_location": "L69",
       "id": "api_checkpoint_list_cache_invalidate_checkpoint_list_cache",
       "community": 11,
       "norm_label": "invalidate_checkpoint_list_cache()"
@@ -8638,27 +8296,27 @@
       "label": "_fetch_checkpoints()",
       "file_type": "code",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L114",
+      "source_location": "L80",
       "id": "api_checkpoint_list_cache_fetch_checkpoints",
-      "community": 53,
+      "community": 17,
       "norm_label": "_fetch_checkpoints()"
     },
     {
       "label": "get_checkpoints_list()",
       "file_type": "code",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L211",
+      "source_location": "L171",
       "id": "api_checkpoint_list_cache_get_checkpoints_list",
-      "community": 53,
+      "community": 17,
       "norm_label": "get_checkpoints_list()"
     },
     {
       "label": "bool",
       "file_type": "code",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L211",
+      "source_location": "L171",
       "id": "backend_api_checkpoint_list_cache_py_bool",
-      "community": 53,
+      "community": 17,
       "norm_label": "bool"
     },
     {
@@ -8667,42 +8325,33 @@
       "source_file": "backend/api/checkpoint_list_cache.py",
       "source_location": "L1",
       "id": "api_checkpoint_list_cache_rationale_1",
-      "community": 53,
+      "community": 17,
       "norm_label": "in-memory ttl + singleflight for checkpoint list api.  repeated get /agents/chec"
-    },
-    {
-      "label": "Pick the agent that produced a checkpoint from its write set.      LangGraph key",
-      "file_type": "rationale",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L40",
-      "id": "api_checkpoint_list_cache_rationale_40",
-      "community": 53,
-      "norm_label": "pick the agent that produced a checkpoint from its write set.      langgraph key"
     },
     {
       "label": "Approximate in-memory size of a JSON-like structure.      We avoid json.dumps he",
       "file_type": "rationale",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L66",
-      "id": "api_checkpoint_list_cache_rationale_66",
-      "community": 53,
+      "source_location": "L32",
+      "id": "api_checkpoint_list_cache_rationale_32",
+      "community": 17,
       "norm_label": "approximate in-memory size of a json-like structure.      we avoid json.dumps he"
     },
     {
       "label": "Evict expired entries first, then oldest-expiring until within bounds.",
       "file_type": "rationale",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L91",
-      "id": "api_checkpoint_list_cache_rationale_91",
-      "community": 53,
+      "source_location": "L57",
+      "id": "api_checkpoint_list_cache_rationale_57",
+      "community": 17,
       "norm_label": "evict expired entries first, then oldest-expiring until within bounds."
     },
     {
       "label": "Drop cached checkpoint lists after agent actions or globally.",
       "file_type": "rationale",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L104",
-      "id": "api_checkpoint_list_cache_rationale_104",
+      "source_location": "L70",
+      "id": "api_checkpoint_list_cache_rationale_70",
       "community": 11,
       "norm_label": "drop cached checkpoint lists after agent actions or globally."
     },
@@ -8748,7 +8397,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L1",
       "id": "backend_api_routes_tickets_py",
-      "community": 17,
+      "community": 7,
       "norm_label": "tickets.py"
     },
     {
@@ -8757,7 +8406,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L17",
       "id": "routes_tickets_create_ticket",
-      "community": 17,
+      "community": 7,
       "norm_label": "create_ticket()"
     },
     {
@@ -8766,7 +8415,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L17",
       "id": "backend_api_routes_tickets_py_ticketcreate",
-      "community": 17,
+      "community": 2,
       "norm_label": "ticketcreate"
     },
     {
@@ -8775,7 +8424,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L17",
       "id": "backend_api_routes_tickets_py_asyncsession",
-      "community": 17,
+      "community": 7,
       "norm_label": "asyncsession"
     },
     {
@@ -8784,7 +8433,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L22",
       "id": "routes_tickets_list_tickets",
-      "community": 17,
+      "community": 7,
       "norm_label": "list_tickets()"
     },
     {
@@ -8793,7 +8442,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L22",
       "id": "backend_api_routes_tickets_py_str",
-      "community": 17,
+      "community": 7,
       "norm_label": "str"
     },
     {
@@ -8802,7 +8451,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L27",
       "id": "routes_tickets_get_ticket",
-      "community": 17,
+      "community": 7,
       "norm_label": "get_ticket()"
     },
     {
@@ -8811,7 +8460,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L35",
       "id": "routes_tickets_update_ticket",
-      "community": 17,
+      "community": 7,
       "norm_label": "update_ticket()"
     },
     {
@@ -8820,7 +8469,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L35",
       "id": "backend_api_routes_tickets_py_ticketupdate",
-      "community": 17,
+      "community": 2,
       "norm_label": "ticketupdate"
     },
     {
@@ -8829,7 +8478,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L49",
       "id": "routes_tickets_answer",
-      "community": 17,
+      "community": 7,
       "norm_label": "answer()"
     },
     {
@@ -8838,7 +8487,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L49",
       "id": "backend_api_routes_tickets_py_answerquestion",
-      "community": 17,
+      "community": 2,
       "norm_label": "answerquestion"
     },
     {
@@ -8847,7 +8496,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L64",
       "id": "routes_tickets_list_subtasks",
-      "community": 17,
+      "community": 7,
       "norm_label": "list_subtasks()"
     },
     {
@@ -8856,7 +8505,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L64",
       "id": "backend_api_routes_tickets_py_agentrole",
-      "community": 17,
+      "community": 2,
       "norm_label": "agentrole"
     },
     {
@@ -8865,7 +8514,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L64",
       "id": "backend_api_routes_tickets_py_subtaskstatus",
-      "community": 17,
+      "community": 2,
       "norm_label": "subtaskstatus"
     },
     {
@@ -8874,7 +8523,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L81",
       "id": "routes_tickets_create_subtask",
-      "community": 17,
+      "community": 7,
       "norm_label": "create_subtask()"
     },
     {
@@ -8883,7 +8532,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L81",
       "id": "backend_api_routes_tickets_py_subtaskcreate",
-      "community": 17,
+      "community": 2,
       "norm_label": "subtaskcreate"
     },
     {
@@ -8892,7 +8541,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L93",
       "id": "routes_tickets_update_subtask",
-      "community": 17,
+      "community": 7,
       "norm_label": "update_subtask()"
     },
     {
@@ -8901,7 +8550,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L93",
       "id": "backend_api_routes_tickets_py_subtaskupdate",
-      "community": 17,
+      "community": 2,
       "norm_label": "subtaskupdate"
     },
     {
@@ -8910,7 +8559,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L106",
       "id": "routes_tickets_create_todo",
-      "community": 17,
+      "community": 7,
       "norm_label": "create_todo()"
     },
     {
@@ -8919,7 +8568,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L106",
       "id": "backend_api_routes_tickets_py_todocreate",
-      "community": 17,
+      "community": 2,
       "norm_label": "todocreate"
     },
     {
@@ -8928,7 +8577,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L118",
       "id": "routes_tickets_update_todo",
-      "community": 17,
+      "community": 7,
       "norm_label": "update_todo()"
     },
     {
@@ -8937,7 +8586,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L118",
       "id": "backend_api_routes_tickets_py_todoupdate",
-      "community": 17,
+      "community": 2,
       "norm_label": "todoupdate"
     },
     {
@@ -8946,7 +8595,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L1",
       "id": "routes_tickets_rationale_1",
-      "community": 17,
+      "community": 7,
       "norm_label": "ticket / subtask / todo crud routes."
     },
     {
@@ -9225,7 +8874,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L430",
       "id": "routes_agents_stoprequest",
-      "community": 18,
+      "community": 11,
       "norm_label": "stoprequest"
     },
     {
@@ -9234,7 +8883,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L435",
       "id": "routes_agents_stop_run",
-      "community": 18,
+      "community": 11,
       "norm_label": "stop_run()"
     },
     {
@@ -9279,7 +8928,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L510",
       "id": "routes_agents_list_interrupts",
-      "community": 15,
+      "community": 85,
       "norm_label": "list_interrupts()"
     },
     {
@@ -9441,7 +9090,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L436",
       "id": "routes_agents_rationale_436",
-      "community": 18,
+      "community": 11,
       "norm_label": "cancel any in-flight graph execution for the given project.      waits up to ~10"
     },
     {
@@ -9468,7 +9117,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L511",
       "id": "routes_agents_rationale_511",
-      "community": 15,
+      "community": 85,
       "norm_label": "return any pending interrupts for the given project's thread."
     },
     {
@@ -9883,33 +9532,6 @@
       "id": "workspace_seed_agents_framework_stacks_e_g_next_js",
       "community": 80,
       "norm_label": "framework stacks (e.g. next.js)"
-    },
-    {
-      "label": "Agent execution environment",
-      "file_type": "document",
-      "source_file": "backend/workspace_seed/AGENTS.md",
-      "source_location": "L13",
-      "id": "workspace_seed_agents_agent_execution_environment",
-      "community": 80,
-      "norm_label": "agent execution environment"
-    },
-    {
-      "label": "Native binaries vs npm",
-      "file_type": "document",
-      "source_file": "backend/workspace_seed/AGENTS.md",
-      "source_location": "L28",
-      "id": "workspace_seed_agents_native_binaries_vs_npm",
-      "community": 80,
-      "norm_label": "native binaries vs npm"
-    },
-    {
-      "label": "What not to do",
-      "file_type": "document",
-      "source_file": "backend/workspace_seed/AGENTS.md",
-      "source_location": "L37",
-      "id": "workspace_seed_agents_what_not_to_do",
-      "community": 80,
-      "norm_label": "what not to do"
     },
     {
       "label": "README.md",
@@ -10614,258 +10236,6 @@
       "norm_label": "key source files"
     },
     {
-      "label": "colorFor()",
-      "file_type": "code",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L9",
-      "community": 65,
-      "norm_label": "colorfor()",
-      "id": "agents_agentlog_colorfor"
-    },
-    {
-      "label": "AGENT_COLORS",
-      "file_type": "code",
-      "source_file": "frontend/src/components/logs/LogFilterBar.tsx",
-      "source_location": "L25",
-      "community": 65,
-      "norm_label": "agent_colors",
-      "id": "logs_logfilterbar_agent_colors"
-    },
-    {
-      "label": "getAgentColor()",
-      "file_type": "code",
-      "source_file": "frontend/src/components/logs/LogFilterBar.tsx",
-      "source_location": "L37",
-      "community": 65,
-      "norm_label": "getagentcolor()",
-      "id": "logs_logfilterbar_getagentcolor"
-    },
-    {
-      "label": "Approximate in-memory size of a JSON-like structure.      We avoid json.dumps he",
-      "file_type": "rationale",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L32",
-      "community": 53,
-      "norm_label": "approximate in-memory size of a json-like structure.      we avoid json.dumps he",
-      "id": "api_checkpoint_list_cache_rationale_32"
-    },
-    {
-      "label": "Evict expired entries first, then oldest-expiring until within bounds.",
-      "file_type": "rationale",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L57",
-      "community": 53,
-      "norm_label": "evict expired entries first, then oldest-expiring until within bounds.",
-      "id": "api_checkpoint_list_cache_rationale_57"
-    },
-    {
-      "label": "Drop cached checkpoint lists after agent actions or globally.",
-      "file_type": "rationale",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L70",
-      "community": 11,
-      "norm_label": "drop cached checkpoint lists after agent actions or globally.",
-      "id": "api_checkpoint_list_cache_rationale_70"
-    },
-    {
-      "label": "Best-effort textual summary of the final AIMessage in ``messages``.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L51",
-      "community": 20,
-      "norm_label": "best-effort textual summary of the final aimessage in ``messages``.",
-      "id": "agents_runner_rationale_51"
-    },
-    {
-      "label": "Assemble the minimal message list a specialist needs to act.      Strategy:",
-      "file_type": "rationale",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L81",
-      "community": 20,
-      "norm_label": "assemble the minimal message list a specialist needs to act.      strategy:",
-      "id": "agents_runner_rationale_81"
-    },
-    {
-      "label": "Classify the turn's verification signal from ``run_tests`` results.      Returns",
-      "file_type": "rationale",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L149",
-      "community": 20,
-      "norm_label": "classify the turn's verification signal from ``run_tests`` results.      returns",
-      "id": "agents_runner_rationale_149"
-    },
-    {
-      "label": "IDs of subtasks the agent flipped to ``done`` via update_subtask_status.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L178",
-      "community": 20,
-      "norm_label": "ids of subtasks the agent flipped to ``done`` via update_subtask_status.",
-      "id": "agents_runner_rationale_178"
-    },
-    {
-      "label": "Force subtasks back to ``blocked`` (used when a completion gate fails).",
-      "file_type": "rationale",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L193",
-      "community": 20,
-      "norm_label": "force subtasks back to ``blocked`` (used when a completion gate fails).",
-      "id": "agents_runner_rationale_193"
-    },
-    {
-      "label": "Build and compile a tool-using specialist subgraph.      When ``verify_completio",
-      "file_type": "rationale",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L223",
-      "community": 4,
-      "norm_label": "build and compile a tool-using specialist subgraph.      when ``verify_completio",
-      "id": "agents_runner_rationale_223"
-    },
-    {
-      "label": "Call from inside an ``except`` block \u2014 attaches stack trace via ``exception()``.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/llm_audit.py",
-      "source_location": "L92",
-      "community": 61,
-      "norm_label": "call from inside an ``except`` block \u2014 attaches stack trace via ``exception()``.",
-      "id": "agents_llm_audit_rationale_92"
-    },
-    {
-      "label": "Attach inline retry-with-backoff to a chat model.      The returned object is a",
-      "file_type": "rationale",
-      "source_file": "backend/agents/llm.py",
-      "source_location": "L90",
-      "community": 79,
-      "norm_label": "attach inline retry-with-backoff to a chat model.      the returned object is a",
-      "id": "agents_llm_rationale_90"
-    },
-    {
-      "label": "Log where each configured role sends traffic (local vs cloud).      Misconfigura",
-      "file_type": "rationale",
-      "source_file": "backend/agents/llm.py",
-      "source_location": "L112",
-      "community": 1,
-      "norm_label": "log where each configured role sends traffic (local vs cloud).      misconfigura",
-      "id": "agents_llm_rationale_112"
-    },
-    {
-      "label": "Resolve a ``provider/model`` slug to a rate-limited chat model.      Inline retr",
-      "file_type": "rationale",
-      "source_file": "backend/agents/llm.py",
-      "source_location": "L149",
-      "community": 1,
-      "norm_label": "resolve a ``provider/model`` slug to a rate-limited chat model.      inline retr",
-      "id": "agents_llm_rationale_149"
-    },
-    {
-      "label": "Public alias so callers can wrap a tool-bound model in retry logic.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/llm.py",
-      "source_location": "L196",
-      "community": 79,
-      "norm_label": "public alias so callers can wrap a tool-bound model in retry logic.",
-      "id": "agents_llm_rationale_196"
-    },
-    {
-      "label": "Return the RITE + tool contract appendix (cached once).",
-      "file_type": "rationale",
-      "source_file": "backend/agents/prompts.py",
-      "source_location": "L611",
-      "community": 27,
-      "norm_label": "return the rite + tool contract appendix (cached once).",
-      "id": "agents_prompts_rationale_611"
-    },
-    {
-      "label": "Return the static base for a given role (cached once).      Only called at app s",
-      "file_type": "rationale",
-      "source_file": "backend/agents/prompts.py",
-      "source_location": "L617",
-      "community": 56,
-      "norm_label": "return the static base for a given role (cached once).      only called at app s",
-      "id": "agents_prompts_rationale_617"
-    },
-    {
-      "label": "Drop ALL specialist AI/tool messages and keep only human turns.      The supervi",
-      "file_type": "rationale",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L77",
-      "community": 77,
-      "norm_label": "drop all specialist ai/tool messages and keep only human turns.      the supervi",
-      "id": "project_manager_supervisor_rationale_77"
-    },
-    {
-      "label": "Build the PM's system prompt with XML-style context separation.      Separating",
-      "file_type": "rationale",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L107",
-      "community": 77,
-      "norm_label": "build the pm's system prompt with xml-style context separation.      separating",
-      "id": "project_manager_supervisor_rationale_107"
-    },
-    {
-      "label": "Format a handoff using the compact Handoff protocol.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L152",
-      "community": 5,
-      "norm_label": "format a handoff using the compact handoff protocol.",
-      "id": "project_manager_supervisor_rationale_152"
-    },
-    {
-      "label": "Conservative readiness check for moving IN_REVIEW -> TODO.      User expectation",
-      "file_type": "rationale",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L228",
-      "community": 69,
-      "norm_label": "conservative readiness check for moving in_review -> todo.      user expectation",
-      "id": "project_manager_supervisor_rationale_228"
-    },
-    {
-      "label": "Auto-advance tickets from IN_REVIEW to TODO when they are ready.      Returns th",
-      "file_type": "rationale",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L254",
-      "community": 5,
-      "norm_label": "auto-advance tickets from in_review to todo when they are ready.      returns th",
-      "id": "project_manager_supervisor_rationale_254"
-    },
-    {
-      "label": "Deterministic routing to a dev role based on ticket/subtask state.      Policy:",
-      "file_type": "rationale",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L281",
-      "community": 5,
-      "norm_label": "deterministic routing to a dev role based on ticket/subtask state.      policy:",
-      "id": "project_manager_supervisor_rationale_281"
-    },
-    {
-      "label": "Pick backend_lead or frontend_lead from DB state when the LLM routing fails.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L344",
-      "community": 68,
-      "norm_label": "pick backend_lead or frontend_lead from db state when the llm routing fails.",
-      "id": "project_manager_supervisor_rationale_344"
-    },
-    {
-      "label": "Best-effort JSON extraction from the supervisor's final message.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L437",
-      "community": 70,
-      "norm_label": "best-effort json extraction from the supervisor's final message.",
-      "id": "project_manager_supervisor_rationale_437"
-    },
-    {
-      "label": "Return an async LangGraph node function for the PM supervisor.",
-      "file_type": "rationale",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L457",
-      "community": 61,
-      "norm_label": "return an async langgraph node function for the pm supervisor.",
-      "id": "project_manager_supervisor_rationale_457"
-    },
-    {
       "label": "Return the RITE + tool contract appendix (cached once).",
       "file_type": "rationale",
       "source_file": "backend/agents/prompts.py",
@@ -10888,7 +10258,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
       "source_location": "L160",
-      "community": 4,
+      "community": 23,
       "norm_label": "build and compile a tool-using specialist subgraph.",
       "id": "agents_runner_rationale_160"
     },
@@ -10951,7 +10321,7 @@
       "file_type": "rationale",
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L24",
-      "community": 4,
+      "community": 77,
       "norm_label": "retrieve relevant project documents using the crag pipeline.",
       "id": "tools_rag_tools_rationale_24"
     },
@@ -10996,7 +10366,7 @@
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L122",
-      "community": 89,
+      "community": 2,
       "norm_label": "a single rite-format test case the lead must specify per subtask.",
       "id": "tools_ticket_tools_rationale_122"
     },
@@ -11005,7 +10375,7 @@
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L162",
-      "community": 13,
+      "community": 2,
       "norm_label": "arguments for create_subtask. every field labelled required must be supplied.",
       "id": "tools_ticket_tools_rationale_162"
     },
@@ -11095,7 +10465,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
       "source_location": "L175",
-      "community": 4,
+      "community": 23,
       "norm_label": "build and compile a tool-using specialist subgraph.",
       "id": "agents_runner_rationale_175"
     },
@@ -11113,7 +10483,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/state.py",
       "source_location": "L27",
-      "community": 76,
+      "community": 4,
       "norm_label": "root state object shared across the orchestration graph.",
       "id": "agents_state_rationale_27"
     },
@@ -11122,7 +10492,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
       "source_location": "L74",
-      "community": 77,
+      "community": 5,
       "norm_label": "drop all specialist ai/tool messages and keep only human turns.      the supervi",
       "id": "project_manager_supervisor_rationale_74"
     },
@@ -11140,7 +10510,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
       "source_location": "L229",
-      "community": 5,
+      "community": 69,
       "norm_label": "auto-advance tickets from in_review to todo when they are ready.      returns th",
       "id": "project_manager_supervisor_rationale_229"
     },
@@ -11347,7 +10717,7 @@
       "file_type": "rationale",
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L433",
-      "community": 18,
+      "community": 11,
       "norm_label": "cancel any in-flight graph execution for the given project.      waits up to ~10",
       "id": "routes_agents_rationale_433"
     },
@@ -11374,7 +10744,7 @@
       "file_type": "rationale",
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L508",
-      "community": 15,
+      "community": 85,
       "norm_label": "return any pending interrupts for the given project's thread.",
       "id": "routes_agents_rationale_508"
     },
@@ -12792,17 +12162,6 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/CheckpointsPanel.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "frontend_src_components_checkpointspanel_tsx",
-      "target": "frontend_src_lib_logformat_ts",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/CheckpointsPanel.tsx",
       "source_location": "L6",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -12830,28 +12189,6 @@
       "confidence_score": 1.0,
       "source": "frontend_src_components_checkpointspanel_tsx",
       "target": "lib_api_checkpointt"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/CheckpointsPanel.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "frontend_src_components_checkpointspanel_tsx",
-      "target": "lib_logformat_agentlabel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/CheckpointsPanel.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "frontend_src_components_checkpointspanel_tsx",
-      "target": "lib_logformat_agentpillclasses",
-      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -13326,71 +12663,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L93",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "agents_agentlog_detailmodal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L215",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "agents_agentlog_fieldhighlights",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L25",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "agents_agentlog_formatabsolutetime",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
       "source_location": "L29",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "frontend_src_components_agents_agentlog_tsx",
       "target": "agents_agentlog_formatrelativetime"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L30",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "agents_agentlog_logrow",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L192",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "agents_agentlog_meta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L203",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "agents_agentlog_section",
-      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -13419,33 +12696,11 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "frontend_src_lib_logformat_ts",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
       "source_location": "L6",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "frontend_src_components_agents_agentlog_tsx",
       "target": "frontend_src_lib_store_ts"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "lib_api_agentlogentry",
-      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -13474,61 +12729,6 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "lib_logformat_agentlabel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "lib_logformat_agentpillclasses",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "lib_logformat_humanizelog",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "lib_logformat_kindmeta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "frontend_src_components_agents_agentlog_tsx",
-      "target": "lib_logformat_tonetextcolor",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
       "source_location": "L6",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -13545,127 +12745,6 @@
       "confidence_score": 1.0,
       "source": "frontend_src_components_agents_agentlog_tsx",
       "target": "logs_logfilterbar_logfilterbar"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L54",
-      "weight": 1.0,
-      "source": "agents_agentlog_logrow",
-      "target": "agents_agentlog_formatrelativetime",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L111",
-      "weight": 1.0,
-      "source": "agents_agentlog_detailmodal",
-      "target": "agents_agentlog_formatabsolutetime",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L52",
-      "weight": 1.0,
-      "source": "agents_agentlog_logrow",
-      "target": "agents_agentlog_formatabsolutetime",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L58",
-      "weight": 1.0,
-      "source": "agents_agentlog_logrow",
-      "target": "lib_logformat_agentlabel"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L57",
-      "weight": 1.0,
-      "source": "agents_agentlog_logrow",
-      "target": "lib_logformat_agentpillclasses"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L43",
-      "weight": 1.0,
-      "source": "agents_agentlog_logrow",
-      "target": "lib_logformat_humanizelog"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L62",
-      "weight": 1.0,
-      "source": "agents_agentlog_logrow",
-      "target": "lib_logformat_tonetextcolor"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L126",
-      "weight": 1.0,
-      "source": "agents_agentlog_detailmodal",
-      "target": "lib_logformat_agentlabel"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L125",
-      "weight": 1.0,
-      "source": "agents_agentlog_detailmodal",
-      "target": "lib_logformat_agentpillclasses"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L108",
-      "weight": 1.0,
-      "source": "agents_agentlog_detailmodal",
-      "target": "lib_logformat_humanizelog"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "frontend/src/components/agents/AgentLog.tsx",
-      "source_location": "L128",
-      "weight": 1.0,
-      "source": "agents_agentlog_detailmodal",
-      "target": "lib_logformat_tonetextcolor"
     },
     {
       "relation": "calls",
@@ -13694,17 +12773,6 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/logs/LogFilterBar.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "frontend_src_components_logs_logfilterbar_tsx",
-      "target": "frontend_src_lib_logformat_ts",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/logs/LogFilterBar.tsx",
       "source_location": "L6",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -13721,28 +12789,6 @@
       "confidence_score": 1.0,
       "source": "frontend_src_components_logs_logfilterbar_tsx",
       "target": "lib_cn_cn"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/logs/LogFilterBar.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "frontend_src_components_logs_logfilterbar_tsx",
-      "target": "lib_logformat_agentlabel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/logs/LogFilterBar.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "frontend_src_components_logs_logfilterbar_tsx",
-      "target": "lib_logformat_agenttextcolor",
-      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -14069,243 +13115,6 @@
       "confidence_score": 1.0,
       "source": "frontend_src_lib_websocket_ts",
       "target": "lib_websocket_wsevent"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L21",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_agent_labels",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L39",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_agent_text",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L35",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_agentlabel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L57",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_agentpillclasses",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L52",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_agenttextcolor",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L103",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_asstring",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L139",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_describeupdate",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L12",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_humanizedlog",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L159",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_humanizelog",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L82",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_kind_meta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L99",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_kindmeta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L10",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_logtone",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L120",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_messagetext",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L114",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_squeeze",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L63",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_tone_text",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L72",
-      "weight": 1.0,
-      "source": "frontend_src_lib_logformat_ts",
-      "target": "lib_logformat_tonetextcolor",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L149",
-      "weight": 1.0,
-      "source": "lib_logformat_describeupdate",
-      "target": "lib_logformat_agentlabel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L197",
-      "weight": 1.0,
-      "source": "lib_logformat_humanizelog",
-      "target": "lib_logformat_agentlabel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L58",
-      "weight": 1.0,
-      "source": "lib_logformat_agentpillclasses",
-      "target": "lib_logformat_agenttextcolor",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L178",
-      "weight": 1.0,
-      "source": "lib_logformat_humanizelog",
-      "target": "lib_logformat_asstring",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L180",
-      "weight": 1.0,
-      "source": "lib_logformat_humanizelog",
-      "target": "lib_logformat_squeeze",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L145",
-      "weight": 1.0,
-      "source": "lib_logformat_describeupdate",
-      "target": "lib_logformat_messagetext",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/logFormat.ts",
-      "source_location": "L220",
-      "weight": 1.0,
-      "source": "lib_logformat_humanizelog",
-      "target": "lib_logformat_describeupdate",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -19958,123 +18767,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_tests_test_runtime_env_py",
-      "target": "agents_runtime_env_detect_agent_runtime"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_tests_test_runtime_env_py",
-      "target": "agents_runtime_env_get_agent_runtime_agents_md_section"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_tests_test_runtime_env_py",
-      "target": "agents_runtime_env_get_agent_runtime_prompt_section"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L27",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_tests_test_runtime_env_py",
-      "target": "tests_test_runtime_env_test_agents_md_section_covers_distro_and_mongodb"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L12",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_tests_test_runtime_env_py",
-      "target": "tests_test_runtime_env_test_detect_agent_runtime_has_core_keys"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L19",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_tests_test_runtime_env_py",
-      "target": "tests_test_runtime_env_test_prompt_section_documents_execution_host"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tests_test_runtime_env_rationale_1",
-      "target": "backend_tests_test_runtime_env_py"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L13",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tests_test_runtime_env_test_detect_agent_runtime_has_core_keys",
-      "target": "agents_runtime_env_detect_agent_runtime"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L24",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tests_test_runtime_env_test_prompt_section_documents_execution_host",
-      "target": "agents_runtime_env_detect_agent_runtime"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L20",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tests_test_runtime_env_test_prompt_section_documents_execution_host",
-      "target": "agents_runtime_env_get_agent_runtime_prompt_section"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_runtime_env.py",
-      "source_location": "L28",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tests_test_runtime_env_test_agents_md_section_covers_distro_and_mongodb",
-      "target": "agents_runtime_env_get_agent_runtime_agents_md_section"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "backend/tests/test_pm_routing_parser.py",
       "source_location": "L4",
       "weight": 1.0,
@@ -21883,17 +20575,6 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L39",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_agents_runner_py",
-      "target": "agents_runtime_env_get_agent_runtime_prompt_section"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runner.py",
       "source_location": "L40",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -21963,16 +20644,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "agents_runner_rationale_51",
-      "target": "agents_runner_last_text"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L52",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runner_rationale_52",
       "target": "agents_runner_last_text"
     },
     {
@@ -22178,16 +20849,6 @@
       "target": "agents_runner_build_specialist_input"
     },
     {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L82",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runner_rationale_82",
-      "target": "agents_runner_build_specialist_input"
-    },
-    {
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/agents/runner.py",
@@ -22274,16 +20935,6 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L150",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runner_rationale_150",
-      "target": "agents_runner_verification_outcome"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runner.py",
       "source_location": "L178",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -22294,30 +20945,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/agents/runner.py",
-      "source_location": "L179",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runner_rationale_179",
-      "target": "agents_runner_subtasks_marked_done"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runner.py",
       "source_location": "L193",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "agents_runner_rationale_193",
-      "target": "agents_runner_revert_subtasks_to_blocked"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L194",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runner_rationale_194",
       "target": "agents_runner_revert_subtasks_to_blocked"
     },
     {
@@ -22374,17 +21005,6 @@
       "confidence_score": 1.0,
       "source": "agents_runner_build_specialist_subgraph",
       "target": "agents_llm_with_retry"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L241",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runner_build_specialist_subgraph",
-      "target": "agents_runtime_env_get_agent_runtime_prompt_section"
     },
     {
       "relation": "references",
@@ -22458,16 +21078,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "agents_runner_rationale_223",
-      "target": "agents_runner_build_specialist_subgraph"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runner.py",
-      "source_location": "L224",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runner_rationale_224",
       "target": "agents_runner_build_specialist_subgraph"
     },
     {
@@ -22971,16 +21581,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "agents_llm_audit_rationale_92",
-      "target": "agents_llm_audit_log_llm_invoke_exception_context"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/llm_audit.py",
-      "source_location": "L95",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_llm_audit_rationale_95",
       "target": "agents_llm_audit_log_llm_invoke_exception_context"
     },
     {
@@ -24340,16 +22940,6 @@
       "target": "agents_llm_wrap_with_retry"
     },
     {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/llm.py",
-      "source_location": "L94",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_llm_rationale_94",
-      "target": "agents_llm_wrap_with_retry"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -24514,16 +23104,6 @@
       "target": "agents_llm_log_resolved_llm_routing"
     },
     {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/llm.py",
-      "source_location": "L116",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_llm_rationale_116",
-      "target": "agents_llm_log_resolved_llm_routing"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -24644,16 +23224,6 @@
       "target": "agents_llm_get_chat_model"
     },
     {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/llm.py",
-      "source_location": "L156",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_llm_rationale_156",
-      "target": "agents_llm_get_chat_model"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -24672,16 +23242,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "agents_llm_rationale_196",
-      "target": "agents_llm_with_retry"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/llm.py",
-      "source_location": "L208",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_llm_rationale_208",
       "target": "agents_llm_with_retry"
     },
     {
@@ -25021,19 +23581,9 @@
       "source_file": "backend/agents/prompts.py",
       "source_location": "L611",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "agents_prompts_rationale_611",
-      "target": "agents_prompts_get_cached_lead_appendix"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/prompts.py",
-      "source_location": "L614",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_prompts_rationale_614",
-      "target": "agents_prompts_get_cached_lead_appendix"
+      "target": "agents_prompts_get_cached_lead_appendix",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -25103,241 +23653,9 @@
       "source_file": "backend/agents/prompts.py",
       "source_location": "L617",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "agents_prompts_rationale_617",
-      "target": "agents_prompts_get_cached_role_base"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/prompts.py",
-      "source_location": "L620",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_prompts_rationale_620",
-      "target": "agents_prompts_get_cached_role_base"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_rationale_1",
-      "target": "backend_agents_runtime_env_py"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L29",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_agents_runtime_env_py",
-      "target": "agents_runtime_env_detect_agent_runtime"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L109",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_agents_runtime_env_py",
-      "target": "agents_runtime_env_get_agent_runtime_agents_md_section"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L73",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_agents_runtime_env_py",
-      "target": "agents_runtime_env_get_agent_runtime_prompt_section"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L51",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_agents_runtime_env_py",
-      "target": "agents_runtime_env_mongodb_memory_server_hints"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L15",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_agents_runtime_env_py",
-      "target": "agents_runtime_env_parse_os_release"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L31",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_detect_agent_runtime",
-      "target": "agents_runtime_env_parse_os_release"
-    },
-    {
-      "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L15",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_parse_os_release",
-      "target": "backend_agents_runtime_env_py_str"
-    },
-    {
-      "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L29",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_detect_agent_runtime",
-      "target": "backend_agents_runtime_env_py_str"
-    },
-    {
-      "relation": "references",
-      "context": "return_type",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L109",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_get_agent_runtime_agents_md_section",
-      "target": "backend_agents_runtime_env_py_str"
-    },
-    {
-      "relation": "references",
-      "context": "return_type",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L73",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_get_agent_runtime_prompt_section",
-      "target": "backend_agents_runtime_env_py_str"
-    },
-    {
-      "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L51",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_mongodb_memory_server_hints",
-      "target": "backend_agents_runtime_env_py_str"
-    },
-    {
-      "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L29",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_detect_agent_runtime",
-      "target": "backend_agents_runtime_env_py_bool"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L111",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_get_agent_runtime_agents_md_section",
-      "target": "agents_runtime_env_detect_agent_runtime"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L75",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_get_agent_runtime_prompt_section",
-      "target": "agents_runtime_env_detect_agent_runtime"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L30",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_rationale_30",
-      "target": "agents_runtime_env_detect_agent_runtime"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L77",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_get_agent_runtime_prompt_section",
-      "target": "agents_runtime_env_mongodb_memory_server_hints"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L74",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_rationale_74",
-      "target": "agents_runtime_env_get_agent_runtime_prompt_section"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L25",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_agents_project_manager_supervisor_py",
-      "target": "agents_runtime_env_get_agent_runtime_prompt_section"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L114",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "project_manager_supervisor_build_system_prompt",
-      "target": "agents_runtime_env_get_agent_runtime_prompt_section"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/runtime_env.py",
-      "source_location": "L110",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "agents_runtime_env_rationale_110",
-      "target": "agents_runtime_env_get_agent_runtime_agents_md_section"
+      "target": "agents_prompts_get_cached_role_base",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -26914,16 +25232,6 @@
       "target": "project_manager_supervisor_condense_messages_for_supervisor"
     },
     {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L78",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "project_manager_supervisor_rationale_78",
-      "target": "project_manager_supervisor_condense_messages_for_supervisor"
-    },
-    {
       "relation": "references",
       "context": "parameter_type",
       "confidence": "EXTRACTED",
@@ -26953,16 +25261,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "project_manager_supervisor_rationale_107",
-      "target": "project_manager_supervisor_build_system_prompt"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L108",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "project_manager_supervisor_rationale_108",
       "target": "project_manager_supervisor_build_system_prompt"
     },
     {
@@ -27024,16 +25322,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "project_manager_supervisor_rationale_152",
-      "target": "project_manager_supervisor_format_pm_handoff"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L156",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "project_manager_supervisor_rationale_156",
       "target": "project_manager_supervisor_format_pm_handoff"
     },
     {
@@ -27272,16 +25560,6 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L232",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "project_manager_supervisor_rationale_232",
-      "target": "project_manager_supervisor_ticket_ready_for_todo"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
       "source_location": "L229",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -27302,16 +25580,6 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L258",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "project_manager_supervisor_rationale_258",
-      "target": "project_manager_supervisor_advance_in_review_to_todo"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
       "source_location": "L256",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -27326,16 +25594,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "project_manager_supervisor_rationale_281",
-      "target": "project_manager_supervisor_infer_next_dev_route"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L285",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "project_manager_supervisor_rationale_285",
       "target": "project_manager_supervisor_infer_next_dev_route"
     },
     {
@@ -27373,16 +25631,6 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L348",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "project_manager_supervisor_rationale_348",
-      "target": "project_manager_supervisor_fallback_routing_decision"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
       "source_location": "L412",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -27403,16 +25651,6 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L441",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "project_manager_supervisor_rationale_441",
-      "target": "project_manager_supervisor_parse_routing"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
       "source_location": "L432",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -27427,16 +25665,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "project_manager_supervisor_rationale_457",
-      "target": "project_manager_supervisor_build_project_manager_node"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/agents/project_manager/supervisor.py",
-      "source_location": "L461",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "project_manager_supervisor_rationale_461",
       "target": "project_manager_supervisor_build_project_manager_node"
     },
     {
@@ -35049,16 +33277,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L39",
-      "weight": 1.0,
-      "source": "backend_api_checkpoint_list_cache_py",
-      "target": "api_checkpoint_list_cache_agent_from_wrote_nodes",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/api/checkpoint_list_cache.py",
       "source_location": "L52",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -35126,47 +33344,26 @@
       "target": "api_checkpoint_list_cache_lock"
     },
     {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L39",
-      "weight": 1.0,
-      "source": "api_checkpoint_list_cache_agent_from_wrote_nodes",
-      "target": "backend_api_checkpoint_list_cache_py_any",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "context": "return_type",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L39",
-      "weight": 1.0,
-      "source": "api_checkpoint_list_cache_agent_from_wrote_nodes",
-      "target": "backend_api_checkpoint_list_cache_py_str",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L151",
+      "source_location": "L188",
       "weight": 1.0,
-      "source": "api_checkpoint_list_cache_fetch_checkpoints",
-      "target": "api_checkpoint_list_cache_agent_from_wrote_nodes",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "api_checkpoint_list_cache_get_checkpoints_list",
+      "target": "api_checkpoint_list_cache_lock"
     },
     {
-      "relation": "rationale_for",
+      "relation": "references",
+      "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L40",
+      "source_location": "L28",
       "weight": 1.0,
-      "source": "api_checkpoint_list_cache_rationale_40",
-      "target": "api_checkpoint_list_cache_agent_from_wrote_nodes",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "api_checkpoint_list_cache_lock",
+      "target": "backend_api_checkpoint_list_cache_py_str"
     },
     {
       "relation": "references",
@@ -35206,55 +33403,11 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L28",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "api_checkpoint_list_cache_lock",
-      "target": "backend_api_checkpoint_list_cache_py_str"
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/api/checkpoint_list_cache.py",
       "source_location": "L31",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "api_checkpoint_list_cache_estimate_bytes",
       "target": "backend_api_checkpoint_list_cache_py_any"
-    },
-    {
-      "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L80",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "api_checkpoint_list_cache_fetch_checkpoints",
-      "target": "backend_api_checkpoint_list_cache_py_any"
-    },
-    {
-      "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L171",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "api_checkpoint_list_cache_get_checkpoints_list",
-      "target": "backend_api_checkpoint_list_cache_py_any"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L188",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "api_checkpoint_list_cache_get_checkpoints_list",
-      "target": "api_checkpoint_list_cache_lock"
     },
     {
       "relation": "references",
@@ -35289,14 +33442,26 @@
       "target": "api_checkpoint_list_cache_estimate_bytes"
     },
     {
-      "relation": "rationale_for",
+      "relation": "references",
+      "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L66",
+      "source_location": "L80",
       "weight": 1.0,
-      "source": "api_checkpoint_list_cache_rationale_66",
-      "target": "api_checkpoint_list_cache_estimate_bytes",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "api_checkpoint_list_cache_fetch_checkpoints",
+      "target": "backend_api_checkpoint_list_cache_py_any"
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/checkpoint_list_cache.py",
+      "source_location": "L171",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "api_checkpoint_list_cache_get_checkpoints_list",
+      "target": "backend_api_checkpoint_list_cache_py_any"
     },
     {
       "relation": "references",
@@ -35362,26 +33527,6 @@
       "confidence_score": 1.0,
       "source": "api_checkpoint_list_cache_rationale_57",
       "target": "api_checkpoint_list_cache_evict_cache_if_needed"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L91",
-      "weight": 1.0,
-      "source": "api_checkpoint_list_cache_rationale_91",
-      "target": "api_checkpoint_list_cache_evict_cache_if_needed",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/api/checkpoint_list_cache.py",
-      "source_location": "L104",
-      "weight": 1.0,
-      "source": "api_checkpoint_list_cache_rationale_104",
-      "target": "api_checkpoint_list_cache_invalidate_checkpoint_list_cache",
-      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -37880,16 +36025,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/workspace_seed/AGENTS.md",
-      "source_location": "L13",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "workspace_seed_agents_agent_notes_this_workspace",
-      "target": "workspace_seed_agents_agent_execution_environment"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/workspace_seed/AGENTS.md",
       "source_location": "L9",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -37905,26 +36040,6 @@
       "confidence_score": 1.0,
       "source": "workspace_seed_agents_agent_notes_this_workspace",
       "target": "workspace_seed_agents_where_documentation_lives"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/workspace_seed/AGENTS.md",
-      "source_location": "L28",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "workspace_seed_agents_agent_execution_environment",
-      "target": "workspace_seed_agents_native_binaries_vs_npm"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/workspace_seed/AGENTS.md",
-      "source_location": "L37",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "workspace_seed_agents_agent_execution_environment",
-      "target": "workspace_seed_agents_what_not_to_do"
     },
     {
       "relation": "contains",
@@ -38858,5 +36973,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "45783e44f0ff8bf2a03b6da9e67e0b3e51c06115"
+  "built_at_commit": "546f36618de10f3c8fe0c66d63cc7ac4e5cdbaf8"
 }

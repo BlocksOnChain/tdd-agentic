@@ -36,6 +36,7 @@ from backend.agents.llm_audit import (
     log_llm_invoke_start,
 )
 from backend.agents.llm import with_retry
+from backend.agents.runtime_env import get_agent_runtime_prompt_section
 from backend.agents.skills.loader import inject_skills
 from backend.agents.state import SystemState
 
@@ -237,10 +238,11 @@ def build_specialist_subgraph(
         llm = with_retry(bound)
 
         system = inject_skills(base_system_prompt, role=role)
+        runtime = get_agent_runtime_prompt_section()
         ctx = _truncate(state.project_context or "", MAX_PROJECT_CONTEXT_CHARS)
         pid = state.project_id or "(unknown)"
         prefix = (
-            f"{system}\n\nPROJECT_ID: {pid}\nPROJECT_CONTEXT:\n{ctx}\n"
+            f"{system}\n\n{runtime}\n\nPROJECT_ID: {pid}\nPROJECT_CONTEXT:\n{ctx}\n"
         )
         if state.active_ticket_id:
             prefix += f"ACTIVE_TICKET_ID: {state.active_ticket_id}\n"

@@ -60,14 +60,14 @@
     "semantic_hash": "3b7127cf61aceac910036b5522365c72"
   },
   "/Users/esra/tdd-agentic/frontend/src/components/EventBridge.tsx": {
-    "mtime": 1780570469.8359046,
-    "ast_hash": "837e4edb75cc51635a8d3e22329518c1",
+    "mtime": 1780312103.3032684,
+    "ast_hash": "5e55b065a5ba951caea8e9095c6d77f7",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/frontend/src/components/CheckpointsPanel.tsx": {
-    "mtime": 1780570656.100792,
-    "ast_hash": "29798a4eae7102a0ae04097c6119b8c5",
-    "semantic_hash": ""
+    "mtime": 1780258531.2005332,
+    "ast_hash": "102b2753c95177327bdafef942b466a6",
+    "semantic_hash": "102b2753c95177327bdafef942b466a6"
   },
   "/Users/esra/tdd-agentic/frontend/src/components/CrashBanner.tsx": {
     "mtime": 1780258531.2006116,
@@ -85,8 +85,8 @@
     "semantic_hash": "85e1df6bd1f119ecb600c20825188902"
   },
   "/Users/esra/tdd-agentic/frontend/src/components/agents/AgentLog.tsx": {
-    "mtime": 1780570646.8889809,
-    "ast_hash": "07927428a178763e2e13e01dd8434f78",
+    "mtime": 1780307632.1028247,
+    "ast_hash": "1261c3fd478e5998b9e18d5fc5d98dbe",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/frontend/src/lib/websocket.ts": {
@@ -100,8 +100,8 @@
     "semantic_hash": "d9837f38cc05303254571985e3164050"
   },
   "/Users/esra/tdd-agentic/frontend/src/lib/api.ts": {
-    "mtime": 1780570433.958639,
-    "ast_hash": "983c4b96d3237c5c51e2466ff9051052",
+    "mtime": 1780306754.916269,
+    "ast_hash": "09529827658f74ffa7c9f3842851f94c",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/frontend/src/lib/store.ts": {
@@ -445,9 +445,9 @@
     "semantic_hash": "9b56d74b96b02046e724e39add027b82"
   },
   "/Users/esra/tdd-agentic/backend/api/checkpoint_list_cache.py": {
-    "mtime": 1780570419.1433494,
-    "ast_hash": "09772f34d8b44f032f65a7ffe8a64341",
-    "semantic_hash": ""
+    "mtime": 1780258531.1948833,
+    "ast_hash": "7176e5cfcc4ac585860446899d4f7a77",
+    "semantic_hash": "7176e5cfcc4ac585860446899d4f7a77"
   },
   "/Users/esra/tdd-agentic/backend/api/websocket.py": {
     "mtime": 1780258531.1956372,
@@ -515,8 +515,8 @@
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/frontend/src/components/logs/LogFilterBar.tsx": {
-    "mtime": 1780570662.4514256,
-    "ast_hash": "78ae563a9a2864fe424a4a1b2d48b879",
+    "mtime": 1780307435.3166125,
+    "ast_hash": "f33c15f620ae9fd54ec69d7873d61a9d",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/frontend/src/components/files/FileExplorer.tsx": {
@@ -622,11 +622,6 @@
   "/Users/esra/tdd-agentic/backend/agents/runtime_env.py": {
     "mtime": 1780498676.1405544,
     "ast_hash": "560ac0a3ed25c7d26bc68dbb76c92dce",
-    "semantic_hash": ""
-  },
-  "/Users/esra/tdd-agentic/frontend/src/lib/logFormat.ts": {
-    "mtime": 1780570624.7251017,
-    "ast_hash": "02f416492d3e5ff3b22e2c2e2d2efb54",
     "semantic_hash": ""
   }
 }

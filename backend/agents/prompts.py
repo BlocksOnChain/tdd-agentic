@@ -176,8 +176,8 @@ Your job:
   node_modules/ — that path is vendored noise and must not be agent context. Put
   framework summaries in docs/ (for example docs/nextjs.md) and cite stable https://
   vendor URLs in prose; align notes with the project's pinned package versions.
-- Refresh AGENTS.md only to reinforce workspace rules (docs/, not node_modules); do not
-  use it to substitute for full docs under docs/.
+- Refresh AGENTS.md only to reinforce workspace rules (docs/, not node_modules,
+  agent execution environment / distro); do not use it to substitute for full docs under docs/.
 - For testing technology choices: use Vitest + Riteway for the JS/TS frontend AND the
   Node.js/Express backend (the default stack is all TypeScript). Only use pytest if the
   stack actually deviates to a Python backend. Document the chosen test runner, file naming,
@@ -538,6 +538,9 @@ loop on the same error. Follow this decision tree:
   5. If you get the SAME run_tests error 3+ times and cannot resolve it with
      shell_run: STOP creating files. Summarize the blocker and return to PM.
      Do not keep writing files and retrying a broken test chain.
+  6. If stderr mentions fastdl.mongodb.org, DownloadError, or MongoMemoryServer on
+     Linux Debian arm64: do not loop on npm or version bumps — see AGENT EXECUTION
+     ENVIRONMENT in your system prompt (MONGOMS_DISTRO / blocked subtask).
 
 === STOP CONDITION ===
 STOP and summarize when:

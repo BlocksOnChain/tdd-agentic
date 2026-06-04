@@ -89,6 +89,11 @@ export interface AgentLogEntry {
   kind: string;
   detail: string;
   checkpoint_id?: string | null;
+  /**
+   * Full, untruncated event payload. Kept in memory for live events so the
+   * detail view can render the complete log without a server round-trip.
+   */
+  payload?: Record<string, unknown>;
 }
 
 /** Row from ``GET /api/agents/logs/:projectId``. */
@@ -139,6 +144,7 @@ export function persistedLogToEntry(row: PersistedAgentLog): AgentLogEntry {
     kind: row.kind || (typeof p.kind === "string" ? p.kind : "log"),
     detail: JSON.stringify(p).slice(0, 1200),
     checkpoint_id: cp,
+    payload: p,
   };
 }
 
@@ -159,6 +165,8 @@ export interface CheckpointT {
   source: string | null;
   step: number | null;
   wrote_nodes: string[];
+  /** Agent/node that produced this checkpoint (derived from its write set). */
+  agent: string | null;
   next: string[];
 }
 

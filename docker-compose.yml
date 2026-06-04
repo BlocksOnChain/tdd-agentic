@@ -93,6 +93,9 @@ services:
       QDRANT_HOST: qdrant
       QDRANT_URL: http://qdrant:6333
       LANGFUSE_HOST: http://langfuse:3000
+      # mongodb-memory-server: Debian arm64 has no official MongoDB tarballs — use Ubuntu builds.
+      MONGOMS_DISTRO: ubuntu-22.04
+      MONGOMS_PREFER_GLOBAL_PATH: "true"
       # Ollama / LM Studio on the host — .env may use host.docker.internal; keep override explicit.
       OPENAI_BASE_URL: ${OPENAI_BASE_URL:-http://host.docker.internal:11434/v1}
     ports:

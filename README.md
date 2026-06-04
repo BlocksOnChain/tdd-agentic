@@ -147,7 +147,7 @@ DEV_MODEL=anthropic/claude-sonnet-4-6
 GRADER_MODEL=anthropic/claude-haiku-4-5
 ```
 
-Slugs are `provider/model`. Add new providers by extending `backend/agents/llm.py`.
+Slugs are `provider/model`. Supported providers: `openai`, `anthropic`, and `openrouter` (OpenAI-compatible gateway — set `OPENROUTER_API_KEY` and use OpenRouter model ids, e.g. `openrouter/anthropic/claude-sonnet-4`).
 
 ---
 

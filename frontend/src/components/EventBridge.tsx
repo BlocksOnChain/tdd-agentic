@@ -37,6 +37,7 @@ export function EventBridge() {
         kind,
         detail: JSON.stringify(p).slice(0, 1200),
         checkpoint_id: (p.checkpoint_id as string | undefined) ?? null,
+        payload: p,
       });
       if (kind === "crash") {
         setCrash({

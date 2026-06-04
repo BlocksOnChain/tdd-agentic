@@ -22,6 +22,7 @@ from backend.agents.llm_audit import (
 )
 from backend.agents.llm import pm_model, with_retry
 from backend.agents.prompts import PROJECT_MANAGER_SYSTEM
+from backend.agents.runtime_env import get_agent_runtime_prompt_section
 from backend.agents.skills.loader import inject_skills
 from backend.agents.state import SystemState
 from backend.db.session import AsyncSessionLocal
@@ -110,12 +111,15 @@ def _build_system_prompt(state: SystemState) -> str:
     where the model confuses what to do with what it knows — ~10% routing accuracy gain.
     """
     base = inject_skills(PROJECT_MANAGER_SYSTEM, role="project_manager")
+    runtime = get_agent_runtime_prompt_section()
     ctx = _truncate(state.project_context or "", MAX_PROJECT_CONTEXT_CHARS)
     pid = state.project_id or "(unknown)"
     lines = [
         "<agent>project_manager</agent>",
         "",
         base,
+        "",
+        runtime,
         "",
         "<context>",
         f"<project_id>{pid}</project_id>",
