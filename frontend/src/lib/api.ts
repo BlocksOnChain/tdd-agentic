@@ -236,12 +236,12 @@ export const api = {
       `/api/agents/state/${projectId}`,
     ),
   createFile: (projectId: string, path: string, content: string) =>
-    http<{ written: string }>(`/api/files/${projectId}`, {
+    http<{ written: string }>(`/api/agents/files/${projectId}`, {
       method: "POST",
       body: JSON.stringify({ path, content }),
     }),
   listFiles: (projectId: string, path: string = "") =>
-    http<{ files: string[] }>(`/api/files/${projectId}?path=${encodeURIComponent(path)}`),
+    http<{ files: string[] }>(`/api/agents/files/${projectId}?path=${encodeURIComponent(path)}`),
   getFileContent: (projectId: string, filePath: string) =>
-    http<{ content: string }>(`/api/files/${projectId}/content?path=${encodeURIComponent(filePath)}`),
+    http<{ content: string }>(`/api/agents/files/${projectId}/content?path=${encodeURIComponent(filePath)}`),
 };

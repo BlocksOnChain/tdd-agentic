@@ -149,31 +149,25 @@ export function FileExplorer() {
     fetchFiles();
   }, [selectedProjectId]);
 
-  // Fetch file content when a file is selected
+  // Fetch file content when the selected path changes
   useEffect(() => {
-    if (!selectedPath || !selectedNode || selectedNode.content !== null) return;
-    if (!selectedProjectId) return;
+    if (!selectedPath || !selectedProjectId) return;
     let cancelled = false;
-    setSelectedNode((prev) => (prev ? { ...prev, loading: true } : null));
+    setSelectedNode((prev) => (prev ? { ...prev, loading: true, content: null } : null));
     api
       .getFileContent(selectedProjectId, selectedPath)
       .then((res) => {
         if (cancelled) return;
-        if (selectedNode) {
-          setSelectedNode((prev) => (prev ? { ...prev, content: res.content } : null));
-        }
+        setSelectedNode((prev) => (prev ? { ...prev, content: res.content, loading: false } : null));
       })
       .catch(() => {
-        /* silently fail — content stays null */
-      })
-      .finally(() => {
         if (cancelled) return;
         setSelectedNode((prev) => (prev ? { ...prev, loading: false } : null));
       });
     return () => {
       cancelled = true;
     };
-  }, [selectedPath, selectedProjectId, selectedNode]);
+  }, [selectedPath, selectedProjectId]);
 
   const toggleDir = (path: string) => {
     setExpandedDirs((prev) => {
