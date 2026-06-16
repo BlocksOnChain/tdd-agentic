@@ -131,19 +131,32 @@ def _build_specialist_input(state: SystemState, agent_name: str) -> list[BaseMes
     return out
 
 
-def _latest_subtask_id_from_tools(tool_msgs: list[ToolMessage]) -> str | None:
+def _parse_next_pending_tool_result(content: str) -> dict[str, Any] | None:
+    try:
+        data = json.loads(content)
+    except (json.JSONDecodeError, TypeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def _engaged_subtask_id_from_tools(tool_msgs: list[ToolMessage]) -> str | None:
+    """Subtask the agent picked up via ``next_pending*`` this turn (``None`` = no work)."""
     for tm in reversed(tool_msgs):
         if tm.name not in {"next_pending_subtask", "next_pending_subtask_in_project"}:
             continue
-        try:
-            data = json.loads(str(tm.content))
-        except (json.JSONDecodeError, TypeError):
+        data = _parse_next_pending_tool_result(str(tm.content))
+        if data is None:
             continue
-        sub = data.get("subtask") or {}
-        sid = sub.get("id")
-        if sid:
-            return str(sid)
+        if "subtask" in data:
+            sub = data.get("subtask")
+            if sub and sub.get("id"):
+                return str(sub["id"])
+            return None
     return None
+
+
+def _latest_subtask_id_from_tools(tool_msgs: list[ToolMessage]) -> str | None:
+    return _engaged_subtask_id_from_tools(tool_msgs)
 
 
 def _verification_outcome(tool_msgs: list[ToolMessage]) -> tuple[str, str]:
@@ -175,19 +188,56 @@ def _verification_outcome(tool_msgs: list[ToolMessage]) -> tuple[str, str]:
     return last or ("none", "")
 
 
-def _subtasks_marked_done(tool_msgs: list[ToolMessage]) -> list[str]:
-    """IDs of subtasks the agent flipped to ``done`` via update_subtask_status."""
-    done_ids: list[str] = []
+def _subtask_status_updates(tool_msgs: list[ToolMessage]) -> dict[str, list[str]]:
+    """Map subtask status → ids the agent set via ``update_subtask_status``."""
+    by_status: dict[str, list[str]] = {}
     for tm in tool_msgs:
         if getattr(tm, "name", None) != "update_subtask_status":
             continue
-        try:
-            data = json.loads(str(tm.content))
-        except (json.JSONDecodeError, TypeError):
+        data = _parse_next_pending_tool_result(str(tm.content))
+        if data is None:
             continue
-        if data.get("status") == "done" and data.get("id"):
-            done_ids.append(str(data["id"]))
-    return done_ids
+        status = data.get("status")
+        sid = data.get("id")
+        if status and sid:
+            by_status.setdefault(str(status), []).append(str(sid))
+    return by_status
+
+
+def _subtasks_marked_done(tool_msgs: list[ToolMessage]) -> list[str]:
+    """IDs of subtasks the agent flipped to ``done`` via update_subtask_status."""
+    return _subtask_status_updates(tool_msgs).get("done", [])
+
+
+def _subtasks_marked_blocked(tool_msgs: list[ToolMessage]) -> list[str]:
+    """IDs of subtasks the agent flipped to ``blocked`` via update_subtask_status."""
+    return _subtask_status_updates(tool_msgs).get("blocked", [])
+
+
+def _subtask_resolution_outcome(
+    tool_msgs: list[ToolMessage],
+    *,
+    engaged_subtask_id: str | None,
+    step_exhausted: bool,
+    max_steps: int,
+) -> tuple[str, str]:
+    """Classify whether the agent resolved the subtask it picked up.
+
+    Returns ``(status, detail)`` where status is ``no_engagement`` | ``resolved`` |
+    ``incomplete``.
+    """
+    if not engaged_subtask_id:
+        return ("no_engagement", "")
+
+    done = set(_subtasks_marked_done(tool_msgs))
+    blocked = set(_subtasks_marked_blocked(tool_msgs))
+    if engaged_subtask_id in done or engaged_subtask_id in blocked:
+        return ("resolved", "")
+
+    detail = "Subtask was not marked done or blocked."
+    if step_exhausted:
+        detail += f" Step budget exhausted (max_steps={max_steps})."
+    return ("incomplete", detail)
 
 
 async def _revert_subtasks_to_blocked(subtask_ids: list[str]) -> None:
@@ -220,6 +270,7 @@ def build_specialist_subgraph(
     base_system_prompt: str,
     max_steps: int = 12,
     verify_completion: bool = False,
+    require_subtask_resolution: bool = False,
 ):
     """Build and compile a tool-using specialist subgraph.
 
@@ -228,6 +279,11 @@ def build_specialist_subgraph(
     subtask is forced back to ``blocked`` and the hand-off to the PM is rewritten
     as BLOCKED. This stops roles like devops from declaring infrastructure
     "complete" while the verifying tests/commands are still failing.
+
+    When ``require_subtask_resolution`` is set, a dev agent that called
+    ``next_pending*`` and received a subtask MUST mark it ``done`` or ``blocked``
+    before the turn ends. Otherwise the hand-off is rewritten as INCOMPLETE so
+    the PM re-dispatches instead of treating the turn as finished work.
     """
     tools_by_name: dict[str, BaseTool] = {t.name: t for t in tools}
 
@@ -257,6 +313,7 @@ def build_specialist_subgraph(
 
         local_ai_msgs: list[AIMessage] = []
         local_tool_msgs: list[ToolMessage] = []
+        step_exhausted = False
 
         for step_i in range(max_steps):
             log_llm_invoke_start(
@@ -301,18 +358,20 @@ def build_specialist_subgraph(
                 )
                 messages.append(truncated)
                 local_tool_msgs.append(truncated)
+        else:
+            step_exhausted = bool(local_ai_msgs and local_ai_msgs[-1].tool_calls)
 
         summary = _last_text(local_ai_msgs) or "turn complete"
         summary = _truncate(summary, MAX_SUMMARY_CHARS)
 
-        subtask_id = _latest_subtask_id_from_tools(local_tool_msgs)
+        subtask_id = _engaged_subtask_id_from_tools(local_tool_msgs)
 
-        # Completion gate: a verify-required role (e.g. devops) may only report a
-        # subtask complete when a run_tests invocation actually passed this turn.
+        # Completion gate: dev roles may only report done when run_tests passed this turn.
         if verify_completion and subtask_id:
             status, detail = _verification_outcome(local_tool_msgs)
-            if status != "passed":
-                reverted = _subtasks_marked_done(local_tool_msgs)
+            marked_done = _subtasks_marked_done(local_tool_msgs)
+            if marked_done and status != "passed":
+                reverted = marked_done
                 await _revert_subtasks_to_blocked(reverted)
                 await emit(
                     name,
@@ -327,19 +386,45 @@ def build_specialist_subgraph(
                 )
                 if status == "failed":
                     gate = (
-                        "[BLOCKED — verification FAILED] The infrastructure is NOT "
-                        f"complete. {detail} The subtask was kept/flipped to 'blocked'. "
-                        "Resolve the environment/test failure (install the missing "
-                        "toolchain or fix the config) and re-run run_tests until it "
-                        "exits 0, or report the blocker — do not claim completion."
+                        "[BLOCKED — verification FAILED] Work is NOT complete. "
+                        f"{detail} The subtask was kept/flipped to 'blocked'. "
+                        "Resolve the test failure and re-run run_tests until it exits 0, "
+                        "or set status to 'blocked' with the exact blocker — do not claim completion."
                     )
                 else:  # "none"
                     gate = (
-                        "[BLOCKED — UNVERIFIED] No passing test proved the "
-                        "infrastructure works this turn. The subtask was kept/flipped "
-                        "to 'blocked'. Author an infra smoke/verification test and run "
-                        "it with run_tests until it exits 0 before marking the subtask done."
+                        "[BLOCKED — UNVERIFIED] No passing run_tests proved the work "
+                        "this turn. The subtask was kept/flipped to 'blocked'. Run the "
+                        "full spec suite with run_tests until it exits 0 before marking done."
                     )
+                summary = _truncate(f"{gate}\n\nOriginal summary:\n{summary}", MAX_SUMMARY_CHARS)
+
+        if require_subtask_resolution:
+            resolution, resolution_detail = _subtask_resolution_outcome(
+                local_tool_msgs,
+                engaged_subtask_id=subtask_id,
+                step_exhausted=step_exhausted,
+                max_steps=max_steps,
+            )
+            if resolution == "incomplete":
+                await emit(
+                    name,
+                    "subtask_incomplete",
+                    {
+                        "subtask_id": subtask_id,
+                        "detail": resolution_detail,
+                        "step_exhausted": step_exhausted,
+                    },
+                    state.project_id,
+                )
+                gate = (
+                    "[INCOMPLETE — subtask NOT finished] You picked up a subtask but "
+                    f"did not mark it done or blocked. {resolution_detail} The subtask "
+                    "stays in_progress; PM will re-dispatch you to continue. If you are "
+                    "genuinely blocked (missing toolchain, bad spec), call "
+                    "update_subtask_status(..., 'blocked') with the exact error — do "
+                    "not end the turn with a vague summary."
+                )
                 summary = _truncate(f"{gate}\n\nOriginal summary:\n{summary}", MAX_SUMMARY_CHARS)
 
         handoff = HumanMessage(

@@ -1782,7 +1782,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L1",
       "id": "backend_tools_rag_tools_py",
-      "community": 88,
+      "community": 4,
       "norm_label": "rag_tools.py"
     },
     {
@@ -1791,7 +1791,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L12",
       "id": "tools_rag_tools_rag_ingest_text",
-      "community": 88,
+      "community": 4,
       "norm_label": "rag_ingest_text()"
     },
     {
@@ -1800,7 +1800,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L12",
       "id": "backend_tools_rag_tools_py_str",
-      "community": 88,
+      "community": 4,
       "norm_label": "str"
     },
     {
@@ -1827,7 +1827,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L1",
       "id": "tools_rag_tools_rationale_1",
-      "community": 88,
+      "community": 4,
       "norm_label": "langchain tools for rag ingestion and crag-style retrieval."
     },
     {
@@ -1836,7 +1836,7 @@
       "source_file": "backend/tools/rag_tools.py",
       "source_location": "L13",
       "id": "tools_rag_tools_rationale_13",
-      "community": 88,
+      "community": 4,
       "norm_label": "add a document to the project's rag vector store.      use when: you wrote docum"
     },
     {
@@ -1854,7 +1854,7 @@
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L1",
       "id": "backend_tools_ticket_tools_py",
-      "community": 27,
+      "community": 0,
       "norm_label": "ticket_tools.py"
     },
     {
@@ -1872,7 +1872,7 @@
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L26",
       "id": "backend_tools_ticket_tools_py_any",
-      "community": 27,
+      "community": 61,
       "norm_label": "any"
     },
     {
@@ -1885,10 +1885,37 @@
       "norm_label": "str"
     },
     {
+      "label": "_parse_dev_role()",
+      "file_type": "code",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L40",
+      "id": "tools_ticket_tools_parse_dev_role",
+      "community": 77,
+      "norm_label": "_parse_dev_role()"
+    },
+    {
+      "label": "AgentRole",
+      "file_type": "code",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L40",
+      "id": "backend_tools_ticket_tools_py_agentrole",
+      "community": 0,
+      "norm_label": "agentrole"
+    },
+    {
+      "label": "_subtask_tool_payload()",
+      "file_type": "code",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L56",
+      "id": "tools_ticket_tools_subtask_tool_payload",
+      "community": 0,
+      "norm_label": "_subtask_tool_payload()"
+    },
+    {
       "label": "list_tickets()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L33",
+      "source_location": "L71",
       "id": "tools_ticket_tools_list_tickets",
       "community": 0,
       "norm_label": "list_tickets()"
@@ -1897,7 +1924,7 @@
       "label": "get_ticket()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L49",
+      "source_location": "L87",
       "id": "tools_ticket_tools_get_ticket",
       "community": 0,
       "norm_label": "get_ticket()"
@@ -1906,7 +1933,7 @@
       "label": "get_ticket_summary()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L93",
+      "source_location": "L131",
       "id": "tools_ticket_tools_get_ticket_summary",
       "community": 0,
       "norm_label": "get_ticket_summary()"
@@ -1915,7 +1942,7 @@
       "label": "create_ticket()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L122",
+      "source_location": "L160",
       "id": "tools_ticket_tools_create_ticket",
       "community": 0,
       "norm_label": "create_ticket()"
@@ -1924,7 +1951,7 @@
       "label": "update_ticket_status()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L155",
+      "source_location": "L193",
       "id": "tools_ticket_tools_update_ticket_status",
       "community": 0,
       "norm_label": "update_ticket_status()"
@@ -1933,7 +1960,7 @@
       "label": "add_question_to_ticket()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L177",
+      "source_location": "L215",
       "id": "tools_ticket_tools_add_question_to_ticket",
       "community": 0,
       "norm_label": "add_question_to_ticket()"
@@ -1942,9 +1969,9 @@
       "label": "TestCaseInput",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L184",
+      "source_location": "L222",
       "id": "tools_ticket_tools_testcaseinput",
-      "community": 27,
+      "community": 90,
       "norm_label": "testcaseinput"
     },
     {
@@ -1953,41 +1980,41 @@
       "source_file": "",
       "source_location": "",
       "id": "basemodel",
-      "community": 27,
+      "community": 61,
       "norm_label": "basemodel"
     },
     {
       "label": "CreateSubtaskArgs",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L224",
+      "source_location": "L262",
       "id": "tools_ticket_tools_createsubtaskargs",
-      "community": 27,
+      "community": 61,
       "norm_label": "createsubtaskargs"
     },
     {
       "label": "create_subtask()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L261",
+      "source_location": "L299",
       "id": "tools_ticket_tools_create_subtask",
-      "community": 27,
+      "community": 90,
       "norm_label": "create_subtask()"
     },
     {
       "label": "int",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L261",
+      "source_location": "L299",
       "id": "backend_tools_ticket_tools_py_int",
-      "community": 27,
+      "community": 61,
       "norm_label": "int"
     },
     {
       "label": "update_subtask_status()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L335",
+      "source_location": "L373",
       "id": "tools_ticket_tools_update_subtask_status",
       "community": 0,
       "norm_label": "update_subtask_status()"
@@ -1996,16 +2023,16 @@
       "label": "UpdateSubtaskArgs",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L346",
+      "source_location": "L384",
       "id": "tools_ticket_tools_updatesubtaskargs",
-      "community": 27,
+      "community": 90,
       "norm_label": "updatesubtaskargs"
     },
     {
       "label": "update_subtask()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L371",
+      "source_location": "L409",
       "id": "tools_ticket_tools_update_subtask",
       "community": 0,
       "norm_label": "update_subtask()"
@@ -2014,7 +2041,7 @@
       "label": "delete_subtask()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L431",
+      "source_location": "L469",
       "id": "tools_ticket_tools_delete_subtask",
       "community": 0,
       "norm_label": "delete_subtask()"
@@ -2023,7 +2050,7 @@
       "label": "add_todo_to_subtask()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L447",
+      "source_location": "L485",
       "id": "tools_ticket_tools_add_todo_to_subtask",
       "community": 0,
       "norm_label": "add_todo_to_subtask()"
@@ -2032,7 +2059,7 @@
       "label": "mark_todo_done()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L459",
+      "source_location": "L497",
       "id": "tools_ticket_tools_mark_todo_done",
       "community": 0,
       "norm_label": "mark_todo_done()"
@@ -2041,7 +2068,7 @@
       "label": "next_pending_subtask()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L469",
+      "source_location": "L507",
       "id": "tools_ticket_tools_next_pending_subtask",
       "community": 0,
       "norm_label": "next_pending_subtask()"
@@ -2050,7 +2077,7 @@
       "label": "next_pending_subtask_in_project()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L495",
+      "source_location": "L539",
       "id": "tools_ticket_tools_next_pending_subtask_in_project",
       "community": 0,
       "norm_label": "next_pending_subtask_in_project()"
@@ -2059,7 +2086,7 @@
       "label": "list_subtasks()",
       "file_type": "code",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L576",
+      "source_location": "L617",
       "id": "tools_ticket_tools_list_subtasks",
       "community": 0,
       "norm_label": "list_subtasks()"
@@ -2070,15 +2097,24 @@
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L1",
       "id": "tools_ticket_tools_rationale_1",
-      "community": 27,
+      "community": 0,
       "norm_label": "langchain tools that wrap the ticket-system service for use by agents.  these to"
+    },
+    {
+      "label": "Parse an optional dev role; treat empty / 'none' / 'null' as unfiltered.",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L41",
+      "id": "tools_ticket_tools_rationale_41",
+      "community": 77,
+      "norm_label": "parse an optional dev role; treat empty / 'none' / 'null' as unfiltered."
     },
     {
       "label": "List every ticket in a project as compact rows (id, title, status).      USE WHE",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L34",
-      "id": "tools_ticket_tools_rationale_34",
+      "source_location": "L72",
+      "id": "tools_ticket_tools_rationale_72",
       "community": 0,
       "norm_label": "list every ticket in a project as compact rows (id, title, status).      use whe"
     },
@@ -2086,8 +2122,8 @@
       "label": "Fetch one ticket by UUID.      USE WHEN: You need to read subtasks or RITE test",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L50",
-      "id": "tools_ticket_tools_rationale_50",
+      "source_location": "L88",
+      "id": "tools_ticket_tools_rationale_88",
       "community": 0,
       "norm_label": "fetch one ticket by uuid.      use when: you need to read subtasks or rite test"
     },
@@ -2095,8 +2131,8 @@
       "label": "Fetch one ticket's summary \u2014 no subtask trees, no full RITE specs.      USE WHEN",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L94",
-      "id": "tools_ticket_tools_rationale_94",
+      "source_location": "L132",
+      "id": "tools_ticket_tools_rationale_132",
       "community": 0,
       "norm_label": "fetch one ticket's summary \u2014 no subtask trees, no full rite specs.      use when"
     },
@@ -2104,8 +2140,8 @@
       "label": "Create a new ticket in DRAFT status owned by the given project.      USE WHEN: Y",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L129",
-      "id": "tools_ticket_tools_rationale_129",
+      "source_location": "L167",
+      "id": "tools_ticket_tools_rationale_167",
       "community": 0,
       "norm_label": "create a new ticket in draft status owned by the given project.      use when: y"
     },
@@ -2113,8 +2149,8 @@
       "label": "Transition a ticket to a new status. Valid: draft, in_review, questions_pending,",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L156",
-      "id": "tools_ticket_tools_rationale_156",
+      "source_location": "L194",
+      "id": "tools_ticket_tools_rationale_194",
       "community": 0,
       "norm_label": "transition a ticket to a new status. valid: draft, in_review, questions_pending,"
     },
@@ -2122,8 +2158,8 @@
       "label": "Append a clarification question to a ticket and mark it questions_pending.",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L178",
-      "id": "tools_ticket_tools_rationale_178",
+      "source_location": "L216",
+      "id": "tools_ticket_tools_rationale_216",
       "community": 0,
       "norm_label": "append a clarification question to a ticket and mark it questions_pending."
     },
@@ -2131,35 +2167,35 @@
       "label": "A single RITE-format test case the lead must specify per subtask.",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L185",
-      "id": "tools_ticket_tools_rationale_185",
-      "community": 27,
+      "source_location": "L223",
+      "id": "tools_ticket_tools_rationale_223",
+      "community": 90,
       "norm_label": "a single rite-format test case the lead must specify per subtask."
     },
     {
       "label": "Arguments for create_subtask. Every field labelled REQUIRED must be supplied.",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L225",
-      "id": "tools_ticket_tools_rationale_225",
-      "community": 27,
+      "source_location": "L263",
+      "id": "tools_ticket_tools_rationale_263",
+      "community": 61,
       "norm_label": "arguments for create_subtask. every field labelled required must be supplied."
     },
     {
       "label": "Create an ordered subtask under a ticket using RITE-format test cases.      USE",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L270",
-      "id": "tools_ticket_tools_rationale_270",
-      "community": 27,
+      "source_location": "L308",
+      "id": "tools_ticket_tools_rationale_308",
+      "community": 90,
       "norm_label": "create an ordered subtask under a ticket using rite-format test cases.      use"
     },
     {
       "label": "Update a subtask's status. Valid: pending, in_progress, done, blocked.",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L336",
-      "id": "tools_ticket_tools_rationale_336",
+      "source_location": "L374",
+      "id": "tools_ticket_tools_rationale_374",
       "community": 0,
       "norm_label": "update a subtask's status. valid: pending, in_progress, done, blocked."
     },
@@ -2167,17 +2203,17 @@
       "label": "Lead-only patch tool for fixing an existing subtask in place.",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L347",
-      "id": "tools_ticket_tools_rationale_347",
-      "community": 27,
+      "source_location": "L385",
+      "id": "tools_ticket_tools_rationale_385",
+      "community": 90,
       "norm_label": "lead-only patch tool for fixing an existing subtask in place."
     },
     {
       "label": "Patch fields on an existing subtask. Lead-only tool.      Use this when an exist",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L380",
-      "id": "tools_ticket_tools_rationale_380",
+      "source_location": "L418",
+      "id": "tools_ticket_tools_rationale_418",
       "community": 0,
       "norm_label": "patch fields on an existing subtask. lead-only tool.      use this when an exist"
     },
@@ -2185,8 +2221,8 @@
       "label": "Delete a subtask that's wrong or no longer needed. Lead-only tool.      Refuses",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L432",
-      "id": "tools_ticket_tools_rationale_432",
+      "source_location": "L470",
+      "id": "tools_ticket_tools_rationale_470",
       "community": 0,
       "norm_label": "delete a subtask that's wrong or no longer needed. lead-only tool.      refuses"
     },
@@ -2194,8 +2230,8 @@
       "label": "Append a todo (low-level step) to a subtask.",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L448",
-      "id": "tools_ticket_tools_rationale_448",
+      "source_location": "L486",
+      "id": "tools_ticket_tools_rationale_486",
       "community": 0,
       "norm_label": "append a todo (low-level step) to a subtask."
     },
@@ -2203,35 +2239,35 @@
       "label": "Mark a todo as completed.",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L460",
-      "id": "tools_ticket_tools_rationale_460",
+      "source_location": "L498",
+      "id": "tools_ticket_tools_rationale_498",
       "community": 0,
       "norm_label": "mark a todo as completed."
     },
     {
-      "label": "Return the next pending subtask (lowest order_index) for a ticket, optionally fi",
+      "label": "Return the next actionable subtask for a ticket (resume or start).      USE WHEN",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L470",
-      "id": "tools_ticket_tools_rationale_470",
+      "source_location": "L508",
+      "id": "tools_ticket_tools_rationale_508",
       "community": 0,
-      "norm_label": "return the next pending subtask (lowest order_index) for a ticket, optionally fi"
+      "norm_label": "return the next actionable subtask for a ticket (resume or start).      use when"
     },
     {
-      "label": "Return the next pending subtask for a role across the whole project.      USE WH",
+      "label": "Return the next actionable subtask for a role across the project.      USE WHEN:",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L496",
-      "id": "tools_ticket_tools_rationale_496",
+      "source_location": "L544",
+      "id": "tools_ticket_tools_rationale_544",
       "community": 0,
-      "norm_label": "return the next pending subtask for a role across the whole project.      use wh"
+      "norm_label": "return the next actionable subtask for a role across the project.      use when:"
     },
     {
       "label": "List subtasks filtered by project_id and optionally ticket_id and/or assigned_to",
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L582",
-      "id": "tools_ticket_tools_rationale_582",
+      "source_location": "L623",
+      "id": "tools_ticket_tools_rationale_623",
       "community": 0,
       "norm_label": "list subtasks filtered by project_id and optionally ticket_id and/or assigned_to"
     },
@@ -2538,7 +2574,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L1",
       "id": "backend_tools_persistence_tools_py",
-      "community": 27,
+      "community": 87,
       "norm_label": "persistence_tools.py"
     },
     {
@@ -2547,7 +2583,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L22",
       "id": "tools_persistence_tools_dump",
-      "community": 27,
+      "community": 87,
       "norm_label": "_dump()"
     },
     {
@@ -2556,7 +2592,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L22",
       "id": "backend_tools_persistence_tools_py_any",
-      "community": 27,
+      "community": 61,
       "norm_label": "any"
     },
     {
@@ -2565,7 +2601,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L22",
       "id": "backend_tools_persistence_tools_py_str",
-      "community": 27,
+      "community": 87,
       "norm_label": "str"
     },
     {
@@ -2574,7 +2610,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L28",
       "id": "tools_persistence_tools_createticketargs",
-      "community": 27,
+      "community": 61,
       "norm_label": "createticketargs"
     },
     {
@@ -2583,7 +2619,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L37",
       "id": "tools_persistence_tools_save_ticket",
-      "community": 27,
+      "community": 87,
       "norm_label": "save_ticket()"
     },
     {
@@ -2592,7 +2628,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L63",
       "id": "tools_persistence_tools_transitionticketargs",
-      "community": 27,
+      "community": 61,
       "norm_label": "transitionticketargs"
     },
     {
@@ -2601,7 +2637,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L69",
       "id": "tools_persistence_tools_transition_ticket",
-      "community": 27,
+      "community": 87,
       "norm_label": "transition_ticket()"
     },
     {
@@ -2610,7 +2646,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L86",
       "id": "tools_persistence_tools_saveexecutionplanargs",
-      "community": 27,
+      "community": 61,
       "norm_label": "saveexecutionplanargs"
     },
     {
@@ -2619,7 +2655,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L93",
       "id": "tools_persistence_tools_save_execution_plan",
-      "community": 27,
+      "community": 87,
       "norm_label": "save_execution_plan()"
     },
     {
@@ -2628,7 +2664,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L173",
       "id": "tools_persistence_tools_completeassignmentargs",
-      "community": 27,
+      "community": 61,
       "norm_label": "completeassignmentargs"
     },
     {
@@ -2637,7 +2673,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L178",
       "id": "tools_persistence_tools_complete_assignment",
-      "community": 27,
+      "community": 87,
       "norm_label": "complete_assignment()"
     },
     {
@@ -2646,7 +2682,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L1",
       "id": "tools_persistence_tools_rationale_1",
-      "community": 27,
+      "community": 87,
       "norm_label": "persistence tools for coordinator agent.  these tools handle all database writes"
     },
     {
@@ -2655,7 +2691,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L44",
       "id": "tools_persistence_tools_rationale_44",
-      "community": 27,
+      "community": 87,
       "norm_label": "create or update a ticket in the database.      use when: persisting a new ticke"
     },
     {
@@ -2664,7 +2700,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L70",
       "id": "tools_persistence_tools_rationale_70",
-      "community": 27,
+      "community": 87,
       "norm_label": "transition a ticket to a new status.      use when: moving tickets through the w"
     },
     {
@@ -2673,7 +2709,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L98",
       "id": "tools_persistence_tools_rationale_98",
-      "community": 27,
+      "community": 87,
       "norm_label": "persist an execution plan to the database.      if ticket_id is provided, create"
     },
     {
@@ -2682,7 +2718,7 @@
       "source_file": "backend/tools/persistence_tools.py",
       "source_location": "L179",
       "id": "tools_persistence_tools_rationale_179",
-      "community": 27,
+      "community": 87,
       "norm_label": "mark a subtask as done and transition related ticket if ready.      use when: de"
     },
     {
@@ -3150,7 +3186,7 @@
       "source_file": "backend/tests/test_ticket_state_machine.py",
       "source_location": "L1",
       "id": "backend_tests_test_ticket_state_machine_py",
-      "community": 27,
+      "community": 96,
       "norm_label": "test_ticket_state_machine.py"
     },
     {
@@ -3159,7 +3195,7 @@
       "source_file": "backend/tests/test_ticket_state_machine.py",
       "source_location": "L27",
       "id": "tests_test_ticket_state_machine_test_transition_allowed",
-      "community": 27,
+      "community": 96,
       "norm_label": "test_transition_allowed()"
     },
     {
@@ -3168,7 +3204,7 @@
       "source_file": "backend/tests/test_ticket_state_machine.py",
       "source_location": "L27",
       "id": "ticketstatus",
-      "community": 27,
+      "community": 96,
       "norm_label": "ticketstatus"
     },
     {
@@ -3177,7 +3213,7 @@
       "source_file": "backend/tests/test_ticket_state_machine.py",
       "source_location": "L27",
       "id": "backend_tests_test_ticket_state_machine_py_bool",
-      "community": 27,
+      "community": 96,
       "norm_label": "bool"
     },
     {
@@ -3186,7 +3222,7 @@
       "source_file": "backend/tests/test_ticket_state_machine.py",
       "source_location": "L1",
       "id": "tests_test_ticket_state_machine_rationale_1",
-      "community": 27,
+      "community": 96,
       "norm_label": "smoke tests for the ticket-system state-machine logic.  these exercise the pure-"
     },
     {
@@ -3384,7 +3420,7 @@
       "source_file": "backend/tests/test_llm_slug.py",
       "source_location": "L27",
       "id": "tests_test_llm_slug_test_split_slug_openrouter_vendor_model_when_key_set",
-      "community": 97,
+      "community": 68,
       "norm_label": "test_split_slug_openrouter_vendor_model_when_key_set()"
     },
     {
@@ -3393,7 +3429,7 @@
       "source_file": "backend/tests/test_llm_slug.py",
       "source_location": "L27",
       "id": "backend_tests_test_llm_slug_py_monkeypatch",
-      "community": 97,
+      "community": 68,
       "norm_label": "monkeypatch"
     },
     {
@@ -4410,7 +4446,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L1",
       "id": "backend_tests_test_runner_specialist_input_py",
-      "community": 76,
+      "community": 74,
       "norm_label": "test_runner_specialist_input.py"
     },
     {
@@ -4419,7 +4455,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L9",
       "id": "tests_test_runner_specialist_input_make_state",
-      "community": 76,
+      "community": 74,
       "norm_label": "_make_state()"
     },
     {
@@ -4428,7 +4464,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L9",
       "id": "backend_tests_test_runner_specialist_input_py_str",
-      "community": 76,
+      "community": 74,
       "norm_label": "str"
     },
     {
@@ -4437,7 +4473,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L9",
       "id": "backend_tests_test_runner_specialist_input_py_systemstate",
-      "community": 76,
+      "community": 74,
       "norm_label": "systemstate"
     },
     {
@@ -4446,7 +4482,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L14",
       "id": "tests_test_runner_specialist_input_test_specialist_input_includes_pm_instruction",
-      "community": 76,
+      "community": 74,
       "norm_label": "test_specialist_input_includes_pm_instruction()"
     },
     {
@@ -4455,7 +4491,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L23",
       "id": "tests_test_runner_specialist_input_test_specialist_input_no_first_human_fallback",
-      "community": 76,
+      "community": 74,
       "norm_label": "test_specialist_input_no_first_human_fallback()"
     },
     {
@@ -4464,7 +4500,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L37",
       "id": "tests_test_runner_specialist_input_test_specialist_input_empty_state",
-      "community": 76,
+      "community": 74,
       "norm_label": "test_specialist_input_empty_state()"
     },
     {
@@ -4473,7 +4509,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L44",
       "id": "tests_test_runner_specialist_input_test_backend_dev_excludes_handoff_summaries",
-      "community": 76,
+      "community": 74,
       "norm_label": "test_backend_dev_excludes_handoff_summaries()"
     },
     {
@@ -4482,7 +4518,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L55",
       "id": "tests_test_runner_specialist_input_test_non_dev_agent_gets_handoff_summaries",
-      "community": 76,
+      "community": 74,
       "norm_label": "test_non_dev_agent_gets_handoff_summaries()"
     },
     {
@@ -4491,7 +4527,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L1",
       "id": "tests_test_runner_specialist_input_rationale_1",
-      "community": 76,
+      "community": 74,
       "norm_label": "tests for _build_specialist_input changes (canonical project_context)."
     },
     {
@@ -4500,7 +4536,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L15",
       "id": "tests_test_runner_specialist_input_rationale_15",
-      "community": 76,
+      "community": 74,
       "norm_label": "the pm instruction message is included in specialist input."
     },
     {
@@ -4509,7 +4545,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L24",
       "id": "tests_test_runner_specialist_input_rationale_24",
-      "community": 76,
+      "community": 74,
       "norm_label": "the goal is not extracted from first_human when project_context is set."
     },
     {
@@ -4518,7 +4554,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L38",
       "id": "tests_test_runner_specialist_input_rationale_38",
-      "community": 76,
+      "community": 74,
       "norm_label": "empty state returns empty list."
     },
     {
@@ -4527,7 +4563,7 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L45",
       "id": "tests_test_runner_specialist_input_rationale_45",
-      "community": 76,
+      "community": 74,
       "norm_label": "backend_dev does not receive cross-agent handoff summaries."
     },
     {
@@ -4536,8 +4572,143 @@
       "source_file": "backend/tests/test_runner_specialist_input.py",
       "source_location": "L56",
       "id": "tests_test_runner_specialist_input_rationale_56",
-      "community": 76,
+      "community": 74,
       "norm_label": "non-dev agents (like pm) receive handoff summaries."
+    },
+    {
+      "label": "test_next_pending_subtask.py",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L1",
+      "id": "backend_tests_test_next_pending_subtask_py",
+      "community": 77,
+      "norm_label": "test_next_pending_subtask.py"
+    },
+    {
+      "label": "_sub()",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "id": "tests_test_next_pending_subtask_sub",
+      "community": 77,
+      "norm_label": "_sub()"
+    },
+    {
+      "label": "str",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "id": "backend_tests_test_next_pending_subtask_py_str",
+      "community": 77,
+      "norm_label": "str"
+    },
+    {
+      "label": "SubtaskStatus",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "id": "backend_tests_test_next_pending_subtask_py_subtaskstatus",
+      "community": 77,
+      "norm_label": "subtaskstatus"
+    },
+    {
+      "label": "int",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "id": "backend_tests_test_next_pending_subtask_py_int",
+      "community": 77,
+      "norm_label": "int"
+    },
+    {
+      "label": "AgentRole",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "id": "backend_tests_test_next_pending_subtask_py_agentrole",
+      "community": 77,
+      "norm_label": "agentrole"
+    },
+    {
+      "label": "SimpleNamespace",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "id": "simplenamespace",
+      "community": 68,
+      "norm_label": "simplenamespace"
+    },
+    {
+      "label": "test_subtask_status_priority_prefers_in_progress_then_blocked_then_pending()",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L35",
+      "id": "tests_test_next_pending_subtask_test_subtask_status_priority_prefers_in_progress_then_blocked_then_pending",
+      "community": 77,
+      "norm_label": "test_subtask_status_priority_prefers_in_progress_then_blocked_then_pending()"
+    },
+    {
+      "label": "test_first_actionable_subtask_resumes_in_progress_over_pending()",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L44",
+      "id": "tests_test_next_pending_subtask_test_first_actionable_subtask_resumes_in_progress_over_pending",
+      "community": 77,
+      "norm_label": "test_first_actionable_subtask_resumes_in_progress_over_pending()"
+    },
+    {
+      "label": "test_first_actionable_subtask_picks_blocked_before_pending()",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L55",
+      "id": "tests_test_next_pending_subtask_test_first_actionable_subtask_picks_blocked_before_pending",
+      "community": 77,
+      "norm_label": "test_first_actionable_subtask_picks_blocked_before_pending()"
+    },
+    {
+      "label": "test_first_actionable_subtask_ignores_done()",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L65",
+      "id": "tests_test_next_pending_subtask_test_first_actionable_subtask_ignores_done",
+      "community": 77,
+      "norm_label": "test_first_actionable_subtask_ignores_done()"
+    },
+    {
+      "label": "test_actionable_statuses_exclude_done()",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L70",
+      "id": "tests_test_next_pending_subtask_test_actionable_statuses_exclude_done",
+      "community": 77,
+      "norm_label": "test_actionable_statuses_exclude_done()"
+    },
+    {
+      "label": "test_parse_dev_role()",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L85",
+      "id": "tests_test_next_pending_subtask_test_parse_dev_role",
+      "community": 77,
+      "norm_label": "test_parse_dev_role()"
+    },
+    {
+      "label": "test_parse_dev_role_rejects_non_dev_roles()",
+      "file_type": "code",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L89",
+      "id": "tests_test_next_pending_subtask_test_parse_dev_role_rejects_non_dev_roles",
+      "community": 77,
+      "norm_label": "test_parse_dev_role_rejects_non_dev_roles()"
+    },
+    {
+      "label": "Unit tests for actionable subtask selection helpers.",
+      "file_type": "rationale",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L1",
+      "id": "tests_test_next_pending_subtask_rationale_1",
+      "community": 77,
+      "norm_label": "unit tests for actionable subtask selection helpers."
     },
     {
       "label": "test_message_reducer.py",
@@ -5004,7 +5175,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L1",
       "id": "backend_agents_runner_py",
-      "community": 20,
+      "community": 86,
       "norm_label": "runner.py"
     },
     {
@@ -5013,7 +5184,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L51",
       "id": "agents_runner_last_text",
-      "community": 76,
+      "community": 86,
       "norm_label": "_last_text()"
     },
     {
@@ -5022,7 +5193,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L51",
       "id": "backend_agents_runner_py_basemessage",
-      "community": 76,
+      "community": 86,
       "norm_label": "basemessage"
     },
     {
@@ -5031,7 +5202,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L51",
       "id": "backend_agents_runner_py_str",
-      "community": 20,
+      "community": 86,
       "norm_label": "str"
     },
     {
@@ -5040,7 +5211,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L70",
       "id": "agents_runner_truncate",
-      "community": 76,
+      "community": 86,
       "norm_label": "_truncate()"
     },
     {
@@ -5049,7 +5220,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L70",
       "id": "backend_agents_runner_py_int",
-      "community": 76,
+      "community": 86,
       "norm_label": "int"
     },
     {
@@ -5058,7 +5229,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L81",
       "id": "agents_runner_build_specialist_input",
-      "community": 76,
+      "community": 74,
       "norm_label": "_build_specialist_input()"
     },
     {
@@ -5067,7 +5238,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L81",
       "id": "backend_agents_runner_py_systemstate",
-      "community": 76,
+      "community": 74,
       "norm_label": "systemstate"
     },
     {
@@ -5076,7 +5247,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L134",
       "id": "agents_runner_latest_subtask_id_from_tools",
-      "community": 20,
+      "community": 86,
       "norm_label": "_latest_subtask_id_from_tools()"
     },
     {
@@ -5112,7 +5283,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L193",
       "id": "agents_runner_revert_subtasks_to_blocked",
-      "community": 20,
+      "community": 86,
       "norm_label": "_revert_subtasks_to_blocked()"
     },
     {
@@ -5157,7 +5328,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L1",
       "id": "agents_runner_rationale_1",
-      "community": 20,
+      "community": 86,
       "norm_label": "generic tool-using agent runner shared by specialist subgraphs.  each specialist"
     },
     {
@@ -5166,7 +5337,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L52",
       "id": "agents_runner_rationale_52",
-      "community": 76,
+      "community": 86,
       "norm_label": "best-effort textual summary of the final aimessage in ``messages``."
     },
     {
@@ -5175,7 +5346,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L82",
       "id": "agents_runner_rationale_82",
-      "community": 76,
+      "community": 74,
       "norm_label": "assemble the minimal message list a specialist needs to act.      strategy:"
     },
     {
@@ -5202,7 +5373,7 @@
       "source_file": "backend/agents/runner.py",
       "source_location": "L194",
       "id": "agents_runner_rationale_194",
-      "community": 20,
+      "community": 86,
       "norm_label": "force subtasks back to ``blocked`` (used when a completion gate fails)."
     },
     {
@@ -5220,7 +5391,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L1",
       "id": "backend_agents_llm_audit_py",
-      "community": 20,
+      "community": 84,
       "norm_label": "llm_audit.py"
     },
     {
@@ -5229,7 +5400,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L25",
       "id": "agents_llm_audit_describe_llm_slug",
-      "community": 20,
+      "community": 84,
       "norm_label": "describe_llm_slug()"
     },
     {
@@ -5238,7 +5409,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L25",
       "id": "backend_agents_llm_audit_py_str",
-      "community": 20,
+      "community": 84,
       "norm_label": "str"
     },
     {
@@ -5247,7 +5418,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L41",
       "id": "agents_llm_audit_resolve_model_slug_for_node",
-      "community": 20,
+      "community": 84,
       "norm_label": "resolve_model_slug_for_node()"
     },
     {
@@ -5256,7 +5427,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L49",
       "id": "agents_llm_audit_log_llm_invoke_start",
-      "community": 20,
+      "community": 84,
       "norm_label": "log_llm_invoke_start()"
     },
     {
@@ -5265,7 +5436,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L49",
       "id": "backend_agents_llm_audit_py_int",
-      "community": 20,
+      "community": 84,
       "norm_label": "int"
     },
     {
@@ -5274,7 +5445,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L74",
       "id": "agents_llm_audit_log_rag_crag_llm_targets",
-      "community": 20,
+      "community": 84,
       "norm_label": "log_rag_crag_llm_targets()"
     },
     {
@@ -5283,7 +5454,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L89",
       "id": "agents_llm_audit_log_llm_invoke_exception_context",
-      "community": 20,
+      "community": 84,
       "norm_label": "log_llm_invoke_exception_context()"
     },
     {
@@ -5292,7 +5463,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L1",
       "id": "agents_llm_audit_rationale_1",
-      "community": 20,
+      "community": 84,
       "norm_label": "structured logging around llm http calls \u2014 see where traffic is sent."
     },
     {
@@ -5301,7 +5472,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L26",
       "id": "agents_llm_audit_rationale_26",
-      "community": 20,
+      "community": 84,
       "norm_label": "return (provider, model_name, human_readable_endpoint_hint)."
     },
     {
@@ -5310,7 +5481,7 @@
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L95",
       "id": "agents_llm_audit_rationale_95",
-      "community": 20,
+      "community": 84,
       "norm_label": "call from inside an ``except`` block \u2014 attaches stack trace via ``exception()``."
     },
     {
@@ -5598,7 +5769,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L1",
       "id": "backend_agents_checkpointer_py",
-      "community": 53,
+      "community": 55,
       "norm_label": "checkpointer.py"
     },
     {
@@ -5607,7 +5778,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L31",
       "id": "agents_checkpointer_build_serde",
-      "community": 53,
+      "community": 55,
       "norm_label": "_build_serde()"
     },
     {
@@ -5616,7 +5787,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L31",
       "id": "jsonplusserializer",
-      "community": 53,
+      "community": 55,
       "norm_label": "jsonplusserializer"
     },
     {
@@ -5625,7 +5796,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L46",
       "id": "agents_checkpointer_get_pool",
-      "community": 53,
+      "community": 55,
       "norm_label": "get_pool()"
     },
     {
@@ -5634,7 +5805,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L46",
       "id": "asyncconnectionpool",
-      "community": 53,
+      "community": 55,
       "norm_label": "asyncconnectionpool"
     },
     {
@@ -5661,7 +5832,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L1",
       "id": "agents_checkpointer_rationale_1",
-      "community": 53,
+      "community": 55,
       "norm_label": "langgraph checkpointer setup using asyncpostgressaver.  we expose a context-mana"
     },
     {
@@ -5670,7 +5841,7 @@
       "source_file": "backend/agents/checkpointer.py",
       "source_location": "L32",
       "id": "agents_checkpointer_rationale_32",
-      "community": 53,
+      "community": 55,
       "norm_label": "return a serializer that knows about our application state types.      ``allowed"
     },
     {
@@ -5877,7 +6048,7 @@
       "source_file": "backend/agents/llm.py",
       "source_location": "L263",
       "id": "agents_llm_log_resolved_llm_routing",
-      "community": 97,
+      "community": 55,
       "norm_label": "log_resolved_llm_routing()"
     },
     {
@@ -6039,7 +6210,7 @@
       "source_file": "backend/agents/llm.py",
       "source_location": "L264",
       "id": "agents_llm_rationale_264",
-      "community": 97,
+      "community": 55,
       "norm_label": "log where each configured role sends traffic (local vs cloud).      misconfigura"
     },
     {
@@ -6127,7 +6298,7 @@
       "label": "get_cached_lead_appendix()",
       "file_type": "code",
       "source_file": "backend/agents/prompts.py",
-      "source_location": "L612",
+      "source_location": "L614",
       "id": "agents_prompts_get_cached_lead_appendix",
       "community": 7,
       "norm_label": "get_cached_lead_appendix()"
@@ -6136,7 +6307,7 @@
       "label": "str",
       "file_type": "code",
       "source_file": "backend/agents/prompts.py",
-      "source_location": "L612",
+      "source_location": "L614",
       "id": "backend_agents_prompts_py_str",
       "community": 7,
       "norm_label": "str"
@@ -6145,7 +6316,7 @@
       "label": "get_cached_role_base()",
       "file_type": "code",
       "source_file": "backend/agents/prompts.py",
-      "source_location": "L618",
+      "source_location": "L620",
       "id": "agents_prompts_get_cached_role_base",
       "community": 56,
       "norm_label": "get_cached_role_base()"
@@ -6163,8 +6334,8 @@
       "label": "Return the RITE + tool contract appendix (cached once).",
       "file_type": "rationale",
       "source_file": "backend/agents/prompts.py",
-      "source_location": "L613",
-      "id": "agents_prompts_rationale_613",
+      "source_location": "L615",
+      "id": "agents_prompts_rationale_615",
       "community": 7,
       "norm_label": "return the rite + tool contract appendix (cached once)."
     },
@@ -6172,8 +6343,8 @@
       "label": "Return the static base for a given role (cached once).      Only called at app s",
       "file_type": "rationale",
       "source_file": "backend/agents/prompts.py",
-      "source_location": "L619",
-      "id": "agents_prompts_rationale_619",
+      "source_location": "L621",
+      "id": "agents_prompts_rationale_621",
       "community": 56,
       "norm_label": "return the static base for a given role (cached once).      only called at app s"
     },
@@ -6291,7 +6462,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L1",
       "id": "backend_agents_common_py",
-      "community": 20,
+      "community": 6,
       "norm_label": "common.py"
     },
     {
@@ -6300,7 +6471,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L20",
       "id": "agents_common_emit",
-      "community": 20,
+      "community": 6,
       "norm_label": "emit()"
     },
     {
@@ -6309,7 +6480,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L20",
       "id": "backend_agents_common_py_str",
-      "community": 20,
+      "community": 6,
       "norm_label": "str"
     },
     {
@@ -6318,7 +6489,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L20",
       "id": "backend_agents_common_py_any",
-      "community": 20,
+      "community": 6,
       "norm_label": "any"
     },
     {
@@ -6327,7 +6498,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L20",
       "id": "agentevent",
-      "community": 20,
+      "community": 6,
       "norm_label": "agentevent"
     },
     {
@@ -6336,7 +6507,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L28",
       "id": "agents_common_format_tool_error",
-      "community": 20,
+      "community": 6,
       "norm_label": "_format_tool_error()"
     },
     {
@@ -6345,7 +6516,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L28",
       "id": "backend_agents_common_py_baseexception",
-      "community": 20,
+      "community": 6,
       "norm_label": "baseexception"
     },
     {
@@ -6354,7 +6525,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L48",
       "id": "agents_common_run_tool_calls",
-      "community": 20,
+      "community": 6,
       "norm_label": "run_tool_calls()"
     },
     {
@@ -6372,7 +6543,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L48",
       "id": "backend_agents_common_py_basetool",
-      "community": 20,
+      "community": 6,
       "norm_label": "basetool"
     },
     {
@@ -6381,7 +6552,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L48",
       "id": "backend_agents_common_py_toolmessage",
-      "community": 20,
+      "community": 6,
       "norm_label": "toolmessage"
     },
     {
@@ -6390,7 +6561,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L75",
       "id": "agents_common_last_ai_message",
-      "community": 20,
+      "community": 6,
       "norm_label": "last_ai_message()"
     },
     {
@@ -6399,7 +6570,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L75",
       "id": "backend_agents_common_py_basemessage",
-      "community": 20,
+      "community": 6,
       "norm_label": "basemessage"
     },
     {
@@ -6408,7 +6579,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L1",
       "id": "agents_common_rationale_1",
-      "community": 20,
+      "community": 6,
       "norm_label": "shared utilities for agent subgraphs.  provides helpers for invoking a tool-call"
     },
     {
@@ -6417,7 +6588,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L21",
       "id": "agents_common_rationale_21",
-      "community": 20,
+      "community": 6,
       "norm_label": "persist an event to the eventbus and return an agentevent for state."
     },
     {
@@ -6426,7 +6597,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L29",
       "id": "agents_common_rationale_29",
-      "community": 20,
+      "community": 6,
       "norm_label": "convert an exception (often a pydantic validationerror) into an     actionable c"
     },
     {
@@ -6435,7 +6606,7 @@
       "source_file": "backend/agents/common.py",
       "source_location": "L51",
       "id": "agents_common_rationale_51",
-      "community": 20,
+      "community": 6,
       "norm_label": "execute tool calls in an ai message and return the resulting toolmessages."
     },
     {
@@ -6579,7 +6750,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L1",
       "id": "backend_agents_state_py",
-      "community": 76,
+      "community": 6,
       "norm_label": "state.py"
     },
     {
@@ -6588,7 +6759,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L16",
       "id": "agents_state_agentevent",
-      "community": 20,
+      "community": 6,
       "norm_label": "agentevent"
     },
     {
@@ -6597,7 +6768,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L25",
       "id": "agents_state_testcaseinput",
-      "community": 76,
+      "community": 6,
       "norm_label": "testcaseinput"
     },
     {
@@ -6606,7 +6777,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L37",
       "id": "agents_state_subtaskplan",
-      "community": 76,
+      "community": 6,
       "norm_label": "subtaskplan"
     },
     {
@@ -6615,7 +6786,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L47",
       "id": "agents_state_executionplan",
-      "community": 76,
+      "community": 6,
       "norm_label": "executionplan"
     },
     {
@@ -6633,7 +6804,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L1",
       "id": "agents_state_rationale_1",
-      "community": 76,
+      "community": 6,
       "norm_label": "root langgraph state for the multi-agent system.  important: everything in this"
     },
     {
@@ -6642,7 +6813,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L17",
       "id": "agents_state_rationale_17",
-      "community": 20,
+      "community": 6,
       "norm_label": "lightweight event record for streaming to the monitoring client."
     },
     {
@@ -6651,7 +6822,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L26",
       "id": "agents_state_rationale_26",
-      "community": 76,
+      "community": 6,
       "norm_label": "a single rite-format test case in a plan."
     },
     {
@@ -6660,7 +6831,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L38",
       "id": "agents_state_rationale_38",
-      "community": 76,
+      "community": 6,
       "norm_label": "a single subtask in an execution plan (lead's output)."
     },
     {
@@ -6669,7 +6840,7 @@
       "source_file": "backend/agents/state.py",
       "source_location": "L48",
       "id": "agents_state_rationale_48",
-      "community": 76,
+      "community": 6,
       "norm_label": "execution plan produced by lead agent, consumed by coordinator."
     },
     {
@@ -6687,7 +6858,7 @@
       "source_file": "backend/agents/coordinator/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_coordinator_subgraph_py",
-      "community": 79,
+      "community": 88,
       "norm_label": "subgraph.py"
     },
     {
@@ -6705,7 +6876,7 @@
       "source_file": "backend/agents/coordinator/subgraph.py",
       "source_location": "L1",
       "id": "coordinator_subgraph_rationale_1",
-      "community": 79,
+      "community": 88,
       "norm_label": "coordinator agent subgraph \u2014 handles all db persistence operations.  the coordin"
     },
     {
@@ -6894,7 +7065,7 @@
       "source_file": "backend/agents/project_manager/supervisor.py",
       "source_location": "L460",
       "id": "project_manager_supervisor_build_project_manager_node",
-      "community": 20,
+      "community": 84,
       "norm_label": "build_project_manager_node()"
     },
     {
@@ -6984,7 +7155,7 @@
       "source_file": "backend/agents/project_manager/supervisor.py",
       "source_location": "L461",
       "id": "project_manager_supervisor_rationale_461",
-      "community": 20,
+      "community": 84,
       "norm_label": "return an async langgraph node function for the pm supervisor."
     },
     {
@@ -7299,7 +7470,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_researcher_subgraph_py",
-      "community": 88,
+      "community": 4,
       "norm_label": "subgraph.py"
     },
     {
@@ -7308,7 +7479,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L18",
       "id": "researcher_subgraph_create_skill",
-      "community": 10,
+      "community": 4,
       "norm_label": "create_skill()"
     },
     {
@@ -7317,7 +7488,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L18",
       "id": "backend_agents_researcher_subgraph_py_str",
-      "community": 10,
+      "community": 4,
       "norm_label": "str"
     },
     {
@@ -7326,7 +7497,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L55",
       "id": "researcher_subgraph_build_researcher_subgraph",
-      "community": 88,
+      "community": 79,
       "norm_label": "build_researcher_subgraph()"
     },
     {
@@ -7335,7 +7506,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L1",
       "id": "researcher_subgraph_rationale_1",
-      "community": 88,
+      "community": 4,
       "norm_label": "researcher subgraph \u2014 web search, doc writing, rag ingestion, skill creation."
     },
     {
@@ -7344,7 +7515,7 @@
       "source_file": "backend/agents/researcher/subgraph.py",
       "source_location": "L25",
       "id": "researcher_subgraph_rationale_25",
-      "community": 10,
+      "community": 4,
       "norm_label": "create or update a skill (a focused capability brief) and assign it to roles."
     },
     {
@@ -7371,7 +7542,7 @@
       "source_file": "backend/agents/developers/devops/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_developers_devops_subgraph_py",
-      "community": 79,
+      "community": 88,
       "norm_label": "subgraph.py"
     },
     {
@@ -7389,7 +7560,7 @@
       "source_file": "backend/agents/developers/devops/subgraph.py",
       "source_location": "L1",
       "id": "devops_subgraph_rationale_1",
-      "community": 79,
+      "community": 88,
       "norm_label": "devops subgraph \u2014 docker, ci configs, deployment scripts."
     },
     {
@@ -7407,7 +7578,7 @@
       "source_file": "backend/agents/developers/qa/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_developers_qa_subgraph_py",
-      "community": 79,
+      "community": 88,
       "norm_label": "subgraph.py"
     },
     {
@@ -7425,7 +7596,7 @@
       "source_file": "backend/agents/developers/qa/subgraph.py",
       "source_location": "L1",
       "id": "qa_subgraph_rationale_1",
-      "community": 79,
+      "community": 88,
       "norm_label": "qa subgraph \u2014 integration / e2e test authoring."
     },
     {
@@ -7479,7 +7650,7 @@
       "source_file": "backend/agents/developers/backend_dev/subgraph.py",
       "source_location": "L1",
       "id": "backend_agents_developers_backend_dev_subgraph_py",
-      "community": 79,
+      "community": 88,
       "norm_label": "subgraph.py"
     },
     {
@@ -7497,7 +7668,7 @@
       "source_file": "backend/agents/developers/backend_dev/subgraph.py",
       "source_location": "L1",
       "id": "backend_dev_subgraph_rationale_1",
-      "community": 79,
+      "community": 88,
       "norm_label": "backend dev subgraph \u2014 tdd red/green/refactor loop."
     },
     {
@@ -7879,10 +8050,46 @@
       "norm_label": "service.py"
     },
     {
+      "label": "_subtask_status_priority()",
+      "file_type": "code",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L56",
+      "id": "ticket_system_service_subtask_status_priority",
+      "community": 27,
+      "norm_label": "_subtask_status_priority()"
+    },
+    {
+      "label": "SubtaskStatus",
+      "file_type": "code",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L56",
+      "id": "backend_ticket_system_service_py_subtaskstatus",
+      "community": 27,
+      "norm_label": "subtaskstatus"
+    },
+    {
+      "label": "int",
+      "file_type": "code",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L56",
+      "id": "backend_ticket_system_service_py_int",
+      "community": 27,
+      "norm_label": "int"
+    },
+    {
+      "label": "_subtask_status_order()",
+      "file_type": "code",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L65",
+      "id": "ticket_system_service_subtask_status_order",
+      "community": 27,
+      "norm_label": "_subtask_status_order()"
+    },
+    {
       "label": "TicketStateError",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L49",
+      "source_location": "L75",
       "id": "ticket_system_service_ticketstateerror",
       "community": 27,
       "norm_label": "ticketstateerror"
@@ -7900,7 +8107,7 @@
       "label": "seed_project_workspace()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L57",
+      "source_location": "L83",
       "id": "ticket_system_service_seed_project_workspace",
       "community": 27,
       "norm_label": "seed_project_workspace()"
@@ -7909,7 +8116,7 @@
       "label": "str",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L57",
+      "source_location": "L83",
       "id": "backend_ticket_system_service_py_str",
       "community": 27,
       "norm_label": "str"
@@ -7918,7 +8125,7 @@
       "label": "create_project()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L74",
+      "source_location": "L100",
       "id": "ticket_system_service_create_project",
       "community": 27,
       "norm_label": "create_project()"
@@ -7927,7 +8134,7 @@
       "label": "AsyncSession",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L74",
+      "source_location": "L100",
       "id": "backend_ticket_system_service_py_asyncsession",
       "community": 27,
       "norm_label": "asyncsession"
@@ -7936,7 +8143,7 @@
       "label": "ProjectCreate",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L74",
+      "source_location": "L100",
       "id": "backend_ticket_system_service_py_projectcreate",
       "community": 27,
       "norm_label": "projectcreate"
@@ -7945,7 +8152,7 @@
       "label": "Project",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L74",
+      "source_location": "L100",
       "id": "project",
       "community": 27,
       "norm_label": "project"
@@ -7954,7 +8161,7 @@
       "label": "list_projects()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L84",
+      "source_location": "L110",
       "id": "ticket_system_service_list_projects",
       "community": 27,
       "norm_label": "list_projects()"
@@ -7963,7 +8170,7 @@
       "label": "get_project()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L89",
+      "source_location": "L115",
       "id": "ticket_system_service_get_project",
       "community": 27,
       "norm_label": "get_project()"
@@ -7972,7 +8179,7 @@
       "label": "create_ticket()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L97",
+      "source_location": "L123",
       "id": "ticket_system_service_create_ticket",
       "community": 27,
       "norm_label": "create_ticket()"
@@ -7981,7 +8188,7 @@
       "label": "TicketCreate",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L97",
+      "source_location": "L123",
       "id": "backend_ticket_system_service_py_ticketcreate",
       "community": 27,
       "norm_label": "ticketcreate"
@@ -7990,7 +8197,7 @@
       "label": "Ticket",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L97",
+      "source_location": "L123",
       "id": "backend_ticket_system_service_py_ticket",
       "community": 27,
       "norm_label": "ticket"
@@ -7999,7 +8206,7 @@
       "label": "list_tickets()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L140",
+      "source_location": "L166",
       "id": "ticket_system_service_list_tickets",
       "community": 27,
       "norm_label": "list_tickets()"
@@ -8008,7 +8215,7 @@
       "label": "list_subtasks()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L152",
+      "source_location": "L178",
       "id": "ticket_system_service_list_subtasks",
       "community": 27,
       "norm_label": "list_subtasks()"
@@ -8017,25 +8224,16 @@
       "label": "AgentRole",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L152",
+      "source_location": "L178",
       "id": "backend_ticket_system_service_py_agentrole",
       "community": 27,
       "norm_label": "agentrole"
     },
     {
-      "label": "SubtaskStatus",
-      "file_type": "code",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L152",
-      "id": "backend_ticket_system_service_py_subtaskstatus",
-      "community": 27,
-      "norm_label": "subtaskstatus"
-    },
-    {
       "label": "Subtask",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L152",
+      "source_location": "L178",
       "id": "subtask",
       "community": 27,
       "norm_label": "subtask"
@@ -8044,7 +8242,7 @@
       "label": "get_ticket()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L180",
+      "source_location": "L206",
       "id": "ticket_system_service_get_ticket",
       "community": 27,
       "norm_label": "get_ticket()"
@@ -8053,7 +8251,7 @@
       "label": "update_ticket()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L193",
+      "source_location": "L219",
       "id": "ticket_system_service_update_ticket",
       "community": 27,
       "norm_label": "update_ticket()"
@@ -8062,7 +8260,7 @@
       "label": "TicketUpdate",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L193",
+      "source_location": "L219",
       "id": "backend_ticket_system_service_py_ticketupdate",
       "community": 27,
       "norm_label": "ticketupdate"
@@ -8071,7 +8269,7 @@
       "label": "add_question()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L219",
+      "source_location": "L245",
       "id": "ticket_system_service_add_question",
       "community": 27,
       "norm_label": "add_question()"
@@ -8080,7 +8278,7 @@
       "label": "answer_question()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L247",
+      "source_location": "L273",
       "id": "ticket_system_service_answer_question",
       "community": 27,
       "norm_label": "answer_question()"
@@ -8089,7 +8287,7 @@
       "label": "AnswerQuestion",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L247",
+      "source_location": "L273",
       "id": "backend_ticket_system_service_py_answerquestion",
       "community": 27,
       "norm_label": "answerquestion"
@@ -8098,7 +8296,7 @@
       "label": "_normalise_title()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L275",
+      "source_location": "L301",
       "id": "ticket_system_service_normalise_title",
       "community": 27,
       "norm_label": "_normalise_title()"
@@ -8107,25 +8305,16 @@
       "label": "_subtask_by_order_stmt()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L279",
+      "source_location": "L305",
       "id": "ticket_system_service_subtask_by_order_stmt",
       "community": 27,
       "norm_label": "_subtask_by_order_stmt()"
     },
     {
-      "label": "int",
-      "file_type": "code",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L279",
-      "id": "backend_ticket_system_service_py_int",
-      "community": 27,
-      "norm_label": "int"
-    },
-    {
       "label": "create_subtask()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L291",
+      "source_location": "L317",
       "id": "ticket_system_service_create_subtask",
       "community": 27,
       "norm_label": "create_subtask()"
@@ -8134,7 +8323,7 @@
       "label": "SubtaskCreate",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L291",
+      "source_location": "L317",
       "id": "backend_ticket_system_service_py_subtaskcreate",
       "community": 27,
       "norm_label": "subtaskcreate"
@@ -8143,7 +8332,7 @@
       "label": "get_subtask()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L357",
+      "source_location": "L383",
       "id": "ticket_system_service_get_subtask",
       "community": 27,
       "norm_label": "get_subtask()"
@@ -8152,7 +8341,7 @@
       "label": "update_subtask()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L370",
+      "source_location": "L396",
       "id": "ticket_system_service_update_subtask",
       "community": 27,
       "norm_label": "update_subtask()"
@@ -8161,7 +8350,7 @@
       "label": "SubtaskUpdate",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L370",
+      "source_location": "L396",
       "id": "backend_ticket_system_service_py_subtaskupdate",
       "community": 27,
       "norm_label": "subtaskupdate"
@@ -8170,7 +8359,7 @@
       "label": "delete_subtask()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L401",
+      "source_location": "L427",
       "id": "ticket_system_service_delete_subtask",
       "community": 27,
       "norm_label": "delete_subtask()"
@@ -8179,7 +8368,7 @@
       "label": "Any",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L401",
+      "source_location": "L427",
       "id": "backend_ticket_system_service_py_any",
       "community": 27,
       "norm_label": "any"
@@ -8188,7 +8377,7 @@
       "label": "next_pending_subtask()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L435",
+      "source_location": "L461",
       "id": "ticket_system_service_next_pending_subtask",
       "community": 27,
       "norm_label": "next_pending_subtask()"
@@ -8197,7 +8386,7 @@
       "label": "next_pending_subtask_for_role()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L447",
+      "source_location": "L480",
       "id": "ticket_system_service_next_pending_subtask_for_role",
       "community": 27,
       "norm_label": "next_pending_subtask_for_role()"
@@ -8206,7 +8395,7 @@
       "label": "next_pending_subtask_in_project()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L464",
+      "source_location": "L497",
       "id": "ticket_system_service_next_pending_subtask_in_project",
       "community": 27,
       "norm_label": "next_pending_subtask_in_project()"
@@ -8215,7 +8404,7 @@
       "label": "create_todo()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L499",
+      "source_location": "L545",
       "id": "ticket_system_service_create_todo",
       "community": 27,
       "norm_label": "create_todo()"
@@ -8224,7 +8413,7 @@
       "label": "TodoCreate",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L499",
+      "source_location": "L545",
       "id": "backend_ticket_system_service_py_todocreate",
       "community": 27,
       "norm_label": "todocreate"
@@ -8233,7 +8422,7 @@
       "label": "Todo",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L499",
+      "source_location": "L545",
       "id": "todo",
       "community": 27,
       "norm_label": "todo"
@@ -8242,7 +8431,7 @@
       "label": "update_todo()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L516",
+      "source_location": "L562",
       "id": "ticket_system_service_update_todo",
       "community": 27,
       "norm_label": "update_todo()"
@@ -8251,16 +8440,25 @@
       "label": "TodoUpdate",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L516",
+      "source_location": "L562",
       "id": "backend_ticket_system_service_py_todoupdate",
       "community": 27,
       "norm_label": "todoupdate"
     },
     {
+      "label": "_first_actionable_subtask()",
+      "file_type": "code",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L575",
+      "id": "ticket_system_service_first_actionable_subtask",
+      "community": 77,
+      "norm_label": "_first_actionable_subtask()"
+    },
+    {
       "label": "all_subtasks_done()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L529",
+      "source_location": "L593",
       "id": "ticket_system_service_all_subtasks_done",
       "community": 27,
       "norm_label": "all_subtasks_done()"
@@ -8269,7 +8467,7 @@
       "label": "bool",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L529",
+      "source_location": "L593",
       "id": "backend_ticket_system_service_py_bool",
       "community": 27,
       "norm_label": "bool"
@@ -8278,7 +8476,7 @@
       "label": "to_dict_ticket()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L536",
+      "source_location": "L600",
       "id": "ticket_system_service_to_dict_ticket",
       "community": 27,
       "norm_label": "to_dict_ticket()"
@@ -8287,7 +8485,7 @@
       "label": "to_dict_ticket_summary()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L572",
+      "source_location": "L636",
       "id": "ticket_system_service_to_dict_ticket_summary",
       "community": 27,
       "norm_label": "to_dict_ticket_summary()"
@@ -8296,7 +8494,7 @@
       "label": "to_dict_ticket_list_item()",
       "file_type": "code",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L608",
+      "source_location": "L674",
       "id": "ticket_system_service_to_dict_ticket_list_item",
       "community": 27,
       "norm_label": "to_dict_ticket_list_item()"
@@ -8311,11 +8509,29 @@
       "norm_label": "ticket / subtask state-machine service layer.  encapsulates all reads, writes, a"
     },
     {
+      "label": "Lower = higher priority when picking the next subtask for a dev.",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L57",
+      "id": "ticket_system_service_rationale_57",
+      "community": 27,
+      "norm_label": "lower = higher priority when picking the next subtask for a dev."
+    },
+    {
+      "label": "SQL ORDER BY key: in_progress, then blocked, then pending.",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L66",
+      "id": "ticket_system_service_rationale_66",
+      "community": 27,
+      "norm_label": "sql order by key: in_progress, then blocked, then pending."
+    },
+    {
       "label": "Raised when a status transition is not permitted.",
       "file_type": "rationale",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L50",
-      "id": "ticket_system_service_rationale_50",
+      "source_location": "L76",
+      "id": "ticket_system_service_rationale_76",
       "community": 27,
       "norm_label": "raised when a status transition is not permitted."
     },
@@ -8323,8 +8539,8 @@
       "label": "Lay down AGENTS.md, docs/, and conventions so agents never cite node_modules.",
       "file_type": "rationale",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L58",
-      "id": "ticket_system_service_rationale_58",
+      "source_location": "L84",
+      "id": "ticket_system_service_rationale_84",
       "community": 27,
       "norm_label": "lay down agents.md, docs/, and conventions so agents never cite node_modules."
     },
@@ -8332,8 +8548,8 @@
       "label": "Create a ticket, or return the existing one if a same-title ticket     already e",
       "file_type": "rationale",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L98",
-      "id": "ticket_system_service_rationale_98",
+      "source_location": "L124",
+      "id": "ticket_system_service_rationale_124",
       "community": 27,
       "norm_label": "create a ticket, or return the existing one if a same-title ticket     already e"
     },
@@ -8341,8 +8557,8 @@
       "label": "List subtasks for a project with optional filters.      Ordering is stable for e",
       "file_type": "rationale",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L160",
-      "id": "ticket_system_service_rationale_160",
+      "source_location": "L186",
+      "id": "ticket_system_service_rationale_186",
       "community": 27,
       "norm_label": "list subtasks for a project with optional filters.      ordering is stable for e"
     },
@@ -8350,8 +8566,8 @@
       "label": "Create a subtask, or return the existing row for the same ``order_index``.",
       "file_type": "rationale",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L294",
-      "id": "ticket_system_service_rationale_294",
+      "source_location": "L320",
+      "id": "ticket_system_service_rationale_320",
       "community": 27,
       "norm_label": "create a subtask, or return the existing row for the same ``order_index``."
     },
@@ -8359,35 +8575,44 @@
       "label": "Delete a subtask (and its todos via cascade).      Refuses to delete subtasks th",
       "file_type": "rationale",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L402",
-      "id": "ticket_system_service_rationale_402",
+      "source_location": "L428",
+      "id": "ticket_system_service_rationale_428",
       "community": 27,
       "norm_label": "delete a subtask (and its todos via cascade).      refuses to delete subtasks th"
     },
     {
-      "label": "Return the lowest-order pending subtask for a ticket, or None.",
+      "label": "Return the next actionable subtask for a ticket, or None.      Prefers in_progre",
       "file_type": "rationale",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L436",
-      "id": "ticket_system_service_rationale_436",
+      "source_location": "L462",
+      "id": "ticket_system_service_rationale_462",
       "community": 27,
-      "norm_label": "return the lowest-order pending subtask for a ticket, or none."
+      "norm_label": "return the next actionable subtask for a ticket, or none.      prefers in_progre"
     },
     {
-      "label": "Return the next pending subtask for a role across the whole project.      Orderi",
+      "label": "Return the next actionable subtask for a role across the project.      Ordering:",
       "file_type": "rationale",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L470",
-      "id": "ticket_system_service_rationale_470",
+      "source_location": "L504",
+      "id": "ticket_system_service_rationale_504",
       "community": 27,
-      "norm_label": "return the next pending subtask for a role across the whole project.      orderi"
+      "norm_label": "return the next actionable subtask for a role across the project.      ordering:"
+    },
+    {
+      "label": "Compact pointer to the subtask a dev should resume or start next.",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L576",
+      "id": "ticket_system_service_rationale_576",
+      "community": 77,
+      "norm_label": "compact pointer to the subtask a dev should resume or start next."
     },
     {
       "label": "Compact ticket payload for PM/lead list+plan tools (no RITE trees).",
       "file_type": "rationale",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L573",
-      "id": "ticket_system_service_rationale_573",
+      "source_location": "L637",
+      "id": "ticket_system_service_rationale_637",
       "community": 27,
       "norm_label": "compact ticket payload for pm/lead list+plan tools (no rite trees)."
     },
@@ -8395,8 +8620,8 @@
       "label": "Lightweight row for bulk listing \u2014 keeps tool outputs under truncation limits.",
       "file_type": "rationale",
       "source_file": "backend/ticket_system/service.py",
-      "source_location": "L609",
-      "id": "ticket_system_service_rationale_609",
+      "source_location": "L675",
+      "id": "ticket_system_service_rationale_675",
       "community": 27,
       "norm_label": "lightweight row for bulk listing \u2014 keeps tool outputs under truncation limits."
     },
@@ -8406,7 +8631,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L1",
       "id": "backend_ticket_system_models_py",
-      "community": 27,
+      "community": 91,
       "norm_label": "models.py"
     },
     {
@@ -8415,7 +8640,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L17",
       "id": "ticket_system_models_uuid",
-      "community": 27,
+      "community": 91,
       "norm_label": "_uuid()"
     },
     {
@@ -8424,7 +8649,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L17",
       "id": "backend_ticket_system_models_py_str",
-      "community": 27,
+      "community": 61,
       "norm_label": "str"
     },
     {
@@ -8433,7 +8658,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L21",
       "id": "ticket_system_models_utcnow",
-      "community": 27,
+      "community": 91,
       "norm_label": "_utcnow()"
     },
     {
@@ -8442,7 +8667,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L21",
       "id": "datetime",
-      "community": 27,
+      "community": 91,
       "norm_label": "datetime"
     },
     {
@@ -8451,7 +8676,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L25",
       "id": "ticket_system_models_ticketstatus",
-      "community": 27,
+      "community": 61,
       "norm_label": "ticketstatus"
     },
     {
@@ -8460,7 +8685,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L35",
       "id": "ticket_system_models_subtaskstatus",
-      "community": 27,
+      "community": 61,
       "norm_label": "subtaskstatus"
     },
     {
@@ -8469,7 +8694,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L42",
       "id": "ticket_system_models_todostatus",
-      "community": 27,
+      "community": 61,
       "norm_label": "todostatus"
     },
     {
@@ -8478,7 +8703,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L47",
       "id": "ticket_system_models_agentrole",
-      "community": 27,
+      "community": 61,
       "norm_label": "agentrole"
     },
     {
@@ -8532,7 +8757,7 @@
       "source_file": "backend/ticket_system/models.py",
       "source_location": "L1",
       "id": "ticket_system_models_rationale_1",
-      "community": 27,
+      "community": 91,
       "norm_label": "sqlalchemy orm models for the ticket platform.  hierarchy: project \u2192 ticket \u2192 su"
     },
     {
@@ -8559,7 +8784,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L1",
       "id": "backend_ticket_system_schemas_py",
-      "community": 27,
+      "community": 61,
       "norm_label": "schemas.py"
     },
     {
@@ -8568,7 +8793,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L17",
       "id": "ticket_system_schemas_orm",
-      "community": 27,
+      "community": 61,
       "norm_label": "_orm"
     },
     {
@@ -8577,7 +8802,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L25",
       "id": "ticket_system_schemas_testcasespec",
-      "community": 27,
+      "community": 61,
       "norm_label": "testcasespec"
     },
     {
@@ -8586,7 +8811,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L52",
       "id": "ticket_system_schemas_normalise_test_cases",
-      "community": 27,
+      "community": 95,
       "norm_label": "_normalise_test_cases()"
     },
     {
@@ -8595,7 +8820,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L52",
       "id": "object",
-      "community": 27,
+      "community": 95,
       "norm_label": "object"
     },
     {
@@ -8604,7 +8829,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L82",
       "id": "ticket_system_schemas_projectcreate",
-      "community": 27,
+      "community": 61,
       "norm_label": "projectcreate"
     },
     {
@@ -8613,7 +8838,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L88",
       "id": "ticket_system_schemas_projectout",
-      "community": 27,
+      "community": 61,
       "norm_label": "projectout"
     },
     {
@@ -8622,7 +8847,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L99",
       "id": "ticket_system_schemas_todocreate",
-      "community": 27,
+      "community": 61,
       "norm_label": "todocreate"
     },
     {
@@ -8631,7 +8856,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L105",
       "id": "ticket_system_schemas_todoout",
-      "community": 27,
+      "community": 61,
       "norm_label": "todoout"
     },
     {
@@ -8640,7 +8865,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L114",
       "id": "ticket_system_schemas_todoupdate",
-      "community": 27,
+      "community": 61,
       "norm_label": "todoupdate"
     },
     {
@@ -8649,7 +8874,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L122",
       "id": "ticket_system_schemas_subtaskcreate",
-      "community": 27,
+      "community": 61,
       "norm_label": "subtaskcreate"
     },
     {
@@ -8658,7 +8883,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L137",
       "id": "ticket_system_schemas_subtaskcreate_coerce_test_cases",
-      "community": 27,
+      "community": 95,
       "norm_label": "._coerce_test_cases()"
     },
     {
@@ -8667,7 +8892,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L141",
       "id": "ticket_system_schemas_subtaskout",
-      "community": 27,
+      "community": 61,
       "norm_label": "subtaskout"
     },
     {
@@ -8676,7 +8901,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L155",
       "id": "ticket_system_schemas_subtaskout_coerce_test_cases",
-      "community": 27,
+      "community": 95,
       "norm_label": "._coerce_test_cases()"
     },
     {
@@ -8685,7 +8910,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L159",
       "id": "ticket_system_schemas_subtaskupdate",
-      "community": 27,
+      "community": 61,
       "norm_label": "subtaskupdate"
     },
     {
@@ -8694,7 +8919,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L170",
       "id": "ticket_system_schemas_subtaskupdate_coerce_test_cases",
-      "community": 27,
+      "community": 95,
       "norm_label": "._coerce_test_cases()"
     },
     {
@@ -8703,7 +8928,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L177",
       "id": "ticket_system_schemas_ticketcreate",
-      "community": 27,
+      "community": 61,
       "norm_label": "ticketcreate"
     },
     {
@@ -8712,7 +8937,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L186",
       "id": "ticket_system_schemas_ticketquestion",
-      "community": 27,
+      "community": 61,
       "norm_label": "ticketquestion"
     },
     {
@@ -8721,7 +8946,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L194",
       "id": "ticket_system_schemas_ticketout",
-      "community": 27,
+      "community": 61,
       "norm_label": "ticketout"
     },
     {
@@ -8730,7 +8955,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L209",
       "id": "ticket_system_schemas_ticketupdate",
-      "community": 27,
+      "community": 61,
       "norm_label": "ticketupdate"
     },
     {
@@ -8739,7 +8964,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L218",
       "id": "ticket_system_schemas_answerquestion",
-      "community": 27,
+      "community": 61,
       "norm_label": "answerquestion"
     },
     {
@@ -8748,7 +8973,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L1",
       "id": "ticket_system_schemas_rationale_1",
-      "community": 27,
+      "community": 61,
       "norm_label": "pydantic schemas for ticket-system api requests and responses."
     },
     {
@@ -8757,7 +8982,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L26",
       "id": "ticket_system_schemas_rationale_26",
-      "community": 27,
+      "community": 61,
       "norm_label": "a single test case in rite format.      encodes the 5 questions every test must"
     },
     {
@@ -8766,7 +8991,7 @@
       "source_file": "backend/ticket_system/schemas.py",
       "source_location": "L53",
       "id": "ticket_system_schemas_rationale_53",
-      "community": 27,
+      "community": 95,
       "norm_label": "accept either plain strings (legacy) or structured dicts and     return a list o"
     },
     {
@@ -8775,7 +9000,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L1",
       "id": "backend_db_session_py",
-      "community": 17,
+      "community": 13,
       "norm_label": "session.py"
     },
     {
@@ -8784,7 +9009,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L17",
       "id": "db_session_base",
-      "community": 27,
+      "community": 91,
       "norm_label": "base"
     },
     {
@@ -8793,7 +9018,7 @@
       "source_file": "",
       "source_location": "",
       "id": "declarativebase",
-      "community": 27,
+      "community": 91,
       "norm_label": "declarativebase"
     },
     {
@@ -8802,7 +9027,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L38",
       "id": "db_session_get_db",
-      "community": 17,
+      "community": 13,
       "norm_label": "get_db()"
     },
     {
@@ -8811,7 +9036,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L38",
       "id": "backend_db_session_py_asyncsession",
-      "community": 17,
+      "community": 13,
       "norm_label": "asyncsession"
     },
     {
@@ -8829,7 +9054,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L1",
       "id": "db_session_rationale_1",
-      "community": 17,
+      "community": 13,
       "norm_label": "async sqlalchemy engine, session factory, and declarativebase."
     },
     {
@@ -8838,7 +9063,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L18",
       "id": "db_session_rationale_18",
-      "community": 27,
+      "community": 91,
       "norm_label": "shared declarative base for all orm models."
     },
     {
@@ -8847,7 +9072,7 @@
       "source_file": "backend/db/session.py",
       "source_location": "L39",
       "id": "db_session_rationale_39",
-      "community": 17,
+      "community": 13,
       "norm_label": "fastapi dependency that yields a session and ensures cleanup."
     },
     {
@@ -9297,7 +9522,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L17",
       "id": "backend_api_routes_tickets_py_ticketcreate",
-      "community": 27,
+      "community": 17,
       "norm_label": "ticketcreate"
     },
     {
@@ -9351,7 +9576,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L35",
       "id": "backend_api_routes_tickets_py_ticketupdate",
-      "community": 27,
+      "community": 17,
       "norm_label": "ticketupdate"
     },
     {
@@ -9369,7 +9594,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L49",
       "id": "backend_api_routes_tickets_py_answerquestion",
-      "community": 27,
+      "community": 17,
       "norm_label": "answerquestion"
     },
     {
@@ -9387,7 +9612,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L64",
       "id": "backend_api_routes_tickets_py_agentrole",
-      "community": 27,
+      "community": 17,
       "norm_label": "agentrole"
     },
     {
@@ -9396,7 +9621,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L64",
       "id": "backend_api_routes_tickets_py_subtaskstatus",
-      "community": 27,
+      "community": 17,
       "norm_label": "subtaskstatus"
     },
     {
@@ -9414,7 +9639,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L81",
       "id": "backend_api_routes_tickets_py_subtaskcreate",
-      "community": 27,
+      "community": 17,
       "norm_label": "subtaskcreate"
     },
     {
@@ -9432,7 +9657,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L93",
       "id": "backend_api_routes_tickets_py_subtaskupdate",
-      "community": 27,
+      "community": 17,
       "norm_label": "subtaskupdate"
     },
     {
@@ -9450,7 +9675,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L106",
       "id": "backend_api_routes_tickets_py_todocreate",
-      "community": 27,
+      "community": 17,
       "norm_label": "todocreate"
     },
     {
@@ -9468,7 +9693,7 @@
       "source_file": "backend/api/routes/tickets.py",
       "source_location": "L118",
       "id": "backend_api_routes_tickets_py_todoupdate",
-      "community": 27,
+      "community": 17,
       "norm_label": "todoupdate"
     },
     {
@@ -9540,7 +9765,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L42",
       "id": "backend_api_routes_agents_py_bool",
-      "community": 21,
+      "community": 92,
       "norm_label": "bool"
     },
     {
@@ -9576,7 +9801,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L128",
       "id": "routes_agents_is_transient",
-      "community": 21,
+      "community": 92,
       "norm_label": "_is_transient()"
     },
     {
@@ -9585,7 +9810,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L128",
       "id": "backend_api_routes_agents_py_baseexception",
-      "community": 21,
+      "community": 92,
       "norm_label": "baseexception"
     },
     {
@@ -9702,7 +9927,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L310",
       "id": "backend_api_routes_agents_py_int",
-      "community": 21,
+      "community": 92,
       "norm_label": "int"
     },
     {
@@ -9792,7 +10017,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L474",
       "id": "routes_agents_list_checkpoints",
-      "community": 21,
+      "community": 92,
       "norm_label": "list_checkpoints()"
     },
     {
@@ -9819,7 +10044,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L526",
       "id": "routes_agents_list_project_files",
-      "community": 11,
+      "community": 15,
       "norm_label": "list_project_files()"
     },
     {
@@ -9828,7 +10053,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L545",
       "id": "routes_agents_get_file_content",
-      "community": 15,
+      "community": 11,
       "norm_label": "get_file_content()"
     },
     {
@@ -9990,7 +10215,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L479",
       "id": "routes_agents_rationale_479",
-      "community": 21,
+      "community": 92,
       "norm_label": "return the project's checkpoint history (latest first).      responses are ttl-c"
     },
     {
@@ -10008,7 +10233,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L527",
       "id": "routes_agents_rationale_527",
-      "community": 11,
+      "community": 15,
       "norm_label": "list files in the project's workspace directory recursively."
     },
     {
@@ -10017,7 +10242,7 @@
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L546",
       "id": "routes_agents_rationale_546",
-      "community": 15,
+      "community": 11,
       "norm_label": "return the content of a file in the project's workspace."
     },
     {
@@ -11145,6 +11370,267 @@
       "norm_label": "key source files"
     },
     {
+      "label": "List every ticket in a project as compact rows (id, title, status).      USE WHE",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L34",
+      "community": 0,
+      "norm_label": "list every ticket in a project as compact rows (id, title, status).      use whe",
+      "id": "tools_ticket_tools_rationale_34"
+    },
+    {
+      "label": "Fetch one ticket by UUID.      USE WHEN: You need to read subtasks or RITE test",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L50",
+      "community": 0,
+      "norm_label": "fetch one ticket by uuid.      use when: you need to read subtasks or rite test",
+      "id": "tools_ticket_tools_rationale_50"
+    },
+    {
+      "label": "Fetch one ticket's summary \u2014 no subtask trees, no full RITE specs.      USE WHEN",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L94",
+      "community": 0,
+      "norm_label": "fetch one ticket's summary \u2014 no subtask trees, no full rite specs.      use when",
+      "id": "tools_ticket_tools_rationale_94"
+    },
+    {
+      "label": "Create a new ticket in DRAFT status owned by the given project.      USE WHEN: Y",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L129",
+      "community": 0,
+      "norm_label": "create a new ticket in draft status owned by the given project.      use when: y",
+      "id": "tools_ticket_tools_rationale_129"
+    },
+    {
+      "label": "Transition a ticket to a new status. Valid: draft, in_review, questions_pending,",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L156",
+      "community": 0,
+      "norm_label": "transition a ticket to a new status. valid: draft, in_review, questions_pending,",
+      "id": "tools_ticket_tools_rationale_156"
+    },
+    {
+      "label": "Append a clarification question to a ticket and mark it questions_pending.",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L178",
+      "community": 0,
+      "norm_label": "append a clarification question to a ticket and mark it questions_pending.",
+      "id": "tools_ticket_tools_rationale_178"
+    },
+    {
+      "label": "A single RITE-format test case the lead must specify per subtask.",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L185",
+      "community": 90,
+      "norm_label": "a single rite-format test case the lead must specify per subtask.",
+      "id": "tools_ticket_tools_rationale_185"
+    },
+    {
+      "label": "Arguments for create_subtask. Every field labelled REQUIRED must be supplied.",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L225",
+      "community": 61,
+      "norm_label": "arguments for create_subtask. every field labelled required must be supplied.",
+      "id": "tools_ticket_tools_rationale_225"
+    },
+    {
+      "label": "Create an ordered subtask under a ticket using RITE-format test cases.      USE",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L270",
+      "community": 90,
+      "norm_label": "create an ordered subtask under a ticket using rite-format test cases.      use",
+      "id": "tools_ticket_tools_rationale_270"
+    },
+    {
+      "label": "Update a subtask's status. Valid: pending, in_progress, done, blocked.",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L336",
+      "community": 0,
+      "norm_label": "update a subtask's status. valid: pending, in_progress, done, blocked.",
+      "id": "tools_ticket_tools_rationale_336"
+    },
+    {
+      "label": "Lead-only patch tool for fixing an existing subtask in place.",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L347",
+      "community": 90,
+      "norm_label": "lead-only patch tool for fixing an existing subtask in place.",
+      "id": "tools_ticket_tools_rationale_347"
+    },
+    {
+      "label": "Patch fields on an existing subtask. Lead-only tool.      Use this when an exist",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L380",
+      "community": 0,
+      "norm_label": "patch fields on an existing subtask. lead-only tool.      use this when an exist",
+      "id": "tools_ticket_tools_rationale_380"
+    },
+    {
+      "label": "Delete a subtask that's wrong or no longer needed. Lead-only tool.      Refuses",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L432",
+      "community": 0,
+      "norm_label": "delete a subtask that's wrong or no longer needed. lead-only tool.      refuses",
+      "id": "tools_ticket_tools_rationale_432"
+    },
+    {
+      "label": "Append a todo (low-level step) to a subtask.",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L448",
+      "community": 0,
+      "norm_label": "append a todo (low-level step) to a subtask.",
+      "id": "tools_ticket_tools_rationale_448"
+    },
+    {
+      "label": "Mark a todo as completed.",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L460",
+      "community": 0,
+      "norm_label": "mark a todo as completed.",
+      "id": "tools_ticket_tools_rationale_460"
+    },
+    {
+      "label": "Return the next pending subtask for a role across the whole project.      USE WH",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L496",
+      "community": 0,
+      "norm_label": "return the next pending subtask for a role across the whole project.      use wh",
+      "id": "tools_ticket_tools_rationale_496"
+    },
+    {
+      "label": "List subtasks filtered by project_id and optionally ticket_id and/or assigned_to",
+      "file_type": "rationale",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L582",
+      "community": 0,
+      "norm_label": "list subtasks filtered by project_id and optionally ticket_id and/or assigned_to",
+      "id": "tools_ticket_tools_rationale_582"
+    },
+    {
+      "label": "Return the RITE + tool contract appendix (cached once).",
+      "file_type": "rationale",
+      "source_file": "backend/agents/prompts.py",
+      "source_location": "L613",
+      "community": 7,
+      "norm_label": "return the rite + tool contract appendix (cached once).",
+      "id": "agents_prompts_rationale_613"
+    },
+    {
+      "label": "Return the static base for a given role (cached once).      Only called at app s",
+      "file_type": "rationale",
+      "source_file": "backend/agents/prompts.py",
+      "source_location": "L619",
+      "community": 56,
+      "norm_label": "return the static base for a given role (cached once).      only called at app s",
+      "id": "agents_prompts_rationale_619"
+    },
+    {
+      "label": "Raised when a status transition is not permitted.",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L50",
+      "community": 27,
+      "norm_label": "raised when a status transition is not permitted.",
+      "id": "ticket_system_service_rationale_50"
+    },
+    {
+      "label": "Lay down AGENTS.md, docs/, and conventions so agents never cite node_modules.",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L58",
+      "community": 27,
+      "norm_label": "lay down agents.md, docs/, and conventions so agents never cite node_modules.",
+      "id": "ticket_system_service_rationale_58"
+    },
+    {
+      "label": "Create a ticket, or return the existing one if a same-title ticket     already e",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L98",
+      "community": 27,
+      "norm_label": "create a ticket, or return the existing one if a same-title ticket     already e",
+      "id": "ticket_system_service_rationale_98"
+    },
+    {
+      "label": "List subtasks for a project with optional filters.      Ordering is stable for e",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L160",
+      "community": 27,
+      "norm_label": "list subtasks for a project with optional filters.      ordering is stable for e",
+      "id": "ticket_system_service_rationale_160"
+    },
+    {
+      "label": "Create a subtask, or return the existing row for the same ``order_index``.",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L294",
+      "community": 27,
+      "norm_label": "create a subtask, or return the existing row for the same ``order_index``.",
+      "id": "ticket_system_service_rationale_294"
+    },
+    {
+      "label": "Delete a subtask (and its todos via cascade).      Refuses to delete subtasks th",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L402",
+      "community": 27,
+      "norm_label": "delete a subtask (and its todos via cascade).      refuses to delete subtasks th",
+      "id": "ticket_system_service_rationale_402"
+    },
+    {
+      "label": "Return the lowest-order pending subtask for a ticket, or None.",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L436",
+      "community": 27,
+      "norm_label": "return the lowest-order pending subtask for a ticket, or none.",
+      "id": "ticket_system_service_rationale_436"
+    },
+    {
+      "label": "Return the next pending subtask for a role across the whole project.      Orderi",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L470",
+      "community": 27,
+      "norm_label": "return the next pending subtask for a role across the whole project.      orderi",
+      "id": "ticket_system_service_rationale_470"
+    },
+    {
+      "label": "Compact ticket payload for PM/lead list+plan tools (no RITE trees).",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L573",
+      "community": 27,
+      "norm_label": "compact ticket payload for pm/lead list+plan tools (no rite trees).",
+      "id": "ticket_system_service_rationale_573"
+    },
+    {
+      "label": "Lightweight row for bulk listing \u2014 keeps tool outputs under truncation limits.",
+      "file_type": "rationale",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L609",
+      "community": 27,
+      "norm_label": "lightweight row for bulk listing \u2014 keeps tool outputs under truncation limits.",
+      "id": "ticket_system_service_rationale_609"
+    },
+    {
       "label": "Append a compact index of skills assigned to ``role``.      Full ``SKILL.md`` bo",
       "file_type": "rationale",
       "source_file": "backend/agents/skills/loader.py",
@@ -11194,7 +11680,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/llm.py",
       "source_location": "L218",
-      "community": 97,
+      "community": 55,
       "norm_label": "log where each configured role sends traffic (local vs cloud).      misconfigura",
       "id": "agents_llm_rationale_218"
     },
@@ -11239,7 +11725,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/llm.py",
       "source_location": "L116",
-      "community": 97,
+      "community": 55,
       "norm_label": "log where each configured role sends traffic (local vs cloud).      misconfigura",
       "id": "agents_llm_rationale_116"
     },
@@ -11635,7 +12121,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
       "source_location": "L51",
-      "community": 76,
+      "community": 86,
       "norm_label": "best-effort textual summary of the final aimessage in ``messages``.",
       "id": "agents_runner_rationale_51"
     },
@@ -11644,7 +12130,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
       "source_location": "L81",
-      "community": 76,
+      "community": 74,
       "norm_label": "assemble the minimal message list a specialist needs to act.      strategy:",
       "id": "agents_runner_rationale_81"
     },
@@ -11671,7 +12157,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
       "source_location": "L193",
-      "community": 20,
+      "community": 86,
       "norm_label": "force subtasks back to ``blocked`` (used when a completion gate fails).",
       "id": "agents_runner_rationale_193"
     },
@@ -11689,7 +12175,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/llm_audit.py",
       "source_location": "L92",
-      "community": 20,
+      "community": 84,
       "norm_label": "call from inside an ``except`` block \u2014 attaches stack trace via ``exception()``.",
       "id": "agents_llm_audit_rationale_92"
     },
@@ -11707,7 +12193,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/llm.py",
       "source_location": "L112",
-      "community": 97,
+      "community": 55,
       "norm_label": "log where each configured role sends traffic (local vs cloud).      misconfigura",
       "id": "agents_llm_rationale_112"
     },
@@ -11815,7 +12301,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
       "source_location": "L457",
-      "community": 20,
+      "community": 84,
       "norm_label": "return an async langgraph node function for the pm supervisor.",
       "id": "project_manager_supervisor_rationale_457"
     },
@@ -11950,7 +12436,7 @@
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L122",
-      "community": 27,
+      "community": 90,
       "norm_label": "a single rite-format test case the lead must specify per subtask.",
       "id": "tools_ticket_tools_rationale_122"
     },
@@ -11959,7 +12445,7 @@
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L162",
-      "community": 27,
+      "community": 61,
       "norm_label": "arguments for create_subtask. every field labelled required must be supplied.",
       "id": "tools_ticket_tools_rationale_162"
     },
@@ -11968,7 +12454,7 @@
       "file_type": "rationale",
       "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L207",
-      "community": 27,
+      "community": 90,
       "norm_label": "create an ordered subtask under a ticket using rite-format test cases.      idem",
       "id": "tools_ticket_tools_rationale_207"
     },
@@ -12036,15 +12522,6 @@
       "id": "tools_ticket_tools_rationale_419"
     },
     {
-      "label": "List subtasks filtered by project_id and optionally ticket_id and/or assigned_to",
-      "file_type": "rationale",
-      "source_file": "backend/tools/ticket_tools.py",
-      "source_location": "L498",
-      "community": 0,
-      "norm_label": "list subtasks filtered by project_id and optionally ticket_id and/or assigned_to",
-      "id": "tools_ticket_tools_rationale_498"
-    },
-    {
       "label": "Build and compile a tool-using specialist subgraph.",
       "file_type": "rationale",
       "source_file": "backend/agents/runner.py",
@@ -12058,7 +12535,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/state.py",
       "source_location": "L18",
-      "community": 20,
+      "community": 6,
       "norm_label": "lightweight event record for streaming to the monitoring client.",
       "id": "agents_state_rationale_18"
     },
@@ -12130,7 +12607,7 @@
       "file_type": "rationale",
       "source_file": "backend/agents/project_manager/supervisor.py",
       "source_location": "L432",
-      "community": 20,
+      "community": 84,
       "norm_label": "return an async langgraph node function for the pm supervisor.",
       "id": "project_manager_supervisor_rationale_432"
     },
@@ -12319,7 +12796,7 @@
       "file_type": "rationale",
       "source_file": "backend/api/routes/agents.py",
       "source_location": "L476",
-      "community": 21,
+      "community": 92,
       "norm_label": "return the project's checkpoint history (latest first).      responses are ttl-c",
       "id": "routes_agents_rationale_476"
     },
@@ -12449,7 +12926,7 @@
       "source_url": null,
       "captured_at": null,
       "contributor": null,
-      "community": 16,
+      "community": 86,
       "norm_label": "langgraph orchestration",
       "id": "langgraph_graph"
     },
@@ -17100,6 +17577,26 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "backend_tools_ticket_tools_py",
+      "target": "tools_ticket_tools_parse_dev_role",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "backend_tools_ticket_tools_py",
+      "target": "tools_ticket_tools_subtask_tool_payload",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L121",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -17384,6 +17881,17 @@
       "target": "ticket_system_models_todostatus"
     },
     {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_subtask_tool_payload",
+      "target": "backend_tools_ticket_tools_py_any",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/tools/ticket_tools.py",
@@ -17557,6 +18065,28 @@
     },
     {
       "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_parse_dev_role",
+      "target": "backend_tools_ticket_tools_py_str",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_subtask_tool_payload",
+      "target": "backend_tools_ticket_tools_py_str",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "backend/tools/ticket_tools.py",
@@ -17589,6 +18119,199 @@
       "target": "backend_tools_ticket_tools_py_str"
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "tools_ticket_tools_parse_dev_role",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_parse_dev_role",
+      "target": "tools_ticket_tools_parse_dev_role"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_parse_dev_role_rejects_non_dev_roles",
+      "target": "tools_ticket_tools_parse_dev_role",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L520",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_next_pending_subtask",
+      "target": "tools_ticket_tools_parse_dev_role",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L558",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_next_pending_subtask_in_project",
+      "target": "tools_ticket_tools_parse_dev_role",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_parse_dev_role",
+      "target": "backend_tools_ticket_tools_py_agentrole",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_parse_dev_role",
+      "target": "ticket_system_models_agentrole",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_parse_dev_role",
+      "target": "valueerror"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_41",
+      "target": "tools_ticket_tools_parse_dev_role",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L18",
+      "weight": 0.8,
+      "source": "backend_tools_ticket_tools_py_agentrole",
+      "target": "ticket_system_models_agentrole",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L18",
+      "weight": 0.8,
+      "source": "backend_tools_ticket_tools_py_agentrole",
+      "target": "ticket_system_models_subtaskstatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L18",
+      "weight": 0.8,
+      "source": "backend_tools_ticket_tools_py_agentrole",
+      "target": "ticket_system_models_ticketstatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L18",
+      "weight": 0.8,
+      "source": "backend_tools_ticket_tools_py_agentrole",
+      "target": "ticket_system_models_todostatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L329",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_create_subtask",
+      "target": "backend_tools_ticket_tools_py_agentrole",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L630",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_list_subtasks",
+      "target": "backend_tools_ticket_tools_py_agentrole",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L436",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_update_subtask",
+      "target": "backend_tools_ticket_tools_py_agentrole",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L532",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_next_pending_subtask",
+      "target": "tools_ticket_tools_subtask_tool_payload",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L581",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_next_pending_subtask_in_project",
+      "target": "tools_ticket_tools_subtask_tool_payload",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/tools/ticket_tools.py",
@@ -17597,6 +18320,16 @@
       "confidence_score": 1.0,
       "source": "tools_ticket_tools_rationale_34",
       "target": "tools_ticket_tools_list_tickets"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_72",
+      "target": "tools_ticket_tools_list_tickets",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -17633,6 +18366,26 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_88",
+      "target": "tools_ticket_tools_get_ticket",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L132",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_132",
+      "target": "tools_ticket_tools_get_ticket_summary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L94",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -17648,6 +18401,16 @@
       "confidence_score": 1.0,
       "source": "tools_ticket_tools_rationale_129",
       "target": "tools_ticket_tools_create_ticket"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L167",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_167",
+      "target": "tools_ticket_tools_create_ticket",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -17683,6 +18446,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_194",
+      "target": "tools_ticket_tools_update_ticket_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L115",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -17698,6 +18471,16 @@
       "confidence_score": 1.0,
       "source": "tools_ticket_tools_rationale_178",
       "target": "tools_ticket_tools_add_question_to_ticket"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L216",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_216",
+      "target": "tools_ticket_tools_add_question_to_ticket",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -17729,6 +18512,16 @@
       "confidence_score": 1.0,
       "source": "tools_ticket_tools_rationale_185",
       "target": "tools_ticket_tools_testcaseinput"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L223",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_223",
+      "target": "tools_ticket_tools_testcaseinput",
+      "confidence_score": 1.0
     },
     {
       "relation": "inherits",
@@ -18142,6 +18935,16 @@
       "target": "tools_ticket_tools_createsubtaskargs"
     },
     {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L263",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_263",
+      "target": "tools_ticket_tools_createsubtaskargs",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "context": "parameter_type",
       "confidence": "EXTRACTED",
@@ -18171,6 +18974,16 @@
       "confidence_score": 1.0,
       "source": "tools_ticket_tools_rationale_270",
       "target": "tools_ticket_tools_create_subtask"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L308",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_308",
+      "target": "tools_ticket_tools_create_subtask",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -18255,6 +19068,16 @@
       "target": "tools_ticket_tools_update_subtask_status"
     },
     {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L374",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_374",
+      "target": "tools_ticket_tools_update_subtask_status",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -18284,6 +19107,16 @@
       "confidence_score": 1.0,
       "source": "tools_ticket_tools_rationale_347",
       "target": "tools_ticket_tools_updatesubtaskargs"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L385",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_385",
+      "target": "tools_ticket_tools_updatesubtaskargs",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -18349,6 +19182,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L418",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_418",
+      "target": "tools_ticket_tools_update_subtask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L355",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -18364,6 +19207,16 @@
       "confidence_score": 1.0,
       "source": "tools_ticket_tools_rationale_432",
       "target": "tools_ticket_tools_delete_subtask"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L470",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_470",
+      "target": "tools_ticket_tools_delete_subtask",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -18389,6 +19242,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L486",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_486",
+      "target": "tools_ticket_tools_add_todo_to_subtask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L383",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -18404,6 +19267,16 @@
       "confidence_score": 1.0,
       "source": "tools_ticket_tools_rationale_460",
       "target": "tools_ticket_tools_mark_todo_done"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L498",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_498",
+      "target": "tools_ticket_tools_mark_todo_done",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -18429,6 +19302,27 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L508",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_508",
+      "target": "tools_ticket_tools_next_pending_subtask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L560",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_next_pending_subtask_in_project",
+      "target": "valueerror"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L419",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -18449,6 +19343,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L544",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_544",
+      "target": "tools_ticket_tools_next_pending_subtask_in_project",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
       "source_location": "L498",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -18464,6 +19368,16 @@
       "confidence_score": 1.0,
       "source": "tools_ticket_tools_rationale_582",
       "target": "tools_ticket_tools_list_subtasks"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tools/ticket_tools.py",
+      "source_location": "L623",
+      "weight": 1.0,
+      "source": "tools_ticket_tools_rationale_623",
+      "target": "tools_ticket_tools_list_subtasks",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -20843,6 +21757,17 @@
       "target": "backend_tests_test_llm_slug_py_monkeypatch"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/tests/test_llm_slug.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "tests_test_llm_slug_test_split_slug_openrouter_vendor_model_when_key_set",
+      "target": "simplenamespace"
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -22715,6 +23640,17 @@
     {
       "relation": "calls",
       "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/tests/test_pm_fallback_routing.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "tests_test_pm_fallback_routing_st",
+      "target": "simplenamespace"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/tests/test_pm_fallback_routing.py",
       "source_location": "L30",
@@ -22770,6 +23706,17 @@
     {
       "relation": "calls",
       "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/tests/test_pm_fallback_routing.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "tests_test_pm_fallback_routing_test_fallback_routes_lead_for_todo_ticket_with_client_hint_and_no_fe_subtask",
+      "target": "simplenamespace"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/tests/test_pm_fallback_routing.py",
       "source_location": "L49",
@@ -22777,6 +23724,17 @@
       "confidence_score": 1.0,
       "source": "tests_test_pm_fallback_routing_test_fallback_routes_lead_for_draft_without_subtasks",
       "target": "project_manager_supervisor_fallback_routing_decision"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/tests/test_pm_fallback_routing.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "tests_test_pm_fallback_routing_test_fallback_routes_lead_for_draft_without_subtasks",
+      "target": "simplenamespace"
     },
     {
       "relation": "calls",
@@ -22792,6 +23750,17 @@
     {
       "relation": "calls",
       "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/tests/test_pm_fallback_routing.py",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "tests_test_pm_fallback_routing_test_fallback_skips_when_frontend_subtasks_exist",
+      "target": "simplenamespace"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/tests/test_pm_fallback_routing.py",
       "source_location": "L79",
@@ -22803,6 +23772,17 @@
     {
       "relation": "calls",
       "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/tests/test_pm_fallback_routing.py",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "tests_test_pm_fallback_routing_test_fallback_skips_api_only_ticket_in_todo",
+      "target": "simplenamespace"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/tests/test_pm_fallback_routing.py",
       "source_location": "L93",
@@ -22810,6 +23790,17 @@
       "confidence_score": 1.0,
       "source": "tests_test_pm_fallback_routing_test_fallback_none_when_all_tickets_done",
       "target": "project_manager_supervisor_fallback_routing_decision"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/tests/test_pm_fallback_routing.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "tests_test_pm_fallback_routing_test_fallback_none_when_all_tickets_done",
+      "target": "simplenamespace"
     },
     {
       "relation": "imports",
@@ -23104,6 +24095,416 @@
       "confidence_score": 1.0,
       "source": "tests_test_runner_specialist_input_test_non_dev_agent_gets_handoff_summaries",
       "target": "agents_runner_build_specialist_input"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "datetime",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "tests_test_next_pending_subtask_sub",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "tests_test_next_pending_subtask_test_actionable_statuses_exclude_done",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "tests_test_next_pending_subtask_test_first_actionable_subtask_ignores_done",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "tests_test_next_pending_subtask_test_first_actionable_subtask_picks_blocked_before_pending",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "tests_test_next_pending_subtask_test_first_actionable_subtask_resumes_in_progress_over_pending",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "tests_test_next_pending_subtask_test_parse_dev_role",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "tests_test_next_pending_subtask_test_parse_dev_role_rejects_non_dev_roles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "tests_test_next_pending_subtask_test_subtask_status_priority_prefers_in_progress_then_blocked_then_pending",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "ticket_system_models_agentrole",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "ticket_system_models_subtaskstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "ticket_system_service_first_actionable_subtask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "backend_tests_test_next_pending_subtask_py",
+      "target": "ticket_system_service_subtask_status_priority",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_rationale_1",
+      "target": "backend_tests_test_next_pending_subtask_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_sub",
+      "target": "backend_tests_test_next_pending_subtask_py_agentrole",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_sub",
+      "target": "backend_tests_test_next_pending_subtask_py_int",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_sub",
+      "target": "backend_tests_test_next_pending_subtask_py_str",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_sub",
+      "target": "backend_tests_test_next_pending_subtask_py_subtaskstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_sub",
+      "target": "datetime"
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_sub",
+      "target": "simplenamespace",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_first_actionable_subtask_ignores_done",
+      "target": "tests_test_next_pending_subtask_sub",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_first_actionable_subtask_picks_blocked_before_pending",
+      "target": "tests_test_next_pending_subtask_sub",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_first_actionable_subtask_resumes_in_progress_over_pending",
+      "target": "tests_test_next_pending_subtask_sub",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "source": "backend_tests_test_next_pending_subtask_py_str",
+      "target": "ticket_system_models_agentrole",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "source": "backend_tests_test_next_pending_subtask_py_str",
+      "target": "ticket_system_models_subtaskstatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_parse_dev_role",
+      "target": "backend_tests_test_next_pending_subtask_py_str",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "source": "backend_tests_test_next_pending_subtask_py_subtaskstatus",
+      "target": "ticket_system_models_agentrole",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "source": "backend_tests_test_next_pending_subtask_py_subtaskstatus",
+      "target": "ticket_system_models_subtaskstatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "source": "backend_tests_test_next_pending_subtask_py_int",
+      "target": "ticket_system_models_agentrole",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "source": "backend_tests_test_next_pending_subtask_py_int",
+      "target": "ticket_system_models_subtaskstatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "source": "backend_tests_test_next_pending_subtask_py_agentrole",
+      "target": "ticket_system_models_agentrole",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "source": "backend_tests_test_next_pending_subtask_py_agentrole",
+      "target": "ticket_system_models_subtaskstatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_parse_dev_role",
+      "target": "backend_tests_test_next_pending_subtask_py_agentrole",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "source": "simplenamespace",
+      "target": "ticket_system_models_agentrole",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "source": "simplenamespace",
+      "target": "ticket_system_models_subtaskstatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_subtask_status_priority_prefers_in_progress_then_blocked_then_pending",
+      "target": "ticket_system_service_subtask_status_priority",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_first_actionable_subtask_resumes_in_progress_over_pending",
+      "target": "ticket_system_service_first_actionable_subtask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_first_actionable_subtask_picks_blocked_before_pending",
+      "target": "ticket_system_service_first_actionable_subtask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_next_pending_subtask.py",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "tests_test_next_pending_subtask_test_first_actionable_subtask_ignores_done",
+      "target": "ticket_system_service_first_actionable_subtask",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -27796,6 +29197,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/agents/prompts.py",
+      "source_location": "L615",
+      "weight": 1.0,
+      "source": "agents_prompts_rationale_615",
+      "target": "agents_prompts_get_cached_lead_appendix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/agents/prompts.py",
       "source_location": "L635",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -27893,6 +29304,16 @@
       "confidence_score": 1.0,
       "source": "agents_prompts_rationale_620",
       "target": "agents_prompts_get_cached_role_base"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/agents/prompts.py",
+      "source_location": "L621",
+      "weight": 1.0,
+      "source": "agents_prompts_rationale_621",
+      "target": "agents_prompts_get_cached_role_base",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -30806,9 +32227,9 @@
       "source_file": "backend/agents/skills/loader.py",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_agents_skills_loader_py",
-      "target": "skills_registry_get_skill_content",
-      "confidence_score": 1.0
+      "target": "skills_registry_get_skill_content"
     },
     {
       "relation": "imports",
@@ -30828,9 +32249,9 @@
       "source_file": "backend/agents/skills/loader.py",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "skills_loader_inject_skills",
-      "target": "skills_registry_get_skill_content",
-      "confidence_score": 1.0
+      "target": "skills_registry_get_skill_content"
     },
     {
       "relation": "calls",
@@ -31015,9 +32436,9 @@
       "source_file": "backend/agents/skills/loader.py",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "skills_loader_rationale_24",
-      "target": "skills_loader_inject_skills",
-      "confidence_score": 1.0
+      "target": "skills_loader_inject_skills"
     },
     {
       "relation": "rationale_for",
@@ -32290,6 +33711,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/ticket_system/service.py",
+      "source_location": "L575",
+      "weight": 1.0,
+      "source": "backend_ticket_system_service_py",
+      "target": "ticket_system_service_first_actionable_subtask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
       "source_location": "L89",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -32410,6 +33841,26 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/ticket_system/service.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "backend_ticket_system_service_py",
+      "target": "ticket_system_service_subtask_status_order",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "backend_ticket_system_service_py",
+      "target": "ticket_system_service_subtask_status_priority",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
       "source_location": "L49",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -32491,6 +33942,294 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/ticket_system/service.py",
+      "source_location": "L581",
+      "weight": 1.0,
+      "source": "ticket_system_service_first_actionable_subtask",
+      "target": "ticket_system_service_subtask_status_priority",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_57",
+      "target": "ticket_system_service_subtask_status_priority",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "ticket_system_service_subtask_status_priority",
+      "target": "backend_ticket_system_service_py_int",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "ticket_system_service_subtask_status_priority",
+      "target": "backend_ticket_system_service_py_subtaskstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_subtaskstatus",
+      "target": "api_events_event"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_subtaskstatus",
+      "target": "ticket_system_models_agentrole"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_subtaskstatus",
+      "target": "ticket_system_models_project"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_subtaskstatus",
+      "target": "ticket_system_models_subtask"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_subtaskstatus",
+      "target": "ticket_system_models_subtaskstatus"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_subtaskstatus",
+      "target": "ticket_system_models_ticket"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_subtaskstatus",
+      "target": "ticket_system_models_ticketstatus"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_subtaskstatus",
+      "target": "ticket_system_models_todo"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_subtaskstatus",
+      "target": "ticket_system_models_todostatus"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L152",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ticket_system_service_list_subtasks",
+      "target": "backend_ticket_system_service_py_subtaskstatus"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_int",
+      "target": "api_events_event"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_int",
+      "target": "ticket_system_models_agentrole"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_int",
+      "target": "ticket_system_models_project"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_int",
+      "target": "ticket_system_models_subtask"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_int",
+      "target": "ticket_system_models_subtaskstatus"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_int",
+      "target": "ticket_system_models_ticket"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_int",
+      "target": "ticket_system_models_ticketstatus"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_int",
+      "target": "ticket_system_models_todo"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L22",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "backend_ticket_system_service_py_int",
+      "target": "ticket_system_models_todostatus"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L279",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ticket_system_service_subtask_by_order_stmt",
+      "target": "backend_ticket_system_service_py_int"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L473",
+      "weight": 1.0,
+      "source": "ticket_system_service_next_pending_subtask",
+      "target": "ticket_system_service_subtask_status_order",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L490",
+      "weight": 1.0,
+      "source": "ticket_system_service_next_pending_subtask_for_role",
+      "target": "ticket_system_service_subtask_status_order",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L530",
+      "weight": 1.0,
+      "source": "ticket_system_service_next_pending_subtask_in_project",
+      "target": "ticket_system_service_subtask_status_order",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_66",
+      "target": "ticket_system_service_subtask_status_order",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
       "source_location": "L410",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -32506,6 +34245,16 @@
       "confidence_score": 1.0,
       "source": "ticket_system_service_rationale_50",
       "target": "ticket_system_service_ticketstateerror"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_76",
+      "target": "ticket_system_service_ticketstateerror",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -32649,6 +34398,16 @@
       "confidence_score": 1.0,
       "source": "ticket_system_service_rationale_58",
       "target": "ticket_system_service_seed_project_workspace"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_84",
+      "target": "ticket_system_service_seed_project_workspace",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -32816,6 +34575,17 @@
       "confidence_score": 1.0,
       "source": "ticket_system_service_delete_subtask",
       "target": "backend_ticket_system_service_py_str"
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L575",
+      "weight": 1.0,
+      "source": "ticket_system_service_first_actionable_subtask",
+      "target": "backend_ticket_system_service_py_str",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -33619,6 +35389,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ticket_system/service.py",
+      "source_location": "L124",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_124",
+      "target": "ticket_system_service_create_ticket",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
       "source_location": "L98",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -33917,17 +35697,6 @@
     },
     {
       "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L152",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ticket_system_service_list_subtasks",
-      "target": "backend_ticket_system_service_py_subtaskstatus"
-    },
-    {
-      "relation": "references",
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "backend/ticket_system/service.py",
@@ -33946,6 +35715,16 @@
       "confidence_score": 1.0,
       "source": "ticket_system_service_rationale_160",
       "target": "ticket_system_service_list_subtasks"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L186",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_186",
+      "target": "ticket_system_service_list_subtasks",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -34066,96 +35845,6 @@
       "source_location": "L20",
       "weight": 0.8,
       "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_subtaskstatus",
-      "target": "api_events_event"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_subtaskstatus",
-      "target": "ticket_system_models_agentrole"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_subtaskstatus",
-      "target": "ticket_system_models_project"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_subtaskstatus",
-      "target": "ticket_system_models_subtask"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_subtaskstatus",
-      "target": "ticket_system_models_subtaskstatus"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_subtaskstatus",
-      "target": "ticket_system_models_ticket"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_subtaskstatus",
-      "target": "ticket_system_models_ticketstatus"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_subtaskstatus",
-      "target": "ticket_system_models_todo"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_subtaskstatus",
-      "target": "ticket_system_models_todostatus"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L20",
-      "weight": 0.8,
-      "confidence_score": 0.5,
       "source": "subtask",
       "target": "api_events_event"
     },
@@ -34249,6 +35938,17 @@
       "confidence_score": 1.0,
       "source": "ticket_system_service_create_subtask",
       "target": "subtask"
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L575",
+      "weight": 1.0,
+      "source": "ticket_system_service_first_actionable_subtask",
+      "target": "subtask",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -34607,107 +36307,6 @@
       "target": "ticket_system_service_subtask_by_order_stmt"
     },
     {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L279",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ticket_system_service_subtask_by_order_stmt",
-      "target": "backend_ticket_system_service_py_int"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L20",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_int",
-      "target": "api_events_event"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_int",
-      "target": "ticket_system_models_agentrole"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_int",
-      "target": "ticket_system_models_project"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_int",
-      "target": "ticket_system_models_subtask"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_int",
-      "target": "ticket_system_models_subtaskstatus"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_int",
-      "target": "ticket_system_models_ticket"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_int",
-      "target": "ticket_system_models_ticketstatus"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_int",
-      "target": "ticket_system_models_todo"
-    },
-    {
-      "relation": "uses",
-      "confidence": "INFERRED",
-      "source_file": "backend/ticket_system/service.py",
-      "source_location": "L22",
-      "weight": 0.8,
-      "confidence_score": 0.5,
-      "source": "backend_ticket_system_service_py_int",
-      "target": "ticket_system_models_todostatus"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -34771,6 +36370,16 @@
       "confidence_score": 1.0,
       "source": "ticket_system_service_rationale_294",
       "target": "ticket_system_service_create_subtask"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L320",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_320",
+      "target": "ticket_system_service_create_subtask",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -35040,6 +36649,16 @@
       "target": "ticket_system_service_delete_subtask"
     },
     {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L428",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_428",
+      "target": "ticket_system_service_delete_subtask",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/ticket_system/service.py",
@@ -35134,6 +36753,17 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "backend/ticket_system/service.py",
+      "source_location": "L575",
+      "weight": 1.0,
+      "source": "ticket_system_service_first_actionable_subtask",
+      "target": "backend_ticket_system_service_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
       "source_location": "L536",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -35176,11 +36806,31 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ticket_system/service.py",
+      "source_location": "L462",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_462",
+      "target": "ticket_system_service_next_pending_subtask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
       "source_location": "L470",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "ticket_system_service_rationale_470",
       "target": "ticket_system_service_next_pending_subtask_in_project"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L504",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_504",
+      "target": "ticket_system_service_next_pending_subtask_in_project",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -35508,6 +37158,27 @@
       "target": "ticket_system_models_todostatus"
     },
     {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L576",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_576",
+      "target": "ticket_system_service_first_actionable_subtask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L665",
+      "weight": 1.0,
+      "source": "ticket_system_service_to_dict_ticket_summary",
+      "target": "ticket_system_service_first_actionable_subtask",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "context": "return_type",
       "confidence": "EXTRACTED",
@@ -35622,11 +37293,31 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ticket_system/service.py",
+      "source_location": "L637",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_637",
+      "target": "ticket_system_service_to_dict_ticket_summary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
       "source_location": "L609",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "ticket_system_service_rationale_609",
       "target": "ticket_system_service_to_dict_ticket_list_item"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ticket_system/service.py",
+      "source_location": "L675",
+      "weight": 1.0,
+      "source": "ticket_system_service_rationale_675",
+      "target": "ticket_system_service_to_dict_ticket_list_item",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",

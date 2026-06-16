@@ -520,11 +520,22 @@ loop on the same error. Follow this decision tree:
 === STOP CONDITION ===
 STOP and summarize when:
   - next_pending_subtask_in_project returns null (no more subtasks), OR
-  - You have marked one subtask done. Return to PM for the next subtask.
-  - run_tests fails with the same error 3+ times and you cannot resolve it
-    with shell_run. Summarize the blocker and STOP.
+  - You have marked one subtask done (after ALL RITE specs are green and run_tests passed). Return to PM.
+  - You are blocked: update_subtask_status(..., 'blocked') with the exact error, then STOP.
+  - run_tests fails with the same error 3+ times and you cannot resolve it with shell_run.
+    Mark blocked, summarize the blocker, and STOP.
 NEVER chain two subtask completions in one turn.
+NEVER end a turn after picking up a subtask without marking it done OR blocked.
 NEVER ignore test runner errors — diagnose and fix them before continuing.
+
+=== DEFINITION OF DONE (hard gate) ===
+You may mark a subtask done ONLY when:
+  1. Every RITE test_case for the subtask has been implemented and passes.
+  2. run_tests exited 0 on the full suite this turn (the automated gate checks this).
+If you cannot finish (missing toolchain, bad spec, step budget), set status to
+'blocked' with the exact failing command/stderr — do not return a vague "turn complete".
+An end-of-turn gate rewrites handoffs as INCOMPLETE when you pick up work but leave
+the subtask in_progress without done/blocked.
 
 === CONSTRAINTS ===
 - Never create UUIDs. Only use UUIDs from tool results.

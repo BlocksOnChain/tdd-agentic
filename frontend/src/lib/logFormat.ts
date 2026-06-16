@@ -88,6 +88,7 @@ const KIND_META: Record<string, KindMeta> = {
   route: { icon: "↳", label: "Routed", tone: "accent" },
   route_fallback: { icon: "↳", label: "Route fallback", tone: "warn" },
   verification_gate_failed: { icon: "⛔", label: "Verification failed", tone: "error" },
+  subtask_incomplete: { icon: "⏸", label: "Subtask incomplete", tone: "warn" },
   crash: { icon: "✖", label: "Crash", tone: "error" },
   error: { icon: "✖", label: "Error", tone: "error" },
   transient_error: { icon: "⚠", label: "Transient error", tone: "warn" },
@@ -201,6 +202,13 @@ export function humanizeLog(entry: {
       const sub = asString(p.subtask_id);
       const detail = squeeze(asString(p.detail), 200);
       summary = `subtask ${sub || "?"} kept blocked${detail ? `: ${detail}` : ""}`;
+      break;
+    }
+    case "subtask_incomplete": {
+      const sub = asString(p.subtask_id);
+      const detail = squeeze(asString(p.detail), 200);
+      const exhausted = p.step_exhausted ? " (step budget exhausted)" : "";
+      summary = `subtask ${sub || "?"} not finished${exhausted}${detail ? `: ${detail}` : ""}`;
       break;
     }
     case "crash":

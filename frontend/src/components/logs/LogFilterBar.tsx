@@ -15,6 +15,7 @@ const KIND_OPTIONS = [
   "turn_start",
   "turn_end",
   "verification_gate_failed",
+  "subtask_incomplete",
   "crash",
   "error",
   "route",

@@ -291,6 +291,20 @@ never rely on what you "remember" from earlier turns.
 1. Check if a prior summary for this subtask exists in agent_logs.
 2. If the DB already shows the subtask as "done", no need to summarise again.
 
+### Before ending your turn (dev agents — mandatory)
+1. Did `next_pending_subtask_in_project` return a subtask this turn?
+   - **No** (null subtask): OK to summarize and stop — no work assigned.
+   - **Yes**: you MUST either:
+     a. `update_subtask_status(subtask_id, 'done')` after ALL specs pass and
+        `run_tests` exited 0, OR
+     b. `update_subtask_status(subtask_id, 'blocked')` with the exact blocker
+        (missing toolchain, bad spec, unrecoverable test failure).
+2. Never return "turn complete" while the subtask is still `in_progress`.
+   An automated gate rewrites such handoffs as `[INCOMPLETE]` and PM re-dispatches you.
+3. Prefer `run_tests` over exploratory `fs_read` once you know the target file paths.
+   Environment setup (`node --version`, `npm install`) should happen once per project,
+   not every turn — check AGENT EXECUTION ENVIRONMENT in your system prompt first.
+
 ## Pattern
 
     // 1. Check state

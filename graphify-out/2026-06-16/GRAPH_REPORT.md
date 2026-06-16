@@ -1,12 +1,12 @@
 # Graph Report - tdd-agentic  (2026-06-16)
 
 ## Corpus Check
-- 124 files · ~53,829 words
+- 125 files · ~54,433 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1385 nodes · 2810 edges · 88 communities (81 shown, 7 thin omitted)
-- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 457 edges (avg confidence: 0.51)
+- 1438 nodes · 2926 edges · 99 communities (92 shown, 7 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 481 edges (avg confidence: 0.51)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
@@ -58,6 +58,7 @@
 - [[_COMMUNITY_Community 58|Community 58]]
 - [[_COMMUNITY_Community 59|Community 59]]
 - [[_COMMUNITY_Community 60|Community 60]]
+- [[_COMMUNITY_Community 61|Community 61]]
 - [[_COMMUNITY_Community 62|Community 62]]
 - [[_COMMUNITY_Community 63|Community 63]]
 - [[_COMMUNITY_Community 64|Community 64]]
@@ -70,54 +71,64 @@
 - [[_COMMUNITY_Community 71|Community 71]]
 - [[_COMMUNITY_Community 72|Community 72]]
 - [[_COMMUNITY_Community 73|Community 73]]
+- [[_COMMUNITY_Community 74|Community 74]]
 - [[_COMMUNITY_Community 75|Community 75]]
 - [[_COMMUNITY_Community 76|Community 76]]
+- [[_COMMUNITY_Community 77|Community 77]]
 - [[_COMMUNITY_Community 78|Community 78]]
 - [[_COMMUNITY_Community 79|Community 79]]
 - [[_COMMUNITY_Community 80|Community 80]]
 - [[_COMMUNITY_Community 81|Community 81]]
 - [[_COMMUNITY_Community 82|Community 82]]
 - [[_COMMUNITY_Community 83|Community 83]]
+- [[_COMMUNITY_Community 84|Community 84]]
 - [[_COMMUNITY_Community 85|Community 85]]
+- [[_COMMUNITY_Community 86|Community 86]]
+- [[_COMMUNITY_Community 87|Community 87]]
 - [[_COMMUNITY_Community 88|Community 88]]
 - [[_COMMUNITY_Community 89|Community 89]]
+- [[_COMMUNITY_Community 90|Community 90]]
+- [[_COMMUNITY_Community 91|Community 91]]
+- [[_COMMUNITY_Community 92|Community 92]]
 - [[_COMMUNITY_Community 94|Community 94]]
+- [[_COMMUNITY_Community 95|Community 95]]
+- [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 97|Community 97]]
 - [[_COMMUNITY_Community 98|Community 98]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `SubtaskStatus` - 83 edges
-2. `AgentRole` - 75 edges
+1. `SubtaskStatus` - 90 edges
+2. `AgentRole` - 83 edges
 3. `Event` - 69 edges
 4. `get_settings()` - 68 edges
-5. `TicketStatus` - 66 edges
-6. `TodoStatus` - 48 edges
+5. `TicketStatus` - 67 edges
+6. `TodoStatus` - 49 edges
 7. `SystemState` - 47 edges
 8. `build_specialist_subgraph()` - 33 edges
-9. `str` - 32 edges
+9. `str` - 33 edges
 10. `Ticket` - 31 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Agent Notes` --semantically_similar_to--> `Qdrant Vector Store`  [INFERRED] [semantically similar]
   backend/workspace_seed/AGENTS.md → docker-compose.yml
+- `TicketStatus` --uses--> `TicketStatus`  [INFERRED]
+  backend/tests/test_ticket_state_machine.py → backend/ticket_system/models.py
+- `bool` --uses--> `TicketStatus`  [INFERRED]
+  backend/tests/test_ticket_state_machine.py → backend/ticket_system/models.py
 - `BaseCheckpointSaver` --uses--> `SystemState`  [INFERRED]
   backend/agents/graph.py → backend/agents/state.py
 - `Connection` --uses--> `Base`  [INFERRED]
   backend/db/migrations/env.py → backend/db/session.py
-- `Agent Context and Workflow` --references--> `Agent Hierarchy`  [EXTRACTED]
-  docs/agent-context-and-workflow.md → README.md
-- `Agent Context and Workflow` --references--> `CRAG Retrieval Pipeline`  [EXTRACTED]
-  docs/agent-context-and-workflow.md → README.md
 
 ## Import Cycles
 - 1-file cycle: `backend/ticket_system/models.py -> backend/ticket_system/models.py`
 - 1-file cycle: `backend/api/main.py -> backend/api/main.py`
 
-## Communities (88 total, 7 thin omitted)
+## Communities (99 total, 7 thin omitted)
 
 ### Community 0 - "Ticket Models & Schemas"
-Cohesion: 0.07
-Nodes (42): str, add_question_to_ticket(), add_todo_to_subtask(), create_ticket(), delete_subtask(), _dump(), get_ticket(), get_ticket_summary() (+34 more)
+Cohesion: 0.06
+Nodes (57): AgentRole, str, add_question_to_ticket(), add_todo_to_subtask(), create_ticket(), delete_subtask(), _dump(), get_ticket() (+49 more)
 
 ### Community 1 - "LLM Routing & RAG Pipeline"
 Cohesion: 0.14
@@ -132,20 +143,20 @@ Cohesion: 0.12
 Nodes (14): AgentRole, CheckpointT, LogItemResponse, PersistedAgentLog, SubtaskStatus, SubtaskT, TestCaseSpec, TestType (+6 more)
 
 ### Community 4 - "Agent Graph & Specialist Subgraphs"
-Cohesion: 0.19
-Nodes (18): int, Path, str, fs_delete(), fs_list(), fs_read(), fs_write(), _project_root() (+10 more)
+Cohesion: 0.11
+Nodes (26): str, int, Path, str, str, create_skill(), Researcher subgraph — web search, doc writing, RAG ingestion, skill creation., Create or update a Skill (a focused capability brief) and assign it to roles. (+18 more)
 
 ### Community 5 - "Project Manager & Routing"
 Cohesion: 0.23
 Nodes (14): str, _format_pm_handoff(), _infer_fallback_route(), _infer_next_dev_route(), _normalise_ticket_ids(), Format a handoff using the compact Handoff protocol., Format a handoff using the compact Handoff protocol., Deterministic routing to a dev role based on ticket/subtask state.      Policy: (+6 more)
 
 ### Community 6 - "Message Reducer & Common Utils"
-Cohesion: 0.11
-Nodes (26): add_messages_trimmed(), Checkpoint message reducer — merge then trim human handoffs., Keep first human, recent humans, bounded AI messages.      This is the primary c, trim_checkpoint_messages(), AIMessage, int, Tests for AI message trimming in checkpoints., When AI messages exceed max_ai, keep first + tail. (+18 more)
+Cohesion: 0.06
+Nodes (51): AgentEvent, emit(), _format_tool_error(), last_ai_message(), Shared utilities for agent subgraphs.  Provides helpers for invoking a tool-call, Persist an event to the EventBus and return an AgentEvent for state., Convert an exception (often a Pydantic ValidationError) into an     actionable c, Execute tool calls in an AI message and return the resulting ToolMessages. (+43 more)
 
 ### Community 7 - "Agent Logs & EventBus Persistence"
-Cohesion: 0.14
-Nodes (13): get_cached_lead_appendix(), Centralized system prompts for every agent role.  Kept in one place so they can, Return the RITE + tool contract appendix (cached once)., Return the RITE + tool contract appendix (cached once)., Return the RITE + tool contract appendix (cached once)., Return the RITE + tool contract appendix (cached once)., Return the RITE + tool contract appendix (cached once)., Return the RITE + tool contract appendix (cached once). (+5 more)
+Cohesion: 0.13
+Nodes (14): get_cached_lead_appendix(), Centralized system prompts for every agent role.  Kept in one place so they can, Return the RITE + tool contract appendix (cached once)., Return the RITE + tool contract appendix (cached once)., Return the RITE + tool contract appendix (cached once)., Return the RITE + tool contract appendix (cached once)., Return the RITE + tool contract appendix (cached once)., Return the RITE + tool contract appendix (cached once). (+6 more)
 
 ### Community 8 - "Frontend Dependencies"
 Cohesion: 0.08
@@ -156,20 +167,20 @@ Cohesion: 0.15
 Nodes (20): int, Any, int, str, Embeddings, embedding_dim(), get_embeddings(), Embedding model factory — OpenAI by default, local sentence-transformers as fall (+12 more)
 
 ### Community 10 - "Skills Registry System"
-Cohesion: 0.12
-Nodes (29): str, int, str, Any, Path, str, create_skill(), Create or update a Skill (a focused capability brief) and assign it to roles. (+21 more)
+Cohesion: 0.13
+Nodes (26): int, str, Any, Path, str, Skills system: per-role micro-prompts loaded into agents at runtime., inject_skills(), Skill injection helper used by every agent's prompt builder.  Uses change detect (+18 more)
 
 ### Community 11 - "Agent API Routes & Checkpoint Cache"
 Cohesion: 0.12
-Nodes (25): invalidate_checkpoint_list_cache(), Drop cached checkpoint lists after agent actions or globally., Drop cached checkpoint lists after agent actions or globally., list_project_files(), Routes for starting, resuming, and inspecting LangGraph agent runs., Resume a project's graph from its last persisted checkpoint., Resume a project's graph from its last persisted checkpoint., Cancel any in-flight graph execution for the given project.      Waits up to ~10 (+17 more)
+Nodes (25): invalidate_checkpoint_list_cache(), Drop cached checkpoint lists after agent actions or globally., Drop cached checkpoint lists after agent actions or globally., get_file_content(), Routes for starting, resuming, and inspecting LangGraph agent runs., Resume a project's graph from its last persisted checkpoint., Resume a project's graph from its last persisted checkpoint., Cancel any in-flight graph execution for the given project.      Waits up to ~10 (+17 more)
 
 ### Community 12 - "Frontend TypeScript Config"
 Cohesion: 0.10
 Nodes (19): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+11 more)
 
 ### Community 13 - "DB Session & Ticket API Routes"
-Cohesion: 0.12
-Nodes (20): _payload_for_storage(), persist_agent_event(), Persist agent-scoped events from the EventBus to ``agent_logs`` for replay., Return a JSON-serialisable copy of the payload., Write one ``agent`` bus event to Postgres (best-effort, non-blocking graph)., EventBus, In-memory pub/sub for realtime agent events broadcast over WebSockets.  This is, Any (+12 more)
+Cohesion: 0.09
+Nodes (24): _payload_for_storage(), persist_agent_event(), Persist agent-scoped events from the EventBus to ``agent_logs`` for replay., Return a JSON-serialisable copy of the payload., Write one ``agent`` bus event to Postgres (best-effort, non-blocking graph)., EventBus, In-memory pub/sub for realtime agent events broadcast over WebSockets.  This is, Any (+16 more)
 
 ### Community 14 - "Checkpointer & App Lifecycle"
 Cohesion: 0.14
@@ -177,15 +188,15 @@ Nodes (17): Wrap a Runnable: on provider-400 error, sleep 60s and retry once., R
 
 ### Community 15 - "Observability & Stream Helpers"
 Cohesion: 0.09
-Nodes (30): Any, str, _broadcast_interrupts(), _checkpoint_id(), get_agent_log_item(), get_file_content(), get_state(), list_interrupts() (+22 more)
+Nodes (30): Any, str, _broadcast_interrupts(), _checkpoint_id(), get_agent_log_item(), get_state(), list_interrupts(), list_project_files() (+22 more)
 
 ### Community 16 - "Documentation & Design Docs"
 Cohesion: 0.16
-Nodes (16): Agent Context and Workflow, Agent Hierarchy, Agent Notes, Agent Workspace Readme, CRAG Retrieval Pipeline, Docker Compose, Docker Compose Dev, Human-in-the-Loop Interface (+8 more)
+Nodes (15): Agent Context and Workflow, Agent Hierarchy, Agent Notes, Agent Workspace Readme, CRAG Retrieval Pipeline, Docker Compose, Docker Compose Dev, Human-in-the-Loop Interface (+7 more)
 
 ### Community 17 - "Checkpoint List Cache"
-Cohesion: 0.20
-Nodes (17): AsyncSession, str, AsyncSession, get_db(), Async SQLAlchemy engine, session factory, and DeclarativeBase., FastAPI dependency that yields a session and ensures cleanup., answer(), create_subtask() (+9 more)
+Cohesion: 0.15
+Nodes (22): AgentRole, AnswerQuestion, AsyncSession, str, SubtaskCreate, SubtaskStatus, SubtaskUpdate, TicketCreate (+14 more)
 
 ### Community 18 - "SystemState & Cancellation"
 Cohesion: 0.22
@@ -196,12 +207,12 @@ Cohesion: 0.22
 Nodes (19): Any, float, int, str, Document, _cache_get(), _cache_put(), crag_retrieve() (+11 more)
 
 ### Community 20 - "Community 20"
-Cohesion: 0.05
-Nodes (62): AgentEvent, emit(), _format_tool_error(), last_ai_message(), Shared utilities for agent subgraphs.  Provides helpers for invoking a tool-call, Persist an event to the EventBus and return an AgentEvent for state., Convert an exception (often a Pydantic ValidationError) into an     actionable c, Execute tool calls in an AI message and return the resulting ToolMessages. (+54 more)
+Cohesion: 0.14
+Nodes (23): Classify the turn's verification signal from ``run_tests`` results.      Returns, Classify the turn's verification signal from ``run_tests`` results.      Returns, IDs of subtasks the agent flipped to ``done`` via update_subtask_status., IDs of subtasks the agent flipped to ``done`` via update_subtask_status., _subtasks_marked_done(), _verification_outcome(), ToolMessage, str (+15 more)
 
 ### Community 21 - "Community 21"
-Cohesion: 0.11
-Nodes (17): list_agent_logs(), Read historical agent logs from Postgres., Return newest-first rows; caller may reverse for chronological UI., Any, AsyncSession, int, str, BaseException (+9 more)
+Cohesion: 0.18
+Nodes (10): list_agent_logs(), Read historical agent logs from Postgres., Return newest-first rows; caller may reverse for chronological UI., Any, AsyncSession, int, str, get_agent_logs() (+2 more)
 
 ### Community 22 - "Community 22"
 Cohesion: 0.33
@@ -216,8 +227,8 @@ Cohesion: 0.05
 Nodes (38): 1. Tool Calling Analysis, 1A. Current tool definition quality, 1B. Tool calling patterns across agents, 1C. Tool error handling, 2. System Prompt Analysis, 2A. Current prompt structure, 2B. Prompt engineering patterns currently used, 2C. Modern prompt engineering patterns NOT used (+30 more)
 
 ### Community 27 - "Community 27"
-Cohesion: 0.05
-Nodes (142): Event, Any, str, AgentRole, AnswerQuestion, SubtaskCreate, SubtaskStatus, SubtaskUpdate (+134 more)
+Cohesion: 0.08
+Nodes (80): Event, Any, str, AgentRole, AnswerQuestion, Any, AsyncSession, bool (+72 more)
 
 ### Community 38 - "Community 38"
 Cohesion: 0.29
@@ -236,20 +247,20 @@ Cohesion: 0.10
 Nodes (23): Handoff, Compact structured handoff between agents., Tests for the Handoff protocol and compact serialization., Unknown / empty phase strings degrade to the default instead of raising., Building a Handoff from an invalid phase string no longer crashes., Flags are included in the serialized message., Handoff with ticket_ids serializes them in the compact key., Handoff with context_refs includes them in the compact format. (+15 more)
 
 ### Community 53 - "Community 53"
-Cohesion: 0.13
-Nodes (25): _build_serde(), get_checkpointer(), get_pool(), LangGraph checkpointer setup using AsyncPostgresSaver.  We expose a context-mana, Return a serializer that knows about our application state types.      ``allowed, Async context manager that yields an initialized AsyncPostgresSaver.      On fir, _agent_from_wrote_nodes(), _cache_bytes_total() (+17 more)
+Cohesion: 0.18
+Nodes (19): get_checkpointer(), Async context manager that yields an initialized AsyncPostgresSaver.      On fir, _agent_from_wrote_nodes(), _cache_bytes_total(), _estimate_bytes(), _evict_cache_if_needed(), _fetch_checkpoints(), get_checkpoints_list() (+11 more)
 
 ### Community 54 - "Community 54"
 Cohesion: 0.10
 Nodes (19): 1A. Trim AI messages on checkpoint write, 1B. Remove dead SystemState fields, 1C. Single canonical project goal, 2A. Compact handoff format, 2B. Smart context lookup via context_refs, 2C. Agent-to-agent direct handoff, 3A. Static system prompt cache, 3B. Skill loading optimization (+11 more)
 
 ### Community 55 - "Community 55"
-Cohesion: 0.23
-Nodes (10): close_pool(), create_app(), lifespan(), FastAPI application entrypoint.  Wires HTTP routes, the WebSocket hub, CORS, DB, WebSocket endpoint that streams every EventBus event to connected clients., ws_endpoint(), init_db(), Create all tables (used in dev / CI; production should use Alembic). (+2 more)
+Cohesion: 0.11
+Nodes (21): _build_serde(), close_pool(), get_pool(), LangGraph checkpointer setup using AsyncPostgresSaver.  We expose a context-mana, Return a serializer that knows about our application state types.      ``allowed, log_resolved_llm_routing(), Log where each configured role sends traffic (local vs cloud).      Misconfigura, Log where each configured role sends traffic (local vs cloud).      Misconfigura (+13 more)
 
 ### Community 56 - "Community 56"
 Cohesion: 0.11
-Nodes (22): get_cached_role_base(), Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s (+14 more)
+Nodes (23): get_cached_role_base(), Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s, Return the static base for a given role (cached once).      Only called at app s (+15 more)
 
 ### Community 57 - "Community 57"
 Cohesion: 0.12
@@ -266,6 +277,10 @@ Nodes (16): PM step 5 must review subtask count per ticket., PM step 5 must revi
 ### Community 60 - "Community 60"
 Cohesion: 0.18
 Nodes (9): HandoffV2, Phase, Structured inter-agent handoff protocol.  Replaces the natural-language handoff, Create a Handoff from a RoutingDecision., Extended handoff that carries a small ContextStore snapshot.      Instead of ful, Best-effort map an arbitrary phase string to a valid Phase.          The PM mode, Serialize to a compact message format for the agent., Enum (+1 more)
+
+### Community 61 - "Community 61"
+Cohesion: 0.23
+Nodes (34): str, Any, Any, int, BaseModel, AgentRole, SubtaskStatus, TicketStatus (+26 more)
 
 ### Community 62 - "Community 62"
 Cohesion: 0.11
@@ -292,8 +307,8 @@ Cohesion: 0.39
 Nodes (11): _cuda_major_from_nvidia_smi(), _has_nvidia_gpu(), install_torch(), main(), project_extras(), bool, str, Return one of: skip, pypi, cpu, cu124, cu118. (+3 more)
 
 ### Community 68 - "Community 68"
-Cohesion: 0.26
-Nodes (13): _fallback_routing_decision(), Pick backend_lead or frontend_lead from DB state when the LLM routing fails., Pick backend_lead or frontend_lead from DB state when the LLM routing fails., Pick lead from DB state when the LLM routing fails.      This keeps the graph al, DB-style fallback when the PM model omits valid routing JSON or chooses end too, _st(), test_fallback_none_when_all_tickets_done(), test_fallback_routes_backend_for_draft_without_subtasks() (+5 more)
+Cohesion: 0.24
+Nodes (16): MonkeyPatch, _fallback_routing_decision(), Pick backend_lead or frontend_lead from DB state when the LLM routing fails., Pick backend_lead or frontend_lead from DB state when the LLM routing fails., Pick lead from DB state when the LLM routing fails.      This keeps the graph al, SimpleNamespace, test_split_slug_openrouter_vendor_model_when_key_set(), DB-style fallback when the PM model omits valid routing JSON or chooses end too (+8 more)
 
 ### Community 69 - "Community 69"
 Cohesion: 0.22
@@ -315,21 +330,29 @@ Nodes (6): metadata, EventBridge(), Shell(), persistedLogToEntry(), useEventStre
 Cohesion: 0.17
 Nodes (4): Tests for the three bug fixes.  Bug 1: PM/leads must create infrastructure subta, Ensure the fixes don't break existing prompt behavior., Ensure the fixes don't break existing prompt behavior., TestRegressionNoRegresion
 
+### Community 74 - "Community 74"
+Cohesion: 0.18
+Nodes (18): _build_specialist_input(), Assemble the minimal message list a specialist needs to act.      Strategy:, Assemble the minimal message list a specialist needs to act.      Strategy:, SystemState, str, SystemState, _make_state(), Tests for _build_specialist_input changes (canonical project_context). (+10 more)
+
 ### Community 75 - "Community 75"
 Cohesion: 0.29
 Nodes (4): DEFAULT_COLORS, HitlPanel(), InterruptItem, KIND_COLORS
 
 ### Community 76 - "Community 76"
-Cohesion: 0.05
-Nodes (54): Conditional edge: dispatch from the project manager based on its decision., Conditional edge: dispatch from the project manager based on its decision., _route_from_pm(), _build_specialist_input(), _last_text(), Best-effort textual summary of the final AIMessage in ``messages``., Best-effort textual summary of the final AIMessage in ``messages``., Assemble the minimal message list a specialist needs to act.      Strategy: (+46 more)
+Cohesion: 0.11
+Nodes (23): Conditional edge: dispatch from the project manager based on its decision., Conditional edge: dispatch from the project manager based on its decision., _route_from_pm(), Root state object shared across the orchestration graph., Root state object shared across the orchestration graph., SystemState, str, SystemState (+15 more)
+
+### Community 77 - "Community 77"
+Cohesion: 0.18
+Nodes (16): AgentRole, int, str, SubtaskStatus, Unit tests for actionable subtask selection helpers., _sub(), test_first_actionable_subtask_ignores_done(), test_first_actionable_subtask_picks_blocked_before_pending() (+8 more)
 
 ### Community 78 - "Community 78"
 Cohesion: 0.25
 Nodes (8): HitlBadge(), NAV, InterruptPanel(), AgentLogEntry, TicketT, CrashState, PendingInterrupt, UIState
 
 ### Community 79 - "Community 79"
-Cohesion: 0.09
-Nodes (28): build_lead_subgraph(), build_root_graph(), Root LangGraph orchestration graph.  The Project Manager acts as the supervisor;, Compile the full multi-agent orchestration graph., Compile the full multi-agent orchestration graph., Build the merged Lead agent subgraph (handles both backend and frontend planning, build_specialist_subgraph(), Build and compile a tool-using specialist subgraph. (+20 more)
+Cohesion: 0.12
+Nodes (25): build_lead_subgraph(), build_root_graph(), Root LangGraph orchestration graph.  The Project Manager acts as the supervisor;, Compile the full multi-agent orchestration graph., Compile the full multi-agent orchestration graph., Build the merged Lead agent subgraph (handles both backend and frontend planning, build_specialist_subgraph(), Build and compile a tool-using specialist subgraph. (+17 more)
 
 ### Community 80 - "Community 80"
 Cohesion: 0.29
@@ -339,25 +362,57 @@ Nodes (6): Agent execution environment, Agent notes (this workspace), Framework 
 Cohesion: 0.32
 Nodes (12): Any, int, str, _extract_text(), _format_tavily_response(), Web search tool for the researcher.  Two backends:  1. **Anthropic** — Claude wi, Search the web for recent or authoritative information.      Returns findings wi, Pull text out of a Claude response that mixes text and tool blocks. (+4 more)
 
+### Community 84 - "Community 84"
+Cohesion: 0.23
+Nodes (15): describe_llm_slug(), log_llm_invoke_exception_context(), log_llm_invoke_start(), log_rag_crag_llm_targets(), Structured logging around LLM HTTP calls — see where traffic is sent., Return (provider, model_name, human_readable_endpoint_hint)., Call from inside an ``except`` block — attaches stack trace via ``exception()``., Call from inside an ``except`` block — attaches stack trace via ``exception()``. (+7 more)
+
 ### Community 85 - "Community 85"
 Cohesion: 0.33
 Nodes (4): str, Application configuration loaded from environment via pydantic-settings., Settings, BaseSettings
 
+### Community 86 - "Community 86"
+Cohesion: 0.18
+Nodes (13): _last_text(), _latest_subtask_id_from_tools(), Generic tool-using agent runner shared by specialist subgraphs.  Each specialist, Force subtasks back to ``blocked`` (used when a completion gate fails)., Force subtasks back to ``blocked`` (used when a completion gate fails)., Best-effort textual summary of the final AIMessage in ``messages``., Best-effort textual summary of the final AIMessage in ``messages``., _revert_subtasks_to_blocked() (+5 more)
+
+### Community 87 - "Community 87"
+Cohesion: 0.29
+Nodes (11): str, complete_assignment(), _dump(), Persistence tools for Coordinator agent.  These tools handle all database writes, Mark a subtask as done and transition related ticket if ready.      USE WHEN: De, Create or update a ticket in the database.      USE WHEN: Persisting a new ticke, Transition a ticket to a new status.      USE WHEN: Moving tickets through the w, Persist an execution plan to the database.      If ticket_id is provided, create (+3 more)
+
 ### Community 88 - "Community 88"
-Cohesion: 0.20
-Nodes (10): int, str, build_researcher_subgraph(), Researcher subgraph — web search, doc writing, RAG ingestion, skill creation., rag_ingest_text(), rag_query(), LangChain tools for RAG ingestion and CRAG-style retrieval., Add a document to the project's RAG vector store.      USE WHEN: You wrote docum (+2 more)
+Cohesion: 0.17
+Nodes (8): Backend Dev subgraph — TDD red/green/refactor loop., int, Coordinator agent subgraph — handles all DB persistence operations.  The Coordin, DevOps subgraph — Docker, CI configs, deployment scripts., QA subgraph — integration / e2e test authoring., rag_query(), Retrieve relevant project documents using the CRAG pipeline., Retrieve relevant project documents using the CRAG pipeline.      USE WHEN: You
 
 ### Community 89 - "Community 89"
 Cohesion: 0.40
 Nodes (4): str, ask_human(), Human-in-the-loop tool that pauses graph execution via ``interrupt()``.  Calling, Ask the human supervisor a question and wait for the answer.      Use sparingly
 
+### Community 90 - "Community 90"
+Cohesion: 0.18
+Nodes (11): create_subtask(), A single RITE-format test case the lead must specify per subtask., A single RITE-format test case the lead must specify per subtask., Create an ordered subtask under a ticket using RITE-format test cases.      Idem, A single RITE-format test case the lead must specify per subtask., Create an ordered subtask under a ticket using RITE-format test cases.      USE, Create an ordered subtask under a ticket using RITE-format test cases.      USE, Lead-only patch tool for fixing an existing subtask in place. (+3 more)
+
+### Community 91 - "Community 91"
+Cohesion: 0.32
+Nodes (7): datetime, Base, Shared declarative base for all ORM models., DeclarativeBase, SQLAlchemy ORM models for the ticket platform.  Hierarchy: Project → Ticket → Su, _utcnow(), _uuid()
+
+### Community 92 - "Community 92"
+Cohesion: 0.29
+Nodes (7): BaseException, bool, int, _is_transient(), list_checkpoints(), Return the project's checkpoint history (latest first).      Responses are TTL-c, Return the project's checkpoint history (latest first).      Responses are TTL-c
+
 ### Community 94 - "Community 94"
 Cohesion: 0.24
 Nodes (12): int, MonkeyPatch, str, Exception, DummyRunnable, Provider400Error, Minimal Runnable-like object for retry wrapper tests., test_generic_400_does_not_sleep_or_retry() (+4 more)
 
+### Community 95 - "Community 95"
+Cohesion: 0.53
+Nodes (3): object, _normalise_test_cases(), Accept either plain strings (legacy) or structured dicts and     return a list o
+
+### Community 96 - "Community 96"
+Cohesion: 0.40
+Nodes (4): bool, Smoke tests for the ticket-system state-machine logic.  These exercise the pure-, test_transition_allowed(), TicketStatus
+
 ### Community 97 - "Community 97"
-Cohesion: 0.20
-Nodes (10): log_resolved_llm_routing(), Log where each configured role sends traffic (local vs cloud).      Misconfigura, Log where each configured role sends traffic (local vs cloud).      Misconfigura, Log where each configured role sends traffic (local vs cloud).      Misconfigura, Log where each configured role sends traffic (local vs cloud).      Misconfigura, _split_slug(), MonkeyPatch, test_split_slug_explicit_openrouter() (+2 more)
+Cohesion: 0.60
+Nodes (3): _split_slug(), test_split_slug_explicit_openrouter(), test_split_slug_known_direct_providers()
 
 ### Community 98 - "Community 98"
 Cohesion: 0.67
@@ -371,17 +426,17 @@ Nodes (6): _is_provider_400_error(), _should_retry_transient(), _status_code_fro
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `get_settings()` connect `LLM Routing & RAG Pipeline` to `Agent Graph & Specialist Subgraphs`, `Message Reducer & Common Utils`, `Researcher Subgraph & Code Tools`, `Skills Registry System`, `Agent API Routes & Checkpoint Cache`, `DB Session & Ticket API Routes`, `Checkpointer & App Lifecycle`, `Observability & Stream Helpers`, `Checkpoint List Cache`, `Community 19`, `Community 20`, `Community 22`, `Community 27`, `Community 38`, `Community 53`, `Community 55`, `Community 81`, `Community 85`, `Community 88`, `Community 97`?**
-  _High betweenness centrality (0.144) - this node is a cross-community bridge._
+- **Why does `get_settings()` connect `LLM Routing & RAG Pipeline` to `Agent Graph & Specialist Subgraphs`, `Message Reducer & Common Utils`, `Researcher Subgraph & Code Tools`, `Skills Registry System`, `Agent API Routes & Checkpoint Cache`, `DB Session & Ticket API Routes`, `Checkpointer & App Lifecycle`, `Observability & Stream Helpers`, `Community 19`, `Community 22`, `Community 27`, `Community 38`, `Community 53`, `Community 55`, `Community 81`, `Community 84`, `Community 85`, `Community 88`, `Community 97`?**
+  _High betweenness centrality (0.148) - this node is a cross-community bridge._
 - **Why does `get_cached_role_base()` connect `Community 56` to `Community 73`, `Researcher Subgraph & Code Tools`, `Agent Logs & EventBus Persistence`?**
-  _High betweenness centrality (0.121) - this node is a cross-community bridge._
-- **Why does `SubtaskStatus` connect `Community 27` to `Ticket Models & Schemas`, `Event Bus & Ticket Service`, `Project Manager & Routing`, `Community 69`, `Community 76`, `Community 79`, `Checkpoint List Cache`, `Community 20`?**
-  _High betweenness centrality (0.080) - this node is a cross-community bridge._
-- **Are the 74 inferred relationships involving `SubtaskStatus` (e.g. with `bool` and `int`) actually correct?**
-  _`SubtaskStatus` has 74 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 66 inferred relationships involving `AgentRole` (e.g. with `bool` and `int`) actually correct?**
-  _`AgentRole` has 66 INFERRED edges - model-reasoned connections that need verification._
+  _High betweenness centrality (0.127) - this node is a cross-community bridge._
+- **Why does `SubtaskStatus` connect `Community 61` to `Ticket Models & Schemas`, `Event Bus & Ticket Service`, `Community 68`, `Project Manager & Routing`, `Community 69`, `Community 27`, `Community 74`, `Community 77`, `Community 79`, `Checkpoint List Cache`, `Community 20`, `Community 86`, `Community 87`, `Community 90`, `Community 91`, `Community 95`?**
+  _High betweenness centrality (0.078) - this node is a cross-community bridge._
+- **Are the 80 inferred relationships involving `SubtaskStatus` (e.g. with `bool` and `int`) actually correct?**
+  _`SubtaskStatus` has 80 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 72 inferred relationships involving `AgentRole` (e.g. with `bool` and `int`) actually correct?**
+  _`AgentRole` has 72 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 46 inferred relationships involving `Event` (e.g. with `AgentEvent` and `AIMessage`) actually correct?**
   _`Event` has 46 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 57 inferred relationships involving `TicketStatus` (e.g. with `bool` and `int`) actually correct?**
-  _`TicketStatus` has 57 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 58 inferred relationships involving `TicketStatus` (e.g. with `bool` and `int`) actually correct?**
+  _`TicketStatus` has 58 INFERRED edges - model-reasoned connections that need verification._
