@@ -47,8 +47,8 @@ class TodoStatus(str, enum.Enum):
 class AgentRole(str, enum.Enum):
     PROJECT_MANAGER = "project_manager"
     RESEARCHER = "researcher"
-    BACKEND_LEAD = "backend_lead"
-    FRONTEND_LEAD = "frontend_lead"
+    LEAD = "lead"  # Merged backend/frontend lead
+    COORDINATOR = "coordinator"  # Persists plans to DB
     BACKEND_DEV = "backend_dev"
     FRONTEND_DEV = "frontend_dev"
     DEVOPS = "devops"

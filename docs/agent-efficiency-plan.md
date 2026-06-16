@@ -270,8 +270,8 @@ def get_cached_system_prompt(role: str) -> str:
     """
     if role == "project_manager":
         return PROJECT_MANAGER_SYSTEM
-    elif role == "backend_lead":
-        return BACKEND_LEAD_SYSTEM
+    elif role == "lead":
+        return LEAD_SYSTEM
     # ... etc
 
 @lru_cache(maxsize=1)

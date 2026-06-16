@@ -26,8 +26,8 @@ _AGENT_NODES = frozenset(
     {
         "project_manager",
         "researcher",
-        "backend_lead",
-        "frontend_lead",
+        "lead",
+        "coordinator",
         "backend_dev",
         "frontend_dev",
         "devops",

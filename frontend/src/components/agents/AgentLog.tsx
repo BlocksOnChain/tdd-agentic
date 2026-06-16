@@ -222,6 +222,7 @@ function FieldHighlights({ payload }: { payload: Record<string, unknown> }) {
   };
   add("name", "Tool");
   add("preview", "Result preview");
+  add("result", "Result");
   add("detail", "Detail");
   add("error", "Error");
   add("subtask_id", "Subtask");

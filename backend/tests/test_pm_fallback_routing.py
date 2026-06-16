@@ -18,7 +18,7 @@ def _st(**kwargs):
     return SimpleNamespace(**defaults)
 
 
-def test_fallback_routes_frontend_for_todo_ticket_with_client_hint_and_no_fe_subtask() -> None:
+def test_fallback_routes_lead_for_todo_ticket_with_client_hint_and_no_fe_subtask() -> None:
     t = SimpleNamespace(
         id="tid",
         status=TicketStatus.TODO,
@@ -31,11 +31,11 @@ def test_fallback_routes_frontend_for_todo_ticket_with_client_hint_and_no_fe_sub
     )
     d = _fallback_routing_decision([t])
     assert d is not None
-    assert d.next_agent == "frontend_lead"
+    assert d.next_agent == "lead"
     assert d.ticket_ids == ["tid"]
 
 
-def test_fallback_routes_backend_for_draft_without_subtasks() -> None:
+def test_fallback_routes_lead_for_draft_without_subtasks() -> None:
     t = SimpleNamespace(
         id="draft-1",
         status=TicketStatus.DRAFT,
@@ -48,7 +48,7 @@ def test_fallback_routes_backend_for_draft_without_subtasks() -> None:
     )
     d = _fallback_routing_decision([t])
     assert d is not None
-    assert d.next_agent == "backend_lead"
+    assert d.next_agent == "lead"
 
 
 def test_fallback_skips_when_frontend_subtasks_exist() -> None:

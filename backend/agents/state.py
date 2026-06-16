@@ -22,6 +22,35 @@ class AgentEvent(BaseModel):
     timestamp: float | None = None
 
 
+class TestCaseInput(BaseModel):
+    """A single RITE-format test case in a plan."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    given: str
+    should: str
+    expected: str
+    test_type: str = "unit"
+    notes: str = ""
+
+
+class SubtaskPlan(BaseModel):
+    """A single subtask in an execution plan (Lead's output)."""
+
+    title: str
+    description: str = ""
+    required_functionality: str = ""
+    test_cases: list[TestCaseInput] | None = None
+    assigned_to: str  # backend_dev, frontend_dev, devops, qa
+
+
+class ExecutionPlan(BaseModel):
+    """Execution plan produced by Lead agent, consumed by Coordinator."""
+
+    ticket_id: str | None = None  # None if creating new ticket
+    subtasks: list[SubtaskPlan] = Field(default_factory=list)
+
+
 class SystemState(BaseModel):
     """Root state object shared across the orchestration graph."""
 
@@ -49,5 +78,8 @@ class SystemState(BaseModel):
     # Not persisted in checkpoints — cleared between graph runs.
     context_store: dict[str, Any] = Field(default_factory=dict)
 
+    # Execution plan produced by Lead, to be persisted by Coordinator
+    execution_plan: ExecutionPlan | None = Field(default=None)
 
-__all__ = ["SystemState", "AgentEvent"]
+
+__all__ = ["SystemState", "AgentEvent", "ExecutionPlan", "SubtaskPlan", "TestCaseInput"]

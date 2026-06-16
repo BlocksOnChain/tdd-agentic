@@ -13,8 +13,8 @@ _logger = logging.getLogger("backend.agents.llm_http")
 _slug_for_node: dict[str, Callable[["object"], str]] = {
     "project_manager": lambda s: s.pm_model,
     "researcher": lambda s: s.researcher_model,
-    "backend_lead": lambda s: s.lead_model,
-    "frontend_lead": lambda s: s.lead_model,
+    "lead": lambda s: s.lead_model,
+    "coordinator": lambda s: s.coordinator_model or s.dev_model,
     "backend_dev": lambda s: s.backend_dev_model or s.dev_model,
     "frontend_dev": lambda s: s.frontend_dev_model or s.dev_model,
     "devops": lambda s: s.dev_model,

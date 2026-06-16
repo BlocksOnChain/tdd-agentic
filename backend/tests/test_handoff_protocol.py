@@ -38,11 +38,11 @@ def test_handoff_with_ticket_ids() -> None:
 def test_handoff_with_context_refs() -> None:
     """Handoff with context_refs includes them in the compact format."""
     h = Handoff(
-        target="backend_lead",
+        target="lead",
         phase=Phase.BACKEND_PLANNING,
         ticket_ids=("uuid1",),
         context_refs=("ctx_1", "ctx_2"),
-        intent="Audit and plan backend subtasks.",
+        intent="Plan all subtasks for the ticket.",
     )
     msg = h.to_message()
     import json
@@ -51,7 +51,7 @@ def test_handoff_with_context_refs() -> None:
     header = json.loads(lines[1])
     assert header["c"] == ["ctx_1", "ctx_2"]
     assert header["tik"] == ["uuid1"]
-    assert header["t"] == "backend_lead"
+    assert header["t"] == "lead"
 
 
 def test_handoff_from_routing_decision() -> None:

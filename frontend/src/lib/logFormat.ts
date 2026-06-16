@@ -21,8 +21,8 @@ export interface HumanizedLog {
 const AGENT_LABELS: Record<string, string> = {
   project_manager: "Project Manager",
   researcher: "Researcher",
-  backend_lead: "Backend Lead",
-  frontend_lead: "Frontend Lead",
+  lead: "Lead",
+  coordinator: "Coordinator",
   backend_dev: "Backend Dev",
   frontend_dev: "Frontend Dev",
   devops: "DevOps",
@@ -39,8 +39,8 @@ export function agentLabel(agent: string): string {
 const AGENT_TEXT: Record<string, string> = {
   project_manager: "text-amber-400",
   researcher: "text-cyan-400",
-  backend_lead: "text-violet-400",
-  frontend_lead: "text-pink-400",
+  lead: "text-violet-400",
+  coordinator: "text-pink-400",
   backend_dev: "text-emerald-400",
   frontend_dev: "text-sky-400",
   devops: "text-orange-400",

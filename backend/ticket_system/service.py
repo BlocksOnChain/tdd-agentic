@@ -12,7 +12,7 @@ from typing import Any
 
 from backend.config import get_settings
 
-from sqlalchemy import select
+from sqlalchemy import case, select
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -44,6 +44,32 @@ ALLOWED_TICKET_TRANSITIONS: dict[TicketStatus, set[TicketStatus]] = {
     TicketStatus.BLOCKED: {TicketStatus.IN_PROGRESS, TicketStatus.IN_REVIEW},
     TicketStatus.DONE: set(),
 }
+
+
+ACTIONABLE_SUBTASK_STATUSES = (
+    SubtaskStatus.IN_PROGRESS,
+    SubtaskStatus.BLOCKED,
+    SubtaskStatus.PENDING,
+)
+
+
+def _subtask_status_priority(status: SubtaskStatus) -> int:
+    """Lower = higher priority when picking the next subtask for a dev."""
+    return {
+        SubtaskStatus.IN_PROGRESS: 0,
+        SubtaskStatus.BLOCKED: 1,
+        SubtaskStatus.PENDING: 2,
+    }[status]
+
+
+def _subtask_status_order():
+    """SQL ORDER BY key: in_progress, then blocked, then pending."""
+    return case(
+        (Subtask.status == SubtaskStatus.IN_PROGRESS, 0),
+        (Subtask.status == SubtaskStatus.BLOCKED, 1),
+        (Subtask.status == SubtaskStatus.PENDING, 2),
+        else_=3,
+    )
 
 
 class TicketStateError(ValueError):
@@ -433,11 +459,18 @@ async def delete_subtask(db: AsyncSession, subtask_id: str) -> dict[str, Any]:
 
 
 async def next_pending_subtask(db: AsyncSession, ticket_id: str) -> Subtask | None:
-    """Return the lowest-order pending subtask for a ticket, or None."""
+    """Return the next actionable subtask for a ticket, or None.
+
+    Prefers in_progress (resume), then blocked, then pending — always the
+    lowest ``order_index`` within each status tier.
+    """
     stmt = (
         select(Subtask)
-        .where(Subtask.ticket_id == ticket_id, Subtask.status == SubtaskStatus.PENDING)
-        .order_by(Subtask.order_index)
+        .where(
+            Subtask.ticket_id == ticket_id,
+            Subtask.status.in_(ACTIONABLE_SUBTASK_STATUSES),
+        )
+        .order_by(_subtask_status_order(), Subtask.order_index, Subtask.created_at)
         .limit(1)
     )
     result = await db.execute(stmt)
@@ -451,10 +484,10 @@ async def next_pending_subtask_for_role(
         select(Subtask)
         .where(
             Subtask.ticket_id == ticket_id,
-            Subtask.status == SubtaskStatus.PENDING,
+            Subtask.status.in_(ACTIONABLE_SUBTASK_STATUSES),
             Subtask.assigned_to == role,
         )
-        .order_by(Subtask.order_index)
+        .order_by(_subtask_status_order(), Subtask.order_index, Subtask.created_at)
         .limit(1)
     )
     result = await db.execute(stmt)
@@ -466,25 +499,38 @@ async def next_pending_subtask_in_project(
     *,
     project_id: str,
     role: AgentRole,
+    ticket_id: str | None = None,
 ) -> tuple[Ticket, Subtask] | None:
-    """Return the next pending subtask for a role across the whole project.
+    """Return the next actionable subtask for a role across the project.
 
     Ordering:
       1) ticket.order_index ASC (the "ticket order to do")
-      2) subtask.order_index ASC (within-ticket execution order)
+      2) subtask status tier: in_progress, blocked, pending
+      3) subtask.order_index ASC (within-ticket execution order)
 
-    Only considers tickets in TODO or IN_PROGRESS and subtasks in PENDING.
+    Only considers tickets in TODO or IN_PROGRESS and subtasks that are
+    pending, in_progress, or blocked. When ``ticket_id`` is set, scope is
+    limited to that ticket (PM-directed resume).
     """
+    filters = [
+        Ticket.project_id == project_id,
+        Ticket.status.in_([TicketStatus.TODO, TicketStatus.IN_PROGRESS]),
+        Subtask.status.in_(ACTIONABLE_SUBTASK_STATUSES),
+        Subtask.assigned_to == role,
+    ]
+    if ticket_id is not None:
+        filters.append(Ticket.id == ticket_id)
     stmt = (
         select(Ticket, Subtask)
         .join(Subtask, Subtask.ticket_id == Ticket.id)
-        .where(
-            Ticket.project_id == project_id,
-            Ticket.status.in_([TicketStatus.TODO, TicketStatus.IN_PROGRESS]),
-            Subtask.status == SubtaskStatus.PENDING,
-            Subtask.assigned_to == role,
+        .where(*filters)
+        .order_by(
+            Ticket.order_index,
+            Ticket.created_at,
+            _subtask_status_order(),
+            Subtask.order_index,
+            Subtask.created_at,
         )
-        .order_by(Ticket.order_index, Ticket.created_at, Subtask.order_index, Subtask.created_at)
         .limit(1)
     )
     result = await db.execute(stmt)
@@ -526,6 +572,24 @@ async def update_todo(db: AsyncSession, todo_id: str, patch: schemas.TodoUpdate)
 
 
 # ===== Helpers used by agents =====
+def _first_actionable_subtask(subs: list[Subtask]) -> dict[str, Any] | None:
+    """Compact pointer to the subtask a dev should resume or start next."""
+    actionable = [s for s in subs if s.status in ACTIONABLE_SUBTASK_STATUSES]
+    if not actionable:
+        return None
+    actionable.sort(
+        key=lambda s: (_subtask_status_priority(s.status), s.order_index, s.created_at)
+    )
+    s0 = actionable[0]
+    return {
+        "id": s0.id,
+        "title": s0.title,
+        "status": s0.status.value,
+        "assigned_to": s0.assigned_to.value,
+        "order_index": s0.order_index,
+    }
+
+
 async def all_subtasks_done(db: AsyncSession, ticket_id: str) -> bool:
     stmt = select(Subtask.status).where(Subtask.ticket_id == ticket_id)
     result = await db.execute(stmt)
@@ -598,9 +662,11 @@ async def to_dict_ticket_summary(ticket: Ticket) -> dict[str, Any]:
             }
             for s in subs
         ],
+        "next_actionable_subtask": _first_actionable_subtask(subs),
         "hint": (
             "Call get_ticket(ticket_id, detail='full') for RITE test_cases and todos; "
-            "dev agents should use next_pending_subtask* for active work."
+            "dev agents should call next_pending_subtask* once per turn for work "
+            "(returns in_progress, blocked, or pending subtasks)."
         ),
     }
 

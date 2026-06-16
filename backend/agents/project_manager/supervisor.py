@@ -40,8 +40,8 @@ MAX_KEPT_HUMAN_MESSAGES = 8
 
 VALID_TARGETS = {
     "researcher",
-    "backend_lead",
-    "frontend_lead",
+    "lead",           # Merged backend/frontend lead
+    "coordinator",    # Persists plans to DB
     "backend_dev",
     "frontend_dev",
     "devops",
@@ -165,8 +165,8 @@ def _format_pm_handoff(target: str, decision: RoutingDecision) -> str:
     return handoff.to_message()
 
 
-# Heuristic for tickets that still need a frontend_lead pass. Used when the PM model
-# emits invalid JSON or wrongly chooses "end" while only backend_dev subtasks exist.
+# Heuristic for tickets that still need a lead planning pass. Used when the PM model
+# emits invalid JSON or wrongly chooses "end" while planning is incomplete.
 _CLIENT_SCOPE_TOKENS: frozenset[str] = frozenset(
     {
         "client",
@@ -345,10 +345,9 @@ async def _infer_next_dev_route(project_id: str | None) -> RoutingDecision | Non
 
 
 def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
-    """Pick backend_lead or frontend_lead from DB state when the LLM routing fails.
+    """Pick lead from DB state when the LLM routing fails.
 
-    This keeps the graph alive after backend planning + PM review when tickets were
-    advanced to TODO but no frontend_dev subtasks exist yet for client-scope work.
+    This keeps the graph alive after planning is needed but PM failed to route correctly.
     """
     if not tickets:
         return None
@@ -367,15 +366,16 @@ def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
     if drafts_without_subtasks:
         ids = [t.id for t in drafts_without_subtasks]
         return RoutingDecision(
-            next_agent="backend_lead",
+            next_agent="lead",
             rationale=(
-                "Fallback: DRAFT ticket(s) still have no subtasks; routing backend_lead."
+                "Fallback: DRAFT ticket(s) still have no subtasks; routing lead."
             ),
-            instructions="Break down DRAFT tickets into backend-domain subtasks.",
+            instructions="Break down DRAFT tickets into subtasks (backend + frontend combined).",
             ticket_ids=ids,
-            phase="backend_planning",
+            phase="planning",
         )
 
+    # With merged lead, we route all planning needs to 'lead' agent
     fe_candidates: list[Ticket] = []
     for t in active:
         if _ticket_has_unanswered_questions(t):
@@ -387,32 +387,32 @@ def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
         ):
             continue
         subs = list(t.subtasks or [])
-        if not subs:
-            continue
-        # If *any* client-side execution subtask exists already, don't
-        # force a frontend_lead fallback. Some tickets are legitimately
-        # QA-only or DevOps-only even when they relate to client/UI scope.
-        if any(
-            s.assigned_to in {AgentRole.FRONTEND_DEV, AgentRole.DEVOPS, AgentRole.QA}
-            for s in subs
-        ):
-            continue
-        if _text_suggests_client_scope(t):
+        # Check if planning is incomplete (some domains missing)
+        has_backend_subtask = any(
+            s.assigned_to in {AgentRole.BACKEND_DEV, AgentRole.DEVOPS} for s in subs
+        )
+        has_frontend_subtask = any(
+            s.assigned_to == AgentRole.FRONTEND_DEV for s in subs
+        )
+
+        # If ticket needs both but only one domain is planned, or no subtasks exist
+        if _text_suggests_client_scope(t) and not (has_backend_subtask and has_frontend_subtask):
+            fe_candidates.append(t)
+        elif not has_backend_subtask:
             fe_candidates.append(t)
 
     if fe_candidates:
         ids = [t.id for t in fe_candidates]
         return RoutingDecision(
-            next_agent="frontend_lead",
+            next_agent="lead",
             rationale=(
-                "Fallback: ticket text suggests client/UI work but there is no "
-                "client-side execution subtask yet; routing frontend_lead."
+                "Fallback: ticket needs planning but lead hasn't completed subtasks yet."
             ),
             instructions=(
-                "Plan client-side subtasks; assign frontend_dev, devops, or qa as needed."
+                "Plan all subtasks (backend + frontend) for this ticket."
             ),
             ticket_ids=ids,
-            phase="frontend_planning",
+            phase="planning",
         )
     return None
 
@@ -554,7 +554,12 @@ def build_project_manager_node():
                         await emit(
                             "project_manager",
                             "tool_result",
-                            {"name": tm.name, "preview": str(tm.content)[:300]},
+                            {
+                                "name": tm.name,
+                                "preview": str(tm.content)[:300],
+                                # Store a bounded full tool result for the Logs "Full payload" modal.
+                                "result": _truncate(str(tm.content), MAX_TOOL_RESULT_CHARS),
+                            },
                             state.project_id,
                         )
                     )

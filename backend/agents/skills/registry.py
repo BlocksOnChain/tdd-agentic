@@ -4,7 +4,7 @@ A skill is a small markdown file describing a focused capability (a library,
 a pattern, a workflow). Skills are persisted in JSON form here and indexed
 to RAG so retrieval-time lookup works too.
 
-Roles map: project_manager, researcher, backend_lead, frontend_lead,
+Roles map: project_manager, researcher, lead, coordinator,
 backend_dev, frontend_dev, devops, qa.
 """
 from __future__ import annotations

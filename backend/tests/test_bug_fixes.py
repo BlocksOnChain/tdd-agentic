@@ -44,20 +44,21 @@ class TestBug1InfrastructureScaffolding:
         # The PM must have infrastructure as a readiness check
         assert "infrastructure" in PROJECT_MANAGER_SYSTEM.lower()
 
-    def test_backend_lead_infrastructure_first(self):
-        """Backend lead must create infrastructure subtask at order_index 0."""
-        from backend.agents.prompts import BACKEND_LEAD_SYSTEM
+    def test_lead_infrastructure_first(self):
+        """Lead must create infrastructure subtask at order_index 0 via devops."""
+        from backend.agents.prompts import LEAD_SYSTEM
 
-        assert "infrastructure" in BACKEND_LEAD_SYSTEM.lower()
-        assert "order_index 0" in BACKEND_LEAD_SYSTEM
-        assert "devops" in BACKEND_LEAD_SYSTEM
+        assert "infrastructure" in LEAD_SYSTEM.lower()
+        assert "order_index" in LEAD_SYSTEM
+        assert "devops" in LEAD_SYSTEM
 
-    def test_frontend_lead_infrastructure(self):
-        """Frontend lead must create client-side infra subtask."""
-        from backend.agents.prompts import FRONTEND_LEAD_SYSTEM
+    def test_lead_covers_both_domains(self):
+        """Merged lead must cover both backend and frontend infrastructure."""
+        from backend.agents.prompts import LEAD_SYSTEM
 
-        assert "infrastructure" in FRONTEND_LEAD_SYSTEM.lower()
-        assert "order_index 0" in FRONTEND_LEAD_SYSTEM
+        assert "infrastructure" in LEAD_SYSTEM.lower()
+        assert "backend" in LEAD_SYSTEM.lower()
+        assert "frontend" in LEAD_SYSTEM.lower()
 
     def test_devops_system_prompt_expands_deliverables(self):
         """DevOps system prompt must list specific scaffolding deliverables."""
@@ -109,20 +110,13 @@ class TestBug2TicketGranularity:
         assert "4 for full-stack" in PROJECT_MANAGER_SYSTEM or ">= 4" in PROJECT_MANAGER_SYSTEM
         assert "3 for single-domain" in PROJECT_MANAGER_SYSTEM or ">= 3" in PROJECT_MANAGER_SYSTEM
 
-    def test_backend_lead_minimum_subtasks(self):
-        """Backend lead must have minimum subtask count constraint."""
-        from backend.agents.prompts import BACKEND_LEAD_SYSTEM
+    def test_lead_minimum_subtasks(self):
+        """Merged lead must have minimum subtask count constraint and decomposition guidance."""
+        from backend.agents.prompts import LEAD_SYSTEM
 
-        assert "Minimum subtask count" in BACKEND_LEAD_SYSTEM
-        assert "4" in BACKEND_LEAD_SYSTEM
-        assert "decompose further" in BACKEND_LEAD_SYSTEM.lower()
-
-    def test_frontend_lead_minimum_subtasks(self):
-        """Frontend lead must have minimum subtask count constraint."""
-        from backend.agents.prompts import FRONTEND_LEAD_SYSTEM
-
-        assert "Minimum subtask count" in FRONTEND_LEAD_SYSTEM
-        assert "4" in FRONTEND_LEAD_SYSTEM
+        assert "Minimum subtask count" in LEAD_SYSTEM
+        assert "4" in LEAD_SYSTEM
+        assert "decompose further" in LEAD_SYSTEM.lower()
 
     def test_supervisor_enforces_min_subtasks(self):
         """_ticket_ready_for_todo must enforce minimum subtask count (via source inspection)."""
@@ -220,10 +214,10 @@ class TestRegressionNoRegresion:
         assert "should" in LEAD_PLANNING_APPENDIX
         assert "expected" in LEAD_PLANNING_APPENDIX
 
-    def test_leads_still_have_scope_constraints(self):
-        from backend.agents.prompts import BACKEND_LEAD_SYSTEM, FRONTEND_LEAD_SYSTEM
-        assert "forbidden" in BACKEND_LEAD_SYSTEM.lower() or "do not create" in BACKEND_LEAD_SYSTEM.lower()
-        assert "forbidden" in FRONTEND_LEAD_SYSTEM.lower() or "do not create" in FRONTEND_LEAD_SYSTEM.lower()
+    def test_lead_has_scope_definition(self):
+        from backend.agents.prompts import LEAD_SYSTEM
+        assert "backend" in LEAD_SYSTEM.lower() and "frontend" in LEAD_SYSTEM.lower()
+        assert "do not call any tools" in LEAD_SYSTEM.lower() or "no tool calls" in LEAD_SYSTEM.lower() or "do not call" in LEAD_SYSTEM.lower()
 
     def test_dev_still_has_tdd_contract(self):
         from backend.agents.prompts import DEV_SYSTEM_BASE
@@ -236,9 +230,8 @@ class TestRegressionNoRegresion:
         from backend.agents.prompts import get_cached_role_base
 
         roles = [
-            "project_manager", "researcher", "backend_lead",
-            "frontend_lead", "backend_dev", "frontend_dev",
-            "devops", "qa",
+            "project_manager", "researcher", "lead", "coordinator",
+            "backend_dev", "frontend_dev", "devops", "qa",
         ]
         for role in roles:
             base = get_cached_role_base(role)

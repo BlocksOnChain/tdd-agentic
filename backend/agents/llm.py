@@ -11,14 +11,23 @@ Adds two production-grade behaviours on top of plain LangChain integrations:
 Slug format: ``provider/model`` (``openai/gpt-4o``,
 ``anthropic/claude-sonnet-4-6``, ``openrouter/anthropic/claude-sonnet-4``).
 
+OpenRouter catalog ids often look like ``vendor/model`` (e.g. ``nex-agi/foo``).
+Those are **not** gateway providers — with ``OPENROUTER_API_KEY`` set you can use
+the OpenRouter id directly (``nex-agi/foo``) or prefix explicitly
+(``openrouter/nex-agi/foo``); both route to OpenRouter.
+
 ``OPENAI_BASE_URL`` applies **only** to ``openai/...`` slugs. Roles still set to
 ``anthropic/...`` call Anthropic's API regardless of ``OPENAI_BASE_URL``.
 ``openrouter/...`` slugs use ``OPENROUTER_API_KEY`` and ``OPENROUTER_BASE_URL``.
 """
 from __future__ import annotations
 
+import asyncio
 import logging
+import random
 import threading
+import time
+from typing import Any
 
 from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -73,7 +82,7 @@ def _transient_exceptions() -> tuple[type[BaseException], ...]:
             RateLimitError as ARateLimitError,
         )
 
-        excs.extend([AAPIConnectionError, AAPIStatusError, AAPITimeoutError, ARateLimitError])
+        excs.extend([AAPIConnectionError, AAPITimeoutError, ARateLimitError])
     except Exception:
         pass
     try:
@@ -84,32 +93,171 @@ def _transient_exceptions() -> tuple[type[BaseException], ...]:
             RateLimitError as ORateLimitError,
         )
 
-        excs.extend([OAPIConnectionError, OAPIStatusError, OAPITimeoutError, ORateLimitError])
+        excs.extend([OAPIConnectionError, OAPITimeoutError, ORateLimitError])
     except Exception:
         pass
     return tuple(excs)
 
 
-def _wrap_with_retry(model: BaseChatModel) -> Runnable:
-    """Attach inline retry-with-backoff to a chat model.
+def _status_code_from_exc(exc: BaseException) -> int | None:
+    code = getattr(exc, "status_code", None)
+    if isinstance(code, int):
+        return code
+    resp = getattr(exc, "response", None)
+    code2 = getattr(resp, "status_code", None)
+    if isinstance(code2, int):
+        return code2
+    return None
 
-    The returned object is a ``Runnable`` (not a ``BaseChatModel``); call
-    ``.bind_tools(...)`` on the *original* model first, then wrap the
-    result with this helper.
-    """
+
+def _is_provider_400_error(exc: BaseException) -> bool:
+    if _status_code_from_exc(exc) != 400:
+        return False
+    msg = str(exc).lower()
+    return "provider" in msg and "error" in msg
+
+
+def _should_retry_transient(exc: BaseException) -> bool:
+    # Provider 400s are handled by the outer 60s retry wrapper (once).
+    if _is_provider_400_error(exc):
+        return False
+    code = _status_code_from_exc(exc)
+    if code is not None:
+        return code == 429 or code >= 500
+    return isinstance(exc, _transient_exceptions())
+
+
+def _sleep_sync(seconds: float) -> None:
+    time.sleep(seconds)
+
+
+async def _sleep_async(seconds: float) -> None:
+    await asyncio.sleep(seconds)
+
+
+def _backoff_seconds(attempt: int) -> float:
+    """Exponential backoff with jitter (attempt is 0-based)."""
     settings = get_settings()
-    return model.with_retry(
-        retry_if_exception_type=_transient_exceptions(),
-        stop_after_attempt=max(1, settings.llm_max_retries),
-        wait_exponential_jitter=True,
-    )
+    base = max(0.1, settings.llm_retry_initial_delay)
+    cap = max(base, settings.llm_retry_max_delay)
+    ceiling = min(cap, base * (2**attempt))
+    return random.uniform(0, ceiling)
+
+
+def _wrap_transient_retry(runnable: Runnable) -> Runnable:
+    """Retry transient LLM errors with exponential backoff (429, 5xx, network)."""
+    settings = get_settings()
+    max_attempts = max(1, settings.llm_max_retries)
+
+    class _TransientRetryWrapper(Runnable):  # type: ignore[misc]
+        def __init__(self, inner: Runnable):
+            self._inner = inner
+
+        def invoke(self, input: Any, config: Any = None, **kwargs: Any) -> Any:  # noqa: A002
+            for attempt in range(max_attempts):
+                try:
+                    return self._inner.invoke(input, config=config, **kwargs)
+                except Exception as exc:  # noqa: BLE001
+                    if attempt + 1 >= max_attempts or not _should_retry_transient(exc):
+                        raise
+                    delay = _backoff_seconds(attempt)
+                    _logger.warning(
+                        "LLM transient error (attempt %s/%s); retrying in %.1fs: %s",
+                        attempt + 1,
+                        max_attempts,
+                        delay,
+                        str(exc)[:300],
+                    )
+                    _sleep_sync(delay)
+
+        async def ainvoke(self, input: Any, config: Any = None, **kwargs: Any) -> Any:  # noqa: A002
+            for attempt in range(max_attempts):
+                try:
+                    return await self._inner.ainvoke(input, config=config, **kwargs)
+                except Exception as exc:  # noqa: BLE001
+                    if attempt + 1 >= max_attempts or not _should_retry_transient(exc):
+                        raise
+                    delay = _backoff_seconds(attempt)
+                    _logger.warning(
+                        "LLM transient error (attempt %s/%s); retrying in %.1fs: %s",
+                        attempt + 1,
+                        max_attempts,
+                        delay,
+                        str(exc)[:300],
+                    )
+                    await _sleep_async(delay)
+
+    return _TransientRetryWrapper(runnable)
+
+
+def _wrap_provider_400_retry(runnable: Runnable) -> Runnable:
+    """Wrap a Runnable: on provider-400 error, sleep 60s and retry once."""
+
+    class _Provider400RetryWrapper(Runnable):  # type: ignore[misc]
+        def __init__(self, inner: Runnable):
+            self._inner = inner
+
+        def invoke(self, input: Any, config: Any = None, **kwargs: Any) -> Any:  # noqa: A002
+            tried = False
+            while True:
+                try:
+                    return self._inner.invoke(input, config=config, **kwargs)
+                except Exception as exc:  # noqa: BLE001
+                    if tried or not _is_provider_400_error(exc):
+                        raise
+                    tried = True
+                    _logger.warning(
+                        "LLM provider 400 error; retrying once after 60s: %s",
+                        str(exc)[:300],
+                    )
+                    _sleep_sync(60.0)
+
+        async def ainvoke(self, input: Any, config: Any = None, **kwargs: Any) -> Any:  # noqa: A002
+            tried = False
+            while True:
+                try:
+                    return await self._inner.ainvoke(input, config=config, **kwargs)
+                except Exception as exc:  # noqa: BLE001
+                    if tried or not _is_provider_400_error(exc):
+                        raise
+                    tried = True
+                    _logger.warning(
+                        "LLM provider 400 error; retrying once after 60s: %s",
+                        str(exc)[:300],
+                    )
+                    await _sleep_async(60.0)
+
+    return _Provider400RetryWrapper(runnable)
+
+
+def _wrap_with_retry(runnable: Runnable) -> Runnable:
+    """Attach inline retry-with-backoff to a chat model or tool-bound Runnable."""
+    return _wrap_transient_retry(runnable)
+
+
+_KNOWN_GATEWAY_PROVIDERS = frozenset({"openai", "anthropic", "openrouter"})
 
 
 def _split_slug(model_slug: str) -> tuple[str, str]:
+    """Parse a role slug into (gateway_provider, model_id_for_that_gateway).
+
+    Direct gateways: ``openai/...``, ``anthropic/...``, ``openrouter/...``.
+
+    OpenRouter model ids are often ``vendor/model`` (``nex-agi/foo``,
+    ``anthropic/claude-sonnet-4``). When the first segment is not a known
+    gateway and ``OPENROUTER_API_KEY`` is set, the whole slug is sent to
+    OpenRouter as the model id.
+    """
     if "/" not in model_slug:
         return "openai", model_slug
-    p, n = model_slug.split("/", 1)
-    return p.lower(), n
+    provider, name = model_slug.split("/", 1)
+    provider = provider.lower()
+    if provider in _KNOWN_GATEWAY_PROVIDERS:
+        return provider, name
+    settings = get_settings()
+    if (settings.openrouter_api_key or "").strip():
+        return "openrouter", model_slug
+    return provider, name
 
 
 def log_resolved_llm_routing() -> None:
@@ -123,6 +271,7 @@ def log_resolved_llm_routing() -> None:
         ("pm_model", settings.pm_model),
         ("researcher_model", settings.researcher_model),
         ("lead_model", settings.lead_model),
+        ("coordinator_model", settings.coordinator_model or settings.dev_model),
         ("dev_model", settings.dev_model),
         ("backend_dev_model", settings.backend_dev_model or settings.dev_model),
         ("frontend_dev_model", settings.frontend_dev_model or settings.dev_model),
@@ -200,13 +349,23 @@ def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> Ba
         )
 
     raise ValueError(
-        f"Unsupported LLM provider '{provider}'. Supported: openai, anthropic, openrouter."
+        f"Unsupported LLM provider '{provider}' in slug {model_slug!r}. "
+        "Use openai/, anthropic/, or openrouter/ as the gateway prefix. "
+        "For OpenRouter catalog models (e.g. nex-agi/...), set OPENROUTER_API_KEY "
+        "or use openrouter/nex-agi/...."
     )
 
 
 def with_retry(runnable: Runnable) -> Runnable:
-    """Public alias so callers can wrap a tool-bound model in retry logic."""
-    return _wrap_with_retry(runnable)  # type: ignore[arg-type]
+    """Wrap a tool-bound model with safe retry policy.
+
+    Policy:
+      - Retry transient errors (429, 5xx, network/timeouts) with exponential backoff.
+      - If we receive a "400 provider error", wait 60 seconds and retry once.
+        If it happens again, raise (crash) so the failure is surfaced.
+    """
+    wrapped = _wrap_with_retry(runnable)
+    return _wrap_provider_400_retry(wrapped)
 
 
 def pm_model() -> BaseChatModel:
@@ -234,6 +393,13 @@ def backend_dev_model() -> BaseChatModel:
 def frontend_dev_model() -> BaseChatModel:
     s = get_settings()
     slug = s.frontend_dev_model or s.dev_model
+    return get_chat_model(slug)
+
+
+def coordinator_model() -> BaseChatModel:
+    """Coordinator uses dev model by default (planning is done by Lead)."""
+    settings = get_settings()
+    slug = settings.coordinator_model or settings.dev_model
     return get_chat_model(slug)
 
 

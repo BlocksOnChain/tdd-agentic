@@ -29,6 +29,44 @@ def _dump(obj: Any) -> str:
     return json.dumps(obj, default=str, indent=2)
 
 
+_DEV_ROLES = {
+    AgentRole.BACKEND_DEV,
+    AgentRole.FRONTEND_DEV,
+    AgentRole.DEVOPS,
+    AgentRole.QA,
+}
+
+
+def _parse_dev_role(role: str | None) -> AgentRole | None:
+    """Parse an optional dev role; treat empty / 'none' / 'null' as unfiltered."""
+    if role is None:
+        return None
+    cleaned = str(role).strip()
+    if not cleaned or cleaned.lower() in {"none", "null"}:
+        return None
+    parsed = AgentRole(cleaned)
+    if parsed not in _DEV_ROLES:
+        raise ValueError(
+            f"role='{role}' is not a valid dev role. "
+            "Use one of: backend_dev, frontend_dev, devops, qa."
+        )
+    return parsed
+
+
+def _subtask_tool_payload(sub: Any) -> dict[str, Any]:
+    return {
+        "id": sub.id,
+        "ticket_id": sub.ticket_id,
+        "title": sub.title,
+        "description": sub.description,
+        "required_functionality": sub.required_functionality,
+        "test_cases": schemas._normalise_test_cases(sub.test_cases or []),
+        "assigned_to": sub.assigned_to.value,
+        "order_index": sub.order_index,
+        "status": sub.status.value,
+    }
+
+
 @tool
 async def list_tickets(project_id: str) -> str:
     """List every ticket in a project as compact rows (id, title, status).
@@ -467,58 +505,70 @@ async def mark_todo_done(todo_id: str) -> str:
 
 @tool
 async def next_pending_subtask(ticket_id: str, role: str | None = None) -> str:
-    """Return the next pending subtask (lowest order_index) for a ticket, optionally filtered by agent role."""
+    """Return the next actionable subtask for a ticket (resume or start).
+
+    USE WHEN: PM routed you to a specific ticket — pass its UUID here.
+    AVOID WHEN: You need project-wide dispatch — use next_pending_subtask_in_project.
+
+    Prefers in_progress (resume), then blocked, then pending (lowest order_index).
+    Optional role filter: backend_dev, frontend_dev, devops, qa. Omit role to match any assignee.
+
+    RETURNS: {subtask: {...} | null, resume: true|false}
+    ON INVALID ROLE: {error: "role='...' is not a valid dev role..."}
+    """
+    try:
+        parsed_role = _parse_dev_role(role)
+    except ValueError as exc:
+        return _dump({"error": str(exc)})
     async with AsyncSessionLocal() as db:
-        if role:
-            sub = await service.next_pending_subtask_for_role(db, ticket_id, AgentRole(role))
+        if parsed_role is not None:
+            sub = await service.next_pending_subtask_for_role(db, ticket_id, parsed_role)
         else:
             sub = await service.next_pending_subtask(db, ticket_id)
         if sub is None:
-            return _dump({"subtask": None})
+            return _dump({"subtask": None, "resume": False})
         return _dump(
             {
-                "subtask": {
-                    "id": sub.id,
-                    "title": sub.title,
-                    "description": sub.description,
-                    "required_functionality": sub.required_functionality,
-                    "test_cases": schemas._normalise_test_cases(sub.test_cases or []),
-                    "assigned_to": sub.assigned_to.value,
-                    "order_index": sub.order_index,
-                    "status": sub.status.value,
-                }
+                "subtask": _subtask_tool_payload(sub),
+                "resume": sub.status in {SubtaskStatus.IN_PROGRESS, SubtaskStatus.BLOCKED},
             }
         )
 
 
 @tool
-async def next_pending_subtask_in_project(project_id: str, role: str) -> str:
-    """Return the next pending subtask for a role across the whole project.
+async def next_pending_subtask_in_project(
+    project_id: str,
+    role: str,
+    ticket_id: str | None = None,
+) -> str:
+    """Return the next actionable subtask for a role across the project.
 
     USE WHEN: You are a developer starting your turn — fetch the next work item.
+    USE WHEN: PM gave you a ticket UUID — pass ticket_id to scope lookup (fewer tokens).
     AVOID WHEN: You've already fetched a subtask this turn — call it once per turn.
-    AVOID WHEN: The role doesn't match your agent type — use your actual role.
 
-    ORDERING: Uses ticket.order_index first, then subtask.order_index.
-    RETURNS: {ticket: {id, title, status, order_index}, subtask: {id, ticket_id, title, description, required_functionality, test_cases, assigned_to, order_index, status}}
-    ON NO MORE WORK: {ticket: null, subtask: null}
-    ON ERROR (invalid role): {error: "role='...' is not a valid role..."}
+    Prefers in_progress, then blocked, then pending. Ordering uses ticket.order_index,
+    then subtask.order_index.
+
+    RETURNS: {ticket: {...}|null, subtask: {...}|null, resume: true|false}
+    ON NO MORE WORK: {ticket: null, subtask: null, resume: false}
+    ON ERROR (invalid role): {error: "role='...' is not a valid dev role..."}
     """
     try:
-        r = AgentRole(role)
-    except ValueError:
-        return _dump(
-            {
-                "error": (
-                    f"role='{role}' is not a valid role. "
-                    "Use one of: backend_dev, frontend_dev, devops, qa."
-                )
-            }
-        )
+        r = _parse_dev_role(role)
+        if r is None:
+            raise ValueError(
+                f"role='{role}' is not a valid dev role. "
+                "Use one of: backend_dev, frontend_dev, devops, qa."
+            )
+    except ValueError as exc:
+        return _dump({"error": str(exc)})
     async with AsyncSessionLocal() as db:
-        row = await service.next_pending_subtask_in_project(db, project_id=project_id, role=r)
+        row = await service.next_pending_subtask_in_project(
+            db, project_id=project_id, role=r, ticket_id=ticket_id or None
+        )
         if row is None:
-            return _dump({"ticket": None, "subtask": None})
+            return _dump({"ticket": None, "subtask": None, "resume": False})
         ticket, sub = row
         return _dump(
             {
@@ -528,17 +578,8 @@ async def next_pending_subtask_in_project(project_id: str, role: str) -> str:
                     "status": ticket.status.value,
                     "order_index": ticket.order_index,
                 },
-                "subtask": {
-                    "id": sub.id,
-                    "ticket_id": sub.ticket_id,
-                    "title": sub.title,
-                    "description": sub.description,
-                    "required_functionality": sub.required_functionality,
-                    "test_cases": schemas._normalise_test_cases(sub.test_cases or []),
-                    "assigned_to": sub.assigned_to.value,
-                    "order_index": sub.order_index,
-                    "status": sub.status.value,
-                },
+                "subtask": _subtask_tool_payload(sub),
+                "resume": sub.status in {SubtaskStatus.IN_PROGRESS, SubtaskStatus.BLOCKED},
             }
         )
 

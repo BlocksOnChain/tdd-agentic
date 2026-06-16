@@ -285,7 +285,13 @@ def build_specialist_subgraph(
                 await emit(
                     name,
                     "tool_result",
-                    {"name": tm.name, "preview": str(tm.content)[:300]},
+                    {
+                        "name": tm.name,
+                        "preview": str(tm.content)[:300],
+                        # Store a bounded full tool result for the Logs "Full payload" modal.
+                        # (The list view stays fast by reading only payload.preview.)
+                        "result": _truncate(str(tm.content), MAX_TOOL_RESULT_CHARS),
+                    },
                     state.project_id,
                 )
                 truncated = ToolMessage(

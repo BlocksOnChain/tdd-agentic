@@ -24,8 +24,8 @@ async def create_skill(
 ) -> str:
     """Create or update a Skill (a focused capability brief) and assign it to roles.
 
-    Roles must be one or more of: project_manager, researcher, backend_lead,
-    frontend_lead, backend_dev, frontend_dev, devops, qa.
+    Roles must be one or more of: project_manager, researcher, lead, coordinator,
+    backend_dev, frontend_dev, devops, qa.
     """
     info = upsert_skill(
         name=name, description=description, content=content, roles=roles, project_id=project_id

@@ -38,6 +38,7 @@ class Settings(BaseSettings):
     # Optional overrides for product devs (default to dev_model when unset in env).
     backend_dev_model: str | None = None
     frontend_dev_model: str | None = None
+    coordinator_model: str | None = None  # Optional; defaults to dev_model
     grader_model: str = "anthropic/claude-haiku-4-5"
 
     # Web search backing for the ``web_search`` tool (researcher).

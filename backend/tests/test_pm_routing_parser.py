@@ -13,11 +13,11 @@ def test_parses_plain_json() -> None:
 
 def test_parses_json_in_markdown_fence() -> None:
     text = """```json
-    {"next_agent": "backend_lead", "rationale": "decompose", "instructions": "split TICKET-1"}
+    {"next_agent": "lead", "rationale": "decompose", "instructions": "plan TICKET-1"}
     ```"""
     decision = _parse_routing(text)
     assert decision is not None
-    assert decision.next_agent == "backend_lead"
+    assert decision.next_agent == "lead"
 
 
 def test_returns_none_on_garbage() -> None:

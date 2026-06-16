@@ -1,14 +1,14 @@
 """Tests for prompt caching utility."""
 from __future__ import annotations
 
-from backend.agents.prompts import get_cached_role_base, get_cached_lead_appendix, BACKEND_LEAD_SYSTEM
+from backend.agents.prompts import get_cached_role_base, get_cached_lead_appendix, LEAD_SYSTEM
 
 
 def test_cached_role_base_returns_correct_prompt() -> None:
     """get_cached_role_base returns the correct prompt for each role."""
     assert get_cached_role_base("project_manager") is not None
     assert get_cached_role_base("researcher") is not None
-    assert get_cached_role_base("backend_lead") is BACKEND_LEAD_SYSTEM
+    assert get_cached_role_base("lead") is LEAD_SYSTEM
     assert get_cached_role_base("backend_dev") is not None
     assert get_cached_role_base("frontend_dev") is not None
     assert get_cached_role_base("devops") is not None

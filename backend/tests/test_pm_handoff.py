@@ -24,7 +24,7 @@ def test_parses_ticket_ids_and_phase() -> None:
 def test_normalise_ticket_ids_from_instructions_fallback() -> None:
     uid = "7c4f842e-e29b-41d4-a716-446655440000"
     decision = RoutingDecision(
-        next_agent="backend_lead",
+        next_agent="lead",
         instructions=f"Plan ticket {uid}.",
     )
     assert _normalise_ticket_ids(decision) == [uid]
@@ -33,12 +33,11 @@ def test_normalise_ticket_ids_from_instructions_fallback() -> None:
 def test_format_pm_handoff_includes_json_header() -> None:
     uid = "7c4f842e-e29b-41d4-a716-446655440000"
     decision = RoutingDecision(
-        next_agent="backend_lead",
+        next_agent="lead",
         ticket_ids=[uid],
-        phase="backend_planning",
-        instructions="Add backend subtasks.",
+        phase="planning",
+        instructions="Plan all subtasks.",
     )
-    body = _format_pm_handoff("backend_lead", decision)
-    assert body.startswith("[from project_manager → backend_lead]")
+    body = _format_pm_handoff("lead", decision)
+    assert body.startswith("[from project_manager → lead]")
     assert uid in body
-    assert "backend_planning" in body

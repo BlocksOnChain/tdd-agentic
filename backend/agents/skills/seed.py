@@ -16,8 +16,7 @@ TDD_RITE_DESCRIPTION = (
     "snapshots for logic verification)."
 )
 TDD_RITE_ROLES = [
-    "backend_lead",
-    "frontend_lead",
+    "lead",
     "backend_dev",
     "frontend_dev",
     "devops",
@@ -181,8 +180,8 @@ COMPACT_OUTPUT_DESCRIPTION = (
 COMPACT_OUTPUT_ROLES = [
     "project_manager",
     "researcher",
-    "backend_lead",
-    "frontend_lead",
+    "lead",
+    "coordinator",
     "backend_dev",
     "frontend_dev",
     "devops",
@@ -259,8 +258,8 @@ STATE_BEFORE_ACTION_DESCRIPTION = (
 )
 STATE_BEFORE_ACTION_ROLES = [
     "project_manager",
-    "backend_lead",
-    "frontend_lead",
+    "lead",
+    "coordinator",
     "backend_dev",
     "frontend_dev",
     "devops",
@@ -326,8 +325,8 @@ EFFICIENT_RAG_DESCRIPTION = (
 EFFICIENT_RAG_ROLES = [
     "project_manager",
     "researcher",
-    "backend_lead",
-    "frontend_lead",
+    "lead",
+    "coordinator",
     "backend_dev",
     "frontend_dev",
     "devops",
@@ -396,6 +395,58 @@ async def seed_builtin_skills() -> None:
             description=TDD_RITE_DESCRIPTION,
             content=TDD_RITE_CONTENT,
             roles=TDD_RITE_ROLES,
+            project_id=None,
+        )
+
+    # ================================================================
+    # caveman — ultra-compressed communication mode (always-on by default)
+    # ================================================================
+
+    CAVEMAN_NAME = "caveman"
+    CAVEMAN_DESCRIPTION = (
+        "Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler, "
+        "articles, and pleasantries while keeping full technical accuracy."
+    )
+    CAVEMAN_ROLES = [
+        "project_manager",
+        "researcher",
+        "lead",
+        "coordinator",
+        "backend_dev",
+        "frontend_dev",
+        "devops",
+        "qa",
+    ]
+    CAVEMAN_CONTENT = """# caveman
+
+Respond terse like smart caveman. All technical substance stay. Only fluff die.
+
+## Persistence
+
+ACTIVE EVERY RESPONSE. No revert after many turns. No filler drift.
+
+## Rules
+
+Drop: articles (a/an/the), filler (just/really/basically/actually/simply), pleasantries,
+hedging. Fragments OK. Short synonyms. Abbrev common terms (DB/auth/config/req/res/fn/impl).
+Use arrows for causality (X -> Y). One word when one word enough.
+
+Technical terms stay exact. Code blocks unchanged. Errors quoted exact.
+
+Pattern: `[thing] [action] [reason]. [next step].`
+
+## Auto-Clarity Exception
+
+Drop caveman temporarily for: security warnings, irreversible action confirmations, multi-step
+sequences where fragment order risks misread. Resume caveman after clear part done.
+"""
+
+    if get_skill_content(CAVEMAN_NAME) != CAVEMAN_CONTENT:
+        upsert_skill(
+            name=CAVEMAN_NAME,
+            description=CAVEMAN_DESCRIPTION,
+            content=CAVEMAN_CONTENT,
+            roles=CAVEMAN_ROLES,
             project_id=None,
         )
 

@@ -9,20 +9,20 @@ from __future__ import annotations
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 
+from backend.agents.coordinator.subgraph import build_coordinator_subgraph
 from backend.agents.developers.backend_dev.subgraph import build_backend_dev_subgraph
 from backend.agents.developers.devops.subgraph import build_devops_subgraph
 from backend.agents.developers.frontend_dev.subgraph import build_frontend_dev_subgraph
 from backend.agents.developers.qa.subgraph import build_qa_subgraph
-from backend.agents.leads.backend_lead.subgraph import build_backend_lead_subgraph
-from backend.agents.leads.frontend_lead.subgraph import build_frontend_lead_subgraph
+from backend.agents.leads.lead.subgraph import build_lead_subgraph
 from backend.agents.project_manager.supervisor import build_project_manager_node
 from backend.agents.researcher.subgraph import build_researcher_subgraph
 from backend.agents.state import SystemState
 
 AGENT_NODES = (
     "researcher",
-    "backend_lead",
-    "frontend_lead",
+    "lead",           # Merged backend/frontend lead
+    "coordinator",    # Persists plans to DB
     "backend_dev",
     "frontend_dev",
     "devops",
@@ -54,8 +54,8 @@ def build_root_graph(checkpointer: BaseCheckpointSaver | None = None):
 
     # Specialist subgraphs (each compiled independently)
     graph.add_node("researcher", build_researcher_subgraph())
-    graph.add_node("backend_lead", build_backend_lead_subgraph())
-    graph.add_node("frontend_lead", build_frontend_lead_subgraph())
+    graph.add_node("lead", build_lead_subgraph())  # Merged lead
+    graph.add_node("coordinator", build_coordinator_subgraph())
     graph.add_node("backend_dev", build_backend_dev_subgraph())
     graph.add_node("frontend_dev", build_frontend_dev_subgraph())
     graph.add_node("devops", build_devops_subgraph())
@@ -67,8 +67,8 @@ def build_root_graph(checkpointer: BaseCheckpointSaver | None = None):
         _route_from_pm,
         {
             "researcher": "researcher",
-            "backend_lead": "backend_lead",
-            "frontend_lead": "frontend_lead",
+            "lead": "lead",
+            "coordinator": "coordinator",
             "backend_dev": "backend_dev",
             "frontend_dev": "frontend_dev",
             "devops": "devops",
