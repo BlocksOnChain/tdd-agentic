@@ -15,4 +15,5 @@ def build_lead_subgraph():
         tools=[],  # Lead is cognitive-only; Coordinator handles DB persistence
         base_system_prompt=LEAD_SYSTEM,
         max_steps=8,
+        parse_execution_plan=True,
     )

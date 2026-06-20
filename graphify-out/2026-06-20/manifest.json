@@ -115,8 +115,8 @@
     "semantic_hash": "3454c1282aea2ef883e27e222cc16796"
   },
   "/Users/esra/tdd-agentic/backend/config.py": {
-    "mtime": 1781615194.0834432,
-    "ast_hash": "8a738067068d724c1a5e8e718b3f76b5",
+    "mtime": 1781978839.8468835,
+    "ast_hash": "b07e27175144cd45c0b9c3cd5c09e0cb",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/__init__.py": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/tools/ticket_tools.py": {
-    "mtime": 1781611091.8743627,
-    "ast_hash": "c740fe420a2d6bd0923bc40bf028ccb4",
+    "mtime": 1781979587.5588036,
+    "ast_hash": "f14e93536de4663b40f3c48f69f36985",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/tools/__init__.py": {
@@ -160,9 +160,9 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "/Users/esra/tdd-agentic/backend/tools/code_tools.py": {
-    "mtime": 1780258531.1982405,
-    "ast_hash": "6e30183a09817784264fd1113997d4a0",
-    "semantic_hash": "6e30183a09817784264fd1113997d4a0"
+    "mtime": 1781979567.29089,
+    "ast_hash": "27601b539024a27f7a22757f6f6c90f8",
+    "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/tools/web_search_tools.py": {
     "mtime": 1780258531.1986704,
@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/runner.py": {
-    "mtime": 1781615059.1240232,
-    "ast_hash": "cb876674a89313498fff274f2c7bf1fc",
+    "mtime": 1781979592.828424,
+    "ast_hash": "c4af02e85d970663dadbb7af159c5767",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/llm_audit.py": {
@@ -240,8 +240,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "/Users/esra/tdd-agentic/backend/agents/llm.py": {
-    "mtime": 1781608136.4563286,
-    "ast_hash": "258af03f6c182bcc7f3a107feadd7933",
+    "mtime": 1781978773.9602568,
+    "ast_hash": "05f7a1ab02c55240eb4443309dd343ec",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/observability.py": {
@@ -250,8 +250,8 @@
     "semantic_hash": "3aef874efdcfc0813cbe531aee4270cc"
   },
   "/Users/esra/tdd-agentic/backend/agents/prompts.py": {
-    "mtime": 1781615069.463268,
-    "ast_hash": "f0ba61cb401a4575792117a6c31e4317",
+    "mtime": 1781979576.153863,
+    "ast_hash": "1a5af055fc48e32e0e5d151d97956cf1",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/common.py": {
@@ -265,8 +265,8 @@
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/project_manager/supervisor.py": {
-    "mtime": 1781609192.6572258,
-    "ast_hash": "a8e769b2c9d2998ddb9c8683dc744386",
+    "mtime": 1781979613.163914,
+    "ast_hash": "c94dee67a37cce088cec3fa41d9783c8",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/project_manager/__init__.py": {
@@ -305,8 +305,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "/Users/esra/tdd-agentic/backend/agents/researcher/subgraph.py": {
-    "mtime": 1781257922.5983913,
-    "ast_hash": "b75f4b17578f43c8ee097abe1bb342cf",
+    "mtime": 1781979596.9181893,
+    "ast_hash": "c4de42a722f9aee5ee1ed453195d3a11",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/developers/__init__.py": {
@@ -320,8 +320,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "/Users/esra/tdd-agentic/backend/agents/developers/devops/subgraph.py": {
-    "mtime": 1781615173.322393,
-    "ast_hash": "d7304637a55ad7bb33bfc40008814e7b",
+    "mtime": 1781979595.734609,
+    "ast_hash": "12967251814e09e5bfa5028e2fa33424",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/developers/qa/__init__.py": {
@@ -330,8 +330,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "/Users/esra/tdd-agentic/backend/agents/developers/qa/subgraph.py": {
-    "mtime": 1781615172.5023234,
-    "ast_hash": "cb017e603c67bbab7f03aa86e64c3028",
+    "mtime": 1781979596.3459866,
+    "ast_hash": "f5ce5fbd41cfe0086e34a5dd435c8a32",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/developers/frontend_dev/__init__.py": {
@@ -340,8 +340,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "/Users/esra/tdd-agentic/backend/agents/developers/frontend_dev/subgraph.py": {
-    "mtime": 1781615171.9472096,
-    "ast_hash": "4a2de057846014ec5b351ee424d606a4",
+    "mtime": 1781979595.2577062,
+    "ast_hash": "d1accba05484f1199c9c5551f17fa696",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/developers/backend_dev/__init__.py": {
@@ -350,8 +350,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "/Users/esra/tdd-agentic/backend/agents/developers/backend_dev/subgraph.py": {
-    "mtime": 1781615171.4952123,
-    "ast_hash": "10e751f0a78084e8004d36e678373836",
+    "mtime": 1781979594.4326787,
+    "ast_hash": "e19c597c7e9460dd824c9abe61410b4b",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/rag/ingestion.py": {
@@ -625,8 +625,8 @@
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/agents/leads/lead/subgraph.py": {
-    "mtime": 1781538221.1491714,
-    "ast_hash": "51ca402bc60a2c3d51264792e009b794",
+    "mtime": 1781979593.2678068,
+    "ast_hash": "3ec064fdbd0a236d872d8c9891af394f",
     "semantic_hash": ""
   },
   "/Users/esra/tdd-agentic/backend/tests/test_llm_slug.py": {
@@ -649,9 +649,24 @@
     "ast_hash": "3a3cc7b495d8e0f341054264cd94075d",
     "semantic_hash": ""
   },
-  "/Users/esra/tdd-agentic/docs/TEAM_PRESENTATION.md": {
-    "mtime": 1781684182.0534737,
-    "ast_hash": "a956ba1b563e9a08e5ff0ee5a0f34d99",
+  "/Users/esra/tdd-agentic/docs/local-model-finetuning-research.md": {
+    "mtime": 1781977164.0244439,
+    "ast_hash": "75f15caf3a1b07d6f8e120e70187f6e9",
+    "semantic_hash": ""
+  },
+  "/Users/esra/tdd-agentic/backend/tests/test_pm_structured_routing.py": {
+    "mtime": 1781979615.8655074,
+    "ast_hash": "e5b2203a9cf901ba17f5cd9ccb3c563b",
+    "semantic_hash": ""
+  },
+  "/Users/esra/tdd-agentic/backend/tests/test_ticket_tools.py": {
+    "mtime": 1781979593.4251091,
+    "ast_hash": "5721acd0b2d377e81e71ff37e6adba30",
+    "semantic_hash": ""
+  },
+  "/Users/esra/tdd-agentic/backend/tests/test_runner_execution_plan.py": {
+    "mtime": 1781979601.0817869,
+    "ast_hash": "3946235d1d522d3c26fca6c2b0543d84",
     "semantic_hash": ""
   }
 }

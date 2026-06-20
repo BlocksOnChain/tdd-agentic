@@ -60,4 +60,5 @@ def build_researcher_subgraph():
         tools=RESEARCHER_TOOLS,
         base_system_prompt=RESEARCHER_SYSTEM,
         max_steps=14,
+        structured_summary=True,
     )

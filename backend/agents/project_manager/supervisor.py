@@ -24,7 +24,7 @@ from backend.agents.llm import pm_model, with_retry
 from backend.agents.prompts import PROJECT_MANAGER_SYSTEM
 from backend.agents.runtime_env import get_agent_runtime_prompt_section
 from backend.agents.skills.loader import inject_skills
-from backend.agents.state import SystemState
+from backend.agents.state import AgentEvent, SystemState
 from backend.db.session import AsyncSessionLocal
 from backend.tools.hitl_tools import ask_human
 from backend.tools.rag_tools import rag_query
@@ -457,6 +457,52 @@ def _parse_routing(text: str) -> RoutingDecision | None:
         return None
 
 
+async def _resolve_routing_decision(
+    messages: list, ai_content: str
+) -> RoutingDecision | None:
+    """Prefer structured output; fall back to regex JSON parsing."""
+    structured_llm = with_retry(pm_model().with_structured_output(RoutingDecision))
+    try:
+        return await structured_llm.ainvoke(messages)
+    except Exception:
+        return _parse_routing(ai_content)
+
+
+async def _validate_ticket_ids(
+    decision: RoutingDecision,
+    project_id: str | None,
+) -> tuple[RoutingDecision, AgentEvent | None]:
+    """Keep only ticket IDs that exist in the project; strip hallucinated UUIDs."""
+    if not project_id:
+        return decision, None
+
+    async with AsyncSessionLocal() as db:
+        tickets = await service.list_tickets(db, project_id=project_id)
+    valid_ids = {t.id for t in tickets}
+
+    original_ids = [str(t).strip() for t in (decision.ticket_ids or []) if str(t).strip()]
+    kept = [tid for tid in original_ids if tid in valid_ids]
+    stripped = [tid for tid in original_ids if tid not in valid_ids]
+
+    if not kept:
+        from_instructions = _UUID_RE.findall(decision.instructions or "")
+        kept = [uid for uid in from_instructions if uid in valid_ids]
+        stripped.extend(uid for uid in from_instructions if uid not in valid_ids and uid not in stripped)
+
+    event: AgentEvent | None = None
+    if stripped:
+        event = await emit(
+            "project_manager",
+            "ticket_ids_stripped",
+            {"stripped": stripped, "kept": kept},
+            project_id,
+        )
+
+    if kept != original_ids:
+        decision = decision.model_copy(update={"ticket_ids": kept})
+    return decision, event
+
+
 def build_project_manager_node():
     """Return an async LangGraph node function for the PM supervisor."""
 
@@ -571,7 +617,7 @@ def build_project_manager_node():
                     messages.append(truncated)
                 continue
 
-            decision = _parse_routing(str(ai.content))
+            decision = await _resolve_routing_decision(messages, str(ai.content))
             break
 
         # We do NOT push the PM's intermediate AI/Tool messages back into
@@ -627,6 +673,10 @@ def build_project_manager_node():
                         state.project_id,
                     )
                 )
+
+        decision, strip_event = await _validate_ticket_ids(decision, state.project_id)
+        if strip_event is not None:
+            events.append(strip_event)
 
         events.append(
             await emit(

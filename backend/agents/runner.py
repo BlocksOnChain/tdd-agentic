@@ -38,7 +38,7 @@ from backend.agents.llm_audit import (
 from backend.agents.llm import with_retry
 from backend.agents.runtime_env import get_agent_runtime_prompt_section
 from backend.agents.skills.loader import inject_skills
-from backend.agents.state import SystemState
+from backend.agents.state import ExecutionPlan, SubtaskPlan, SystemState
 
 # Hard caps to prevent context blow-up. These are characters, not tokens
 # (rough 4:1 char-to-token ratio for English).
@@ -71,6 +71,113 @@ def _truncate(s: str, limit: int) -> str:
     if len(s) <= limit:
         return s
     return s[:limit] + f"\n…[truncated {len(s) - limit} chars]"
+
+
+def _strip_json_fence(text: str) -> str:
+    """Remove optional markdown fences from LLM JSON output."""
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.strip("`")
+        if text.startswith("json\n"):
+            text = text[len("json\n") :]
+    return text
+
+
+def _extract_json_object(text: str) -> dict[str, Any] | None:
+    """Best-effort extraction of the first JSON object in ``text``."""
+    text = _strip_json_fence(text)
+    start = text.find("{")
+    end = text.rfind("}")
+    if start == -1 or end == -1 or end <= start:
+        return None
+    try:
+        data = json.loads(text[start : end + 1])
+    except (json.JSONDecodeError, TypeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def _parse_execution_plan(text: str) -> ExecutionPlan | None:
+    """Parse Lead's final message into an ``ExecutionPlan`` (Coordinator reads state)."""
+    data = _extract_json_object(text)
+    if data is None:
+        return None
+    plan_data = data.get("execution_plan", data)
+    if not isinstance(plan_data, dict):
+        return None
+    try:
+        subtasks: list[SubtaskPlan] = []
+        for raw in plan_data.get("subtasks") or []:
+            if not isinstance(raw, dict):
+                continue
+            clean = {k: v for k, v in raw.items() if k != "order_index"}
+            subtasks.append(SubtaskPlan(**clean))
+        return ExecutionPlan(
+            ticket_id=plan_data.get("ticket_id"),
+            subtasks=subtasks,
+        )
+    except Exception:
+        return None
+
+
+def _parse_structured_summary(text: str) -> dict[str, Any] | None:
+    """Parse researcher structured output or return ``None`` for prose fallback."""
+    data = _extract_json_object(text)
+    if data is None:
+        return None
+    if not any(k in data for k in ("docs_written", "rag_ingested", "next_steps")):
+        return None
+    return data
+
+
+def _format_structured_summary(data: dict[str, Any]) -> str:
+    """Render structured researcher output as a compact hand-off summary."""
+    parts: list[str] = []
+    docs = data.get("docs_written")
+    if docs:
+        items = docs if isinstance(docs, list) else [docs]
+        parts.append("Docs written: " + ", ".join(str(d) for d in items))
+    ingested = data.get("rag_ingested")
+    if ingested:
+        items = ingested if isinstance(ingested, list) else [ingested]
+        parts.append("RAG ingested: " + ", ".join(str(i) for i in items))
+    next_steps = data.get("next_steps")
+    if next_steps:
+        items = next_steps if isinstance(next_steps, list) else [next_steps]
+        parts.append("Next steps: " + "; ".join(str(s) for s in items))
+    return "\n".join(parts) if parts else "turn complete"
+
+
+def _build_specialist_system_prompt(
+    *,
+    name: str,
+    base_system: str,
+    runtime: str,
+    state: SystemState,
+    instructions: str,
+) -> str:
+    """Build specialist system prompt with XML-style context (matches PM pattern)."""
+    ctx = _truncate(state.project_context or "", MAX_PROJECT_CONTEXT_CHARS)
+    pid = state.project_id or "(unknown)"
+    lines = [
+        f"<agent>{name}</agent>",
+        "",
+        base_system,
+        "",
+        runtime,
+        "",
+        "<context>",
+        f"<project_id>{pid}</project_id>",
+        f"<project_context>{ctx}</project_context>",
+    ]
+    if state.active_ticket_id:
+        lines.append(f"<active_ticket_id>{state.active_ticket_id}</active_ticket_id>")
+    if state.active_subtask_id:
+        lines.append(f"<active_subtask_id>{state.active_subtask_id}</active_subtask_id>")
+    lines.append("</context>")
+    lines.append("")
+    lines.append(f"<instructions>{instructions}</instructions>")
+    return "\n".join(lines)
 
 
 # Product devs fetch ground truth via ticket tools (`next_pending_subtask`, etc.);
@@ -271,6 +378,10 @@ def build_specialist_subgraph(
     max_steps: int = 12,
     verify_completion: bool = False,
     require_subtask_resolution: bool = False,
+    code_tools: list[BaseTool] | None = None,
+    phased_code_tools: bool = False,
+    parse_execution_plan: bool = False,
+    structured_summary: bool = False,
 ):
     """Build and compile a tool-using specialist subgraph.
 
@@ -286,26 +397,49 @@ def build_specialist_subgraph(
     the PM re-dispatches instead of treating the turn as finished work.
     """
     tools_by_name: dict[str, BaseTool] = {t.name: t for t in tools}
+    phase2_tools = code_tools or []
+    code_phase_active = not phased_code_tools
+
+    def _current_tool_list() -> list[BaseTool]:
+        if phased_code_tools and not code_phase_active:
+            return tools
+        if phased_code_tools and code_phase_active:
+            seen: dict[str, BaseTool] = {}
+            for t in [*tools, *phase2_tools]:
+                seen[t.name] = t
+            return list(seen.values())
+        return list(tools_by_name.values())
 
     async def specialist(state: SystemState) -> dict[str, Any]:
+        nonlocal code_phase_active
         await emit(name, "turn_start", {}, state.project_id)
         base = llm_factory()
-        bound = base.bind_tools(tools) if tools else base
+        bound = base.bind_tools(_current_tool_list()) if tools or phase2_tools else base
         llm = with_retry(bound)
 
         system = inject_skills(base_system_prompt, role=role)
         runtime = get_agent_runtime_prompt_section()
-        ctx = _truncate(state.project_context or "", MAX_PROJECT_CONTEXT_CHARS)
-        pid = state.project_id or "(unknown)"
-        prefix = (
-            f"{system}\n\n{runtime}\n\nPROJECT_ID: {pid}\nPROJECT_CONTEXT:\n{ctx}\n"
-        )
-        if state.active_ticket_id:
-            prefix += f"ACTIVE_TICKET_ID: {state.active_ticket_id}\n"
-        if state.active_subtask_id:
-            prefix += f"ACTIVE_SUBTASK_ID: {state.active_subtask_id}\n"
-        prefix += (
-            "Use tools as needed. When done, respond with a short summary of what you accomplished."
+        if structured_summary:
+            instructions = (
+                "Use tools as needed. When done, respond with JSON only: "
+                '{"docs_written": [...], "rag_ingested": [...], "next_steps": [...]} '
+                "or a short prose summary if structured output is not possible."
+            )
+        elif parse_execution_plan:
+            instructions = (
+                "Produce ONLY the execution_plan JSON described in your role prompt. "
+                "Do not call tools."
+            )
+        else:
+            instructions = (
+                "Use tools as needed. When done, respond with a short summary of what you accomplished."
+            )
+        prefix = _build_specialist_system_prompt(
+            name=name,
+            base_system=system,
+            runtime=runtime,
+            state=state,
+            instructions=instructions,
         )
 
         focused_history = _build_specialist_input(state, agent_name=name)
@@ -358,11 +492,27 @@ def build_specialist_subgraph(
                 )
                 messages.append(truncated)
                 local_tool_msgs.append(truncated)
+
+            if phased_code_tools and not code_phase_active:
+                if _engaged_subtask_id_from_tools(tool_msgs):
+                    for t in phase2_tools:
+                        tools_by_name[t.name] = t
+                    code_phase_active = True
+                    bound = base.bind_tools(_current_tool_list())
+                    llm = with_retry(bound)
         else:
             step_exhausted = bool(local_ai_msgs and local_ai_msgs[-1].tool_calls)
 
         summary = _last_text(local_ai_msgs) or "turn complete"
+        if structured_summary:
+            structured = _parse_structured_summary(summary)
+            if structured is not None:
+                summary = _format_structured_summary(structured)
         summary = _truncate(summary, MAX_SUMMARY_CHARS)
+
+        execution_plan: ExecutionPlan | None = None
+        if parse_execution_plan:
+            execution_plan = _parse_execution_plan(_last_text(local_ai_msgs))
 
         subtask_id = _engaged_subtask_id_from_tools(local_tool_msgs)
 
@@ -435,6 +585,8 @@ def build_specialist_subgraph(
         update: dict[str, Any] = {"messages": [handoff]}
         if subtask_id:
             update["active_subtask_id"] = subtask_id
+        if execution_plan is not None:
+            update["execution_plan"] = execution_plan
         return update
 
     g = StateGraph(SystemState)

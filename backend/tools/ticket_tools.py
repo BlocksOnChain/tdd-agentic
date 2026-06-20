@@ -7,6 +7,7 @@ LLM sees clear, structured "REQUIRED" guidance.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 from typing import Any
 
@@ -53,6 +54,28 @@ def _parse_dev_role(role: str | None) -> AgentRole | None:
     return parsed
 
 
+def _ticket_roster_etag(tickets: list[Any]) -> str:
+    """Stable hash of a project's ticket roster for list_tickets etag caching."""
+
+    rows: list[dict[str, Any]] = []
+    for ticket in tickets:
+        status = ticket.status.value if hasattr(ticket.status, "value") else ticket.status
+        row: dict[str, Any] = {
+            "id": ticket.id,
+            "status": status,
+            "order_index": ticket.order_index,
+        }
+        updated_at = getattr(ticket, "updated_at", None)
+        if updated_at is not None:
+            row["updated_at"] = (
+                updated_at.isoformat() if hasattr(updated_at, "isoformat") else str(updated_at)
+            )
+        rows.append(row)
+    rows.sort(key=lambda r: (r["order_index"], r["id"]))
+    payload = json.dumps(rows, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode()).hexdigest()
+
+
 def _subtask_tool_payload(sub: Any) -> dict[str, Any]:
     return {
         "id": sub.id,
@@ -68,19 +91,26 @@ def _subtask_tool_payload(sub: Any) -> dict[str, Any]:
 
 
 @tool
-async def list_tickets(project_id: str) -> str:
+async def list_tickets(project_id: str, since_last_check: str | None = None) -> str:
     """List every ticket in a project as compact rows (id, title, status).
 
     USE WHEN: You need a backlog overview — ticket UUIDs, titles, statuses, subtask counts.
+    USE WHEN: Re-checking the roster — pass the prior response's ``etag`` as ``since_last_check``
+    to get a compact ``{"unchanged": true, "etag": "..."}`` when nothing changed.
     AVOID WHEN: You need subtask details or RITE test cases — use get_ticket(ticket_id, detail='full') instead.
-    AVOID WHEN: You just called this in a previous turn with the same project_id — skip and use cached results.
-    Cost: Always returns the full roster (lightweight, ~200-500 bytes).
-    RETURNS: Array of {id, title, status, subtask_count} objects.
+    AVOID WHEN: You just called this in a previous turn with the same project_id and roster unchanged —
+    pass ``since_last_check`` with the last ``etag`` instead of re-fetching the full list.
+    RETURNS: ``{"etag": "<hash>", "tickets": [{id, title, status, subtask_count, ...}, ...]}``.
+    When ``since_last_check`` matches the current roster hash:
+    ``{"unchanged": true, "etag": "<hash>"}`` (no ``tickets`` array).
     """
     async with AsyncSessionLocal() as db:
         tickets = await service.list_tickets(db, project_id=project_id)
+        etag = _ticket_roster_etag(tickets)
+        if since_last_check is not None and since_last_check == etag:
+            return _dump({"unchanged": True, "etag": etag})
         out = [service.to_dict_ticket_list_item(t) for t in tickets]
-        return _dump(out)
+        return _dump({"etag": etag, "tickets": out})
 
 
 @tool
@@ -587,6 +617,7 @@ async def next_pending_subtask_in_project(
 PM_TICKET_TOOLS = [
     list_tickets,
     get_ticket,
+    get_ticket_summary,
     create_ticket,
     update_ticket_status,
     add_question_to_ticket,

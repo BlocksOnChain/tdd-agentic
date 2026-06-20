@@ -439,6 +439,7 @@ After you output your plan:
 Your job ends when JSON is output. Do not wait for confirmation.
 """
     + DEFAULT_STACK_POLICY
+    + _RITE_CONTRACT
 )
 
 DEV_SYSTEM_BASE = """You are a {role} agent practicing strict TDD.
