@@ -1,7 +1,7 @@
 """DevOps subgraph — Docker, CI configs, deployment scripts."""
 from __future__ import annotations
 
-from backend.agents.llm import dev_model
+from backend.agents.llm import devops_model
 from backend.agents.prompts import DEVOPS_SYSTEM
 from backend.agents.runner import build_specialist_subgraph
 from backend.config import get_settings
@@ -14,7 +14,7 @@ def build_devops_subgraph():
     return build_specialist_subgraph(
         name="devops",
         role="devops",
-        llm_factory=dev_model,
+        llm_factory=devops_model,
         tools=[*DEV_TICKET_TOOLS, *CODE_TOOLS, rag_query],
         base_system_prompt=DEVOPS_SYSTEM,
         max_steps=get_settings().dev_agent_max_steps,

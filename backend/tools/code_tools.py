@@ -33,7 +33,16 @@ def _resolve(project_id: str, rel_path: str) -> Path:
 
 @tool
 async def fs_write(project_id: str, path: str, content: str) -> str:
-    """Write a file inside the project workspace. Creates parent dirs."""
+    """Write or overwrite a file inside the project workspace.
+
+    USE WHEN: You need to create or update source, config, test, or doc files for the subtask.
+    USE WHEN: Parent directories do not exist yet — they are created automatically.
+    AVOID WHEN: You only need to read or inspect a file — use fs_read instead.
+    AVOID WHEN: The path escapes the project workspace (absolute paths outside the tree are rejected).
+
+    RETURNS: {ok: true, path: "<relative path>"}
+    ON ERROR (path escape): raises ValueError before write.
+    """
     full = _resolve(project_id, path)
     full.parent.mkdir(parents=True, exist_ok=True)
     full.write_text(content, encoding="utf-8")
@@ -42,7 +51,18 @@ async def fs_write(project_id: str, path: str, content: str) -> str:
 
 @tool
 async def fs_read(project_id: str, path: str) -> str:
-    """Read a file inside the project workspace (bounded by FS_READ_MAX_BYTES)."""
+    """Read a text file inside the project workspace.
+
+    USE WHEN: You need file contents before editing, debugging, or implementing a change.
+    USE WHEN: You want to verify what fs_write produced or inspect an existing module.
+    AVOID WHEN: You only need filenames or directory layout — use fs_list instead.
+    AVOID WHEN: You already read the same path this turn — reuse the prior result.
+
+    Content is capped at FS_READ_MAX_BYTES (default 32_768); large files return truncated=true.
+    RETURNS: {ok: true, content: "...", truncated: bool, bytes_read: int, bytes_total: int}
+    ON ERROR (not found): {ok: false, error: "not found"}
+    ON ERROR (path escape): raises ValueError before read.
+    """
     settings = get_settings()
     full = _resolve(project_id, path)
     if not full.exists():
@@ -64,7 +84,17 @@ async def fs_read(project_id: str, path: str) -> str:
 
 @tool
 async def fs_list(project_id: str, path: str = ".") -> str:
-    """List files and directories inside the project workspace."""
+    """List immediate children of a directory in the project workspace.
+
+    USE WHEN: You need to discover project layout, find a file path, or confirm a directory exists.
+    USE WHEN: You are orienting in an unfamiliar repo before reading specific files.
+    AVOID WHEN: You already know the exact file path — use fs_read directly.
+    AVOID WHEN: You need recursive tree listing — list subdirectories one level at a time.
+
+    RETURNS: {ok: true, entries: [{name, is_dir, size}, ...]} sorted by name.
+    ON ERROR (not found): {ok: false, error: "not found"}
+    ON ERROR (path escape): raises ValueError before list.
+    """
     full = _resolve(project_id, path)
     if not full.exists():
         return json.dumps({"ok": False, "error": "not found"})
@@ -76,7 +106,17 @@ async def fs_list(project_id: str, path: str = ".") -> str:
 
 @tool
 async def fs_delete(project_id: str, path: str) -> str:
-    """Delete a file or empty directory inside the project workspace."""
+    """Delete a file or empty directory inside the project workspace.
+
+    USE WHEN: You need to remove a file you created or an obsolete empty directory.
+    AVOID WHEN: The directory is non-empty — fs_delete only removes empty dirs (rmdir).
+    AVOID WHEN: You can achieve the goal by editing in place — prefer fs_write over delete+recreate.
+
+    RETURNS: {ok: true}
+    ON ERROR (not found): {ok: false, error: "not found"}
+    ON ERROR (non-empty directory): subprocess/OS error surfaced as exception (not JSON).
+    ON ERROR (path escape): raises ValueError before delete.
+    """
     full = _resolve(project_id, path)
     if not full.exists():
         return json.dumps({"ok": False, "error": "not found"})
@@ -89,7 +129,18 @@ async def fs_delete(project_id: str, path: str) -> str:
 
 @tool
 async def shell_run(project_id: str, command: str, timeout_seconds: int = 120) -> str:
-    """Run a shell command inside the project workspace. Captures stdout/stderr."""
+    """Run a shell command with cwd set to the project workspace.
+
+    USE WHEN: You need to install deps, run linters, build artifacts, or diagnose environment issues.
+    USE WHEN: A one-off command is needed that is not the primary test verification step.
+    AVOID WHEN: You are verifying tests pass/fail for subtask completion — use run_tests instead (that is the verification gate).
+    AVOID WHEN: fs_read/fs_write/fs_list can answer the question without spawning a process.
+
+    stdout/stderr are truncated to the last SHELL_OUTPUT_MAX_CHARS (default 8_000) characters.
+    RETURNS: {ok: bool, exit_code: int, stdout: "...", stderr: "...", stdout_truncated: bool, stderr_truncated: bool}
+    ON ERROR (timeout): {ok: false, error: "timeout after <N>s", command: "..."}
+    ON ERROR (spawn failure): {ok: false, error: "<exception repr>"}
+    """
     cwd = _project_root(project_id)
     try:
         proc = await asyncio.create_subprocess_shell(
@@ -124,7 +175,18 @@ async def shell_run(project_id: str, command: str, timeout_seconds: int = 120) -
 
 @tool
 async def run_tests(project_id: str, command: str = "pytest -q --maxfail=1") -> str:
-    """Run a focused test command (default stops after the first failure)."""
+    """Run the test suite (or a focused test command) as the subtask verification gate.
+
+    USE WHEN: You have implemented or fixed code and need pass/fail signal before marking work done.
+    USE WHEN: TDD red-green-refactor — run after each meaningful change to confirm behavior.
+    AVOID WHEN: You only need to install packages or inspect the environment — use shell_run instead.
+    AVOID WHEN: You have not written or updated tests yet and expect failure — implement first, then run.
+
+    Default command stops after the first failure (--maxfail=1). Timeout is 300s (longer than shell_run).
+    Same JSON shape as shell_run; ok reflects exit_code == 0.
+    RETURNS: {ok: bool, exit_code: int, stdout: "...", stderr: "...", stdout_truncated: bool, stderr_truncated: bool}
+    ON ERROR (timeout): {ok: false, error: "timeout after 300s", command: "..."}
+    """
     return await shell_run.ainvoke(
         {"project_id": project_id, "command": command, "timeout_seconds": 300}
     )

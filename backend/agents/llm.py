@@ -369,39 +369,54 @@ def with_retry(runnable: Runnable) -> Runnable:
 
 
 def pm_model() -> BaseChatModel:
-    return get_chat_model(get_settings().pm_model)
+    s = get_settings()
+    return get_chat_model(s.pm_model, temperature=s.pm_temperature)
 
 
 def researcher_model() -> BaseChatModel:
-    return get_chat_model(get_settings().researcher_model)
+    s = get_settings()
+    return get_chat_model(s.researcher_model, temperature=s.researcher_temperature)
 
 
 def lead_model() -> BaseChatModel:
-    return get_chat_model(get_settings().lead_model)
+    s = get_settings()
+    return get_chat_model(s.lead_model, temperature=s.lead_temperature)
 
 
 def dev_model() -> BaseChatModel:
-    return get_chat_model(get_settings().dev_model)
+    s = get_settings()
+    return get_chat_model(s.dev_model, temperature=s.dev_temperature)
 
 
 def backend_dev_model() -> BaseChatModel:
     s = get_settings()
     slug = s.backend_dev_model or s.dev_model
-    return get_chat_model(slug)
+    return get_chat_model(slug, temperature=s.dev_temperature)
 
 
 def frontend_dev_model() -> BaseChatModel:
     s = get_settings()
     slug = s.frontend_dev_model or s.dev_model
-    return get_chat_model(slug)
+    return get_chat_model(slug, temperature=s.dev_temperature)
+
+
+def devops_model() -> BaseChatModel:
+    s = get_settings()
+    return get_chat_model(s.devops_model, temperature=s.devops_temperature)
+
+
+def qa_model() -> BaseChatModel:
+    s = get_settings()
+    return get_chat_model(s.qa_model, temperature=s.qa_temperature)
 
 
 def coordinator_model() -> BaseChatModel:
     """Coordinator uses dev model by default (planning is done by Lead)."""
-    settings = get_settings()
-    slug = settings.coordinator_model or settings.dev_model
-    return get_chat_model(slug)
+    s = get_settings()
+    slug = s.coordinator_model or s.dev_model
+    return get_chat_model(slug, temperature=s.coordinator_temperature)
 
 
 def grader_model() -> BaseChatModel:
-    return get_chat_model(get_settings().grader_model)
+    s = get_settings()
+    return get_chat_model(s.grader_model, temperature=s.grader_temperature)

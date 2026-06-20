@@ -1,7 +1,7 @@
 """QA subgraph — integration / e2e test authoring."""
 from __future__ import annotations
 
-from backend.agents.llm import dev_model
+from backend.agents.llm import qa_model
 from backend.agents.prompts import QA_SYSTEM
 from backend.agents.runner import build_specialist_subgraph
 from backend.config import get_settings
@@ -14,7 +14,7 @@ def build_qa_subgraph():
     return build_specialist_subgraph(
         name="qa",
         role="qa",
-        llm_factory=dev_model,
+        llm_factory=qa_model,
         tools=[*DEV_TICKET_TOOLS, *CODE_TOOLS, rag_query],
         base_system_prompt=QA_SYSTEM,
         max_steps=get_settings().dev_agent_max_steps,

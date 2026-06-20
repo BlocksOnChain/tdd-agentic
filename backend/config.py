@@ -36,10 +36,20 @@ class Settings(BaseSettings):
     lead_model: str = "anthropic/claude-sonnet-4-6"
     dev_model: str = "anthropic/claude-sonnet-4-6"
     # Optional overrides for product devs (default to dev_model when unset in env).
-    backend_dev_model: str | None = None
-    frontend_dev_model: str | None = None
     coordinator_model: str | None = None  # Optional; defaults to dev_model
+    devops_model: str | None = None  # Optional; defaults to dev_model
+    qa_model: str | None = None  # Optional; defaults to dev_model
     grader_model: str = "anthropic/claude-haiku-4-5"
+
+    # Per-role sampling temperature (override via env, e.g. PM_TEMPERATURE=0.0).
+    pm_temperature: float = 0.0
+    researcher_temperature: float = 0.3
+    lead_temperature: float = 0.1
+    dev_temperature: float = 0.1
+    coordinator_temperature: float = 0.0
+    devops_temperature: float = 0.1
+    qa_temperature: float = 0.1
+    grader_temperature: float = 0.0
 
     # Web search backing for the ``web_search`` tool (researcher).
     # anthropic — Claude ``bind_tools`` with server-side search (needs credits).
