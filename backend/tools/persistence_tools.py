@@ -20,9 +20,16 @@ from backend.ticket_system.models import (
 
 
 def _dump(obj: Any) -> str:
+    """Serialize a tool result compactly.
+
+    Tool results are the highest-frequency payload in the system and every byte
+    is billed as input tokens on the next model call. ``indent=2`` added 20-40%
+    pure whitespace and ate into MAX_TOOL_RESULT_CHARS, so a large get_ticket
+    lost real RITE specs to indentation.
+    """
     if hasattr(obj, "model_dump"):
-        return json.dumps(obj.model_dump(mode="json"), default=str, indent=2)
-    return json.dumps(obj, default=str, indent=2)
+        obj = obj.model_dump(mode="json")
+    return json.dumps(obj, default=str, separators=(",", ":"))
 
 
 class CreateTicketArgs(BaseModel):
@@ -127,14 +134,43 @@ async def save_execution_plan(
             except Exception:
                 return _dump({"error": f"No ticket with id '{ticket_id}'"})
 
-        # Create subtasks
+        # Skip anything already on the ticket. The Coordinator can be
+        # re-dispatched after a crash, a retry, or a resumed interrupt, and
+        # appending unconditionally duplicated the whole plan each time.
+        # A freshly created ticket has no loaded relationship — treat as empty
+        # rather than triggering a lazy load on an async session.
+        existing = list(getattr(ticket, "subtasks", None) or [])
+        existing_titles = {(s.title or "").strip().lower() for s in existing}
+        existing_orders = {s.order_index for s in existing}
+
         created_subtask_ids: list[str] = []
+        skipped: list[str] = []
+        rejected: list[dict[str, str]] = []
+
         for idx, subtask_data in enumerate(subtasks):
-            assigned_to_str = subtask_data.get("assigned_to", "backend_dev")
+            title = str(subtask_data.get("title") or f"Subtask {idx}").strip()
+            order_index = subtask_data.get("order_index", idx)
+            if title.lower() in existing_titles or order_index in existing_orders:
+                skipped.append(title)
+                continue
+
+            assigned_to_str = str(subtask_data.get("assigned_to") or "").strip()
             try:
                 assigned_to = AgentRole(assigned_to_str)
             except ValueError:
-                assigned_to = AgentRole.BACKEND_DEV
+                # Do NOT silently default. Defaulting to backend_dev turned a
+                # frontend subtask into a backend one, and the mistake only
+                # surfaced much later as a dev agent building the wrong thing.
+                rejected.append(
+                    {
+                        "title": title,
+                        "reason": (
+                            f"assigned_to={assigned_to_str!r} is not one of "
+                            "backend_dev, frontend_dev, devops, qa"
+                        ),
+                    }
+                )
+                continue
 
             test_cases_raw = subtask_data.get("test_cases") or []
             # Normalize test cases - extract fields from dict if needed
@@ -153,21 +189,30 @@ async def save_execution_plan(
                 db,
                 ticket_id,
                 schemas.SubtaskCreate(
-                    title=subtask_data.get("title", f"Subtask {idx}"),
+                    title=title,
                     description=subtask_data.get("description", ""),
                     required_functionality=subtask_data.get("required_functionality", ""),
                     test_cases=test_cases,
                     assigned_to=assigned_to,
-                    order_index=subtask_data.get("order_index", idx),
+                    order_index=order_index,
                 ),
             )
             created_subtask_ids.append(subtask.id)
+            existing_titles.add(title.lower())
+            existing_orders.add(order_index)
 
-        return _dump({
+        result: dict[str, Any] = {
             "ticket_id": ticket_id,
             "subtask_count": len(created_subtask_ids),
             "subtask_ids": created_subtask_ids,
-        })
+        }
+        if skipped:
+            result["skipped_existing"] = skipped
+        if rejected:
+            # Surfaced, not swallowed — the Coordinator must report these back
+            # so the PM can send the plan to the lead for repair.
+            result["rejected"] = rejected
+        return _dump(result)
 
 
 class CompleteAssignmentArgs(BaseModel):

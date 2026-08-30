@@ -16,6 +16,12 @@ def ask_human(question: str, ticket_id: str | None = None) -> str:
 
     Use sparingly — only when ticket_id-level questions aren't sufficient
     (e.g. you need an immediate yes/no without persisting a question).
+
+    IMPORTANT (callers): ``interrupt()`` resumes the *whole node* from the top,
+    so every tool call made earlier in the same turn runs a second time. Only
+    call this before any state-mutating tool in a turn, or make the node's
+    replay idempotent. See ``supervisor.project_manager_node``, which records
+    the mutations it has already applied and skips them on replay.
     """
     answer = interrupt(
         {

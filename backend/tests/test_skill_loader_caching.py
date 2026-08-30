@@ -6,15 +6,57 @@ import importlib
 from backend.agents.skills import loader
 
 
-def test_inject_skills_skips_when_no_change() -> None:
-    """Calling inject_skills twice with same skill set returns unchanged base."""
-    # Clear cache first
+def test_inject_skills_reuses_assembled_prompt_when_no_change() -> None:
+    """Repeat calls reuse the cached prompt — they never fall back to the bare base."""
     loader._inject_cache.clear()
 
     base = "base prompt content"
     result1 = loader.inject_skills(base, role="project_manager")
     result2 = loader.inject_skills(base, role="project_manager")
     assert result1 is result2  # Same object (cached)
+    # Whatever the registry holds, the second call must not silently drop
+    # skills that the first call injected.
+    assert result2.startswith(base)
+    assert len(result2) == len(result1)
+
+
+def test_inject_skills_survives_repeat_calls_with_skills(monkeypatch) -> None:
+    """With skills registered, EVERY call keeps the skill index — not just the first.
+
+    Regression: the change-detection cache used to return ``base_prompt`` on a
+    hit, so agents lost their skills from the second turn onward.
+    """
+    loader._inject_cache.clear()
+    monkeypatch.setattr(
+        loader,
+        "get_skills_for_role",
+        lambda role: [{"name": "tdd-rite", "description": "RITE test format"}],
+    )
+
+    base = "base prompt"
+    first = loader.inject_skills(base, role="backend_dev")
+    second = loader.inject_skills(base, role="backend_dev")
+
+    assert "tdd-rite" in first
+    assert "tdd-rite" in second
+    assert first == second
+
+
+def test_inject_skills_rebuilds_when_base_prompt_changes(monkeypatch) -> None:
+    """A different base prompt for the same role must not return the other's cache."""
+    loader._inject_cache.clear()
+    monkeypatch.setattr(
+        loader,
+        "get_skills_for_role",
+        lambda role: [{"name": "tdd-rite", "description": "RITE test format"}],
+    )
+
+    a = loader.inject_skills("PROMPT A", role="backend_dev")
+    b = loader.inject_skills("PROMPT B", role="backend_dev")
+
+    assert a.startswith("PROMPT A")
+    assert b.startswith("PROMPT B")
+    assert "tdd-rite" in b
 
 
 def test_inject_skills_returns_base_when_no_skills() -> None:

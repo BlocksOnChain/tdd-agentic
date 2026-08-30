@@ -59,8 +59,24 @@ _MAX_CACHE_ITEMS = 128
 _MAX_CACHE_BYTES = 2_000_000  # ~2MB
 
 
+# Cap the singleflight lock map. One lock per project id was never cleaned up,
+# so it was the only unbounded structure in a module that otherwise caps
+# everything. Dropping a lock is safe: the worst case is that two concurrent
+# requests for a long-idle project both compute the list once.
+_MAX_LOCKS = 256
+
+
 def _lock(pid: str) -> asyncio.Lock:
-    return _locks.setdefault(pid, asyncio.Lock())
+    lock = _locks.get(pid)
+    if lock is None:
+        if len(_locks) >= _MAX_LOCKS:
+            for stale, existing in list(_locks.items()):
+                if not existing.locked():
+                    _locks.pop(stale, None)
+                if len(_locks) < _MAX_LOCKS:
+                    break
+        lock = _locks.setdefault(pid, asyncio.Lock())
+    return lock
 
 def _estimate_bytes(value: Any) -> int:
     """Approximate in-memory size of a JSON-like structure.

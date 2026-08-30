@@ -26,8 +26,10 @@ def inject_skills(base_prompt: str, role: str, max_chars: int | None = None) -> 
     Full ``SKILL.md`` bodies are available via ``rag_query``; only names and
     descriptions are inlined to keep system prompts small.
 
-    Change detection: if the skill set for ``role`` hasn't changed since the
-    last call, return ``base_prompt`` unchanged (saves string concatenation).
+    Change detection: if neither the skill set for ``role`` nor ``base_prompt``
+    has changed since the last call, the previously assembled prompt is returned
+    from cache (saves re-reading skill bodies and re-joining strings). The
+    injected content itself is never skipped — every turn gets the full index.
     """
     from backend.config import get_settings
 
@@ -35,11 +37,14 @@ def inject_skills(base_prompt: str, role: str, max_chars: int | None = None) -> 
     if not skills:
         return base_prompt
 
-    # Compute a stable hash of the current skill set.
-    current_hash = hash(frozenset(s.get("name", "") for s in skills))
+    # Compute a stable hash of the current skill set *and* the prompt we are
+    # appending to — the cached value is the fully assembled prompt, so it is
+    # only reusable when both halves are unchanged.
+    current_hash = hash((frozenset(s.get("name", "") for s in skills), base_prompt))
     cache_key = f"skills_{role}"
-    if cache_key in _inject_cache and _inject_cache[cache_key][0] == current_hash:
-        return base_prompt  # No change — skip injection.
+    cached = _inject_cache.get(cache_key)
+    if cached is not None and cached[0] == current_hash:
+        return cached[1]  # No change — reuse the assembled prompt.
 
     budget = max_chars if max_chars is not None else get_settings().skill_inject_max_chars
     lines: list[str] = [

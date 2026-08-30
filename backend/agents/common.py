@@ -17,6 +17,28 @@ from backend.agents.state import AgentEvent
 from backend.api.events import Event, bus
 
 
+_SMART_QUOTES = str.maketrans(
+    {
+        "“": '"',  # left double
+        "”": '"',  # right double
+        "‘": "'",  # left single
+        "’": "'",  # right single
+    }
+)
+
+
+def normalise_json_text(text: str) -> str:
+    """Replace typographic quotes with ASCII so ``json.loads`` can accept the text.
+
+    Models routinely echo curly quotes back — from a prompt that used them, from
+    training data, or from a local chat template that "prettifies" output. Those
+    are not valid JSON string delimiters, so an otherwise perfect routing
+    decision or execution plan would be discarded. Normalising costs nothing and
+    turns a silent parse failure into a successful one.
+    """
+    return text.translate(_SMART_QUOTES)
+
+
 async def emit(agent: str, kind: str, payload: dict[str, Any], project_id: str | None = None) -> AgentEvent:
     """Persist an event to the EventBus and return an AgentEvent for state."""
     await bus.publish(

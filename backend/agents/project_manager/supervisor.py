@@ -13,15 +13,15 @@ from typing import Any
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from pydantic import BaseModel, Field
 
-from backend.agents.common import emit, run_tool_calls
-from backend.agents.context_store import ContextStore
+from backend.agents.common import emit, normalise_json_text, run_tool_calls
 from backend.agents.handoff import Handoff, Phase
 from backend.agents.llm_audit import (
     log_llm_invoke_exception_context,
     log_llm_invoke_start,
 )
-from backend.agents.llm import pm_model, with_retry
+from backend.agents.llm import cacheable_system_message, pm_model, with_retry
 from backend.agents.prompts import PROJECT_MANAGER_SYSTEM
+from backend.agents.runner import _truncate_tool_result
 from backend.agents.runtime_env import get_agent_runtime_prompt_section
 from backend.agents.skills.loader import inject_skills
 from backend.agents.state import AgentEvent, SystemState
@@ -37,6 +37,9 @@ MAX_TOOL_RESULT_CHARS = 4000
 MAX_PROJECT_CONTEXT_CHARS = 1500
 MAX_HUMAN_MSG_CHARS = 2500
 MAX_KEPT_HUMAN_MESSAGES = 8
+# How many consecutive times a DB heuristic may override the PM's decision to
+# end the run before we accept the decision and stop.
+MAX_END_VETOES = 2
 
 VALID_TARGETS = {
     "researcher",
@@ -57,7 +60,10 @@ class RoutingDecision(BaseModel):
     instructions: str = Field(default="")
     ticket_ids: list[str] = Field(default_factory=list)
     phase: str = Field(default="")
-    context_refs: list[str] = Field(default_factory=list, description="Pointer IDs into ContextStore for prior agent outputs")
+    # NOTE: no context store is populated today, so this stays empty. Leaving the
+    # field keeps old checkpoints deserializable; _format_pm_handoff must not
+    # advertise refs the receiving agent has no way to resolve.
+    context_refs: list[str] = Field(default_factory=list, exclude=True)
 
 
 PM_TOOLS = [*PM_TICKET_TOOLS, rag_query, ask_human]
@@ -160,7 +166,6 @@ def _format_pm_handoff(target: str, decision: RoutingDecision) -> str:
         phase=Phase.coerce(decision.phase),
         ticket_ids=tuple(ticket_ids),
         intent=(decision.instructions or "").strip(),
-        context_refs=tuple(decision.context_refs),
     )
     return handoff.to_message()
 
@@ -264,12 +269,13 @@ async def _advance_in_review_to_todo(project_id: str | None) -> list[str]:
     advanced: list[str] = []
     async with AsyncSessionLocal() as db:
         tickets = await service.list_tickets(db, project_id=project_id)
-        # list_tickets may not eager-load subtasks depending on the query;
-        # fetch details only for candidates to keep this cheap.
         for t in tickets:
             if t.status != TicketStatus.IN_REVIEW:
                 continue
-            full = await service.get_ticket(db, t.id)
+            # list_tickets eager-loads subtasks and their todos, so the row we
+            # already hold is the full object — re-fetching it per candidate was
+            # a second round trip for data we had.
+            full = t if getattr(t, "subtasks", None) is not None else await service.get_ticket(db, t.id)
             if not _ticket_ready_for_todo(full):
                 continue
             await service.update_ticket(
@@ -387,7 +393,17 @@ def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
         ):
             continue
         subs = list(t.subtasks or [])
-        # Check if planning is incomplete (some domains missing)
+        # A ticket with no subtasks at all always needs planning, whatever its scope.
+        if not subs:
+            fe_candidates.append(t)
+            continue
+
+        # Otherwise "needs planning" means a domain the ticket clearly requires is
+        # entirely unrepresented. Note the asymmetry: a client-scope ticket does NOT
+        # imply backend work. Demanding a backend subtask on every UI ticket was
+        # unsatisfiable — the Lead can plan such a ticket perfectly and the condition
+        # still holds, so this fallback would veto `end` forever and spin the graph
+        # to its recursion limit.
         has_backend_subtask = any(
             s.assigned_to in {AgentRole.BACKEND_DEV, AgentRole.DEVOPS} for s in subs
         )
@@ -395,9 +411,10 @@ def _fallback_routing_decision(tickets: list[Ticket]) -> RoutingDecision | None:
             s.assigned_to == AgentRole.FRONTEND_DEV for s in subs
         )
 
-        # If ticket needs both but only one domain is planned, or no subtasks exist
-        if _text_suggests_client_scope(t) and not (has_backend_subtask and has_frontend_subtask):
-            fe_candidates.append(t)
+        if _text_suggests_client_scope(t):
+            # Client work is planned once any client-side owner has a subtask.
+            if not has_frontend_subtask:
+                fe_candidates.append(t)
         elif not has_backend_subtask:
             fe_candidates.append(t)
 
@@ -439,7 +456,7 @@ async def _infer_fallback_route(project_id: str | None) -> RoutingDecision | Non
 
 def _parse_routing(text: str) -> RoutingDecision | None:
     """Best-effort JSON extraction from the supervisor's final message."""
-    text = text.strip()
+    text = normalise_json_text(text).strip()
     # Strip markdown fences if present
     if text.startswith("```"):
         text = text.strip("`")
@@ -457,15 +474,33 @@ def _parse_routing(text: str) -> RoutingDecision | None:
         return None
 
 
+def _is_usable_decision(decision: RoutingDecision | None) -> bool:
+    return decision is not None and decision.next_agent in VALID_TARGETS
+
+
 async def _resolve_routing_decision(
     messages: list, ai_content: str
 ) -> RoutingDecision | None:
-    """Prefer structured output; fall back to regex JSON parsing."""
+    """Parse the routing decision the model already produced; re-ask only if needed.
+
+    The supervisor's final response *is* the routing JSON — the prompt demands
+    exactly that. Parsing it costs nothing. Issuing a second, structured-output
+    call is a full extra round trip that re-sends the whole transcript (system
+    prompt plus every truncated tool result) and, at the configured Anthropic
+    rate of 0.4 req/s, adds a mandatory throttle wait to every routing hop.
+
+    So: parse first, and fall back to the structured call only when the model
+    returned something we genuinely cannot read.
+    """
+    parsed = _parse_routing(ai_content)
+    if _is_usable_decision(parsed):
+        return parsed
+
     structured_llm = with_retry(pm_model().with_structured_output(RoutingDecision))
     try:
         return await structured_llm.ainvoke(messages)
     except Exception:
-        return _parse_routing(ai_content)
+        return parsed  # may be None; caller falls back to DB routing
 
 
 async def _validate_ticket_ids(
@@ -477,8 +512,8 @@ async def _validate_ticket_ids(
         return decision, None
 
     async with AsyncSessionLocal() as db:
-        tickets = await service.list_tickets(db, project_id=project_id)
-    valid_ids = {t.id for t in tickets}
+        # Existence check only — no need to drag every subtask and todo along.
+        valid_ids = await service.list_ticket_ids(db, project_id)
 
     original_ids = [str(t).strip() for t in (decision.ticket_ids or []) if str(t).strip()]
     kept = [tid for tid in original_ids if tid in valid_ids]
@@ -524,15 +559,18 @@ def build_project_manager_node():
 
         # If there is developer work ready, route deterministically even if the
         # LLM later fails or emits invalid routing JSON.
-        ready_dev = await _infer_next_dev_route(state.project_id)
-        llm = with_retry(pm_model().bind_tools(PM_TOOLS))
+        base_model = pm_model()
+        llm = with_retry(base_model.bind_tools(PM_TOOLS))
         system_prompt = _build_system_prompt(state)
 
         # Condense state.messages to just the human/handoff turns so we
         # don't pay for every specialist's entire tool transcript on each
         # supervisor invocation.
         condensed = _condense_messages_for_supervisor(list(state.messages))
-        messages: list = [SystemMessage(content=system_prompt), *condensed]
+        messages: list = [
+            cacheable_system_message(system_prompt, base_model),
+            *condensed,
+        ]
         # Anthropic requires the conversation to end with a user message
         # before the model can produce a new assistant turn. If the last
         # message in state is an AIMessage, append a nudge.
@@ -604,13 +642,13 @@ def build_project_manager_node():
                                 "name": tm.name,
                                 "preview": str(tm.content)[:300],
                                 # Store a bounded full tool result for the Logs "Full payload" modal.
-                                "result": _truncate(str(tm.content), MAX_TOOL_RESULT_CHARS),
+                                "result": _truncate_tool_result(str(tm.content), MAX_TOOL_RESULT_CHARS),
                             },
                             state.project_id,
                         )
                     )
                     truncated = ToolMessage(
-                        content=_truncate(str(tm.content), MAX_TOOL_RESULT_CHARS),
+                        content=_truncate_tool_result(str(tm.content), MAX_TOOL_RESULT_CHARS),
                         name=tm.name,
                         tool_call_id=tm.tool_call_id,
                     )
@@ -626,7 +664,13 @@ def build_project_manager_node():
         # at the start of every turn anyway, so nothing important is lost.
         new_msgs: list = []
 
+        end_veto_count = state.end_veto_count
+
         if decision is None or decision.next_agent not in VALID_TARGETS:
+            # Deferred until now on purpose: this walks every ticket in the
+            # project, and on the overwhelmingly common path (the LLM returned a
+            # valid route) its result is discarded unused.
+            ready_dev = await _infer_next_dev_route(state.project_id)
             if ready_dev is not None:
                 decision = ready_dev
                 events.append(
@@ -659,9 +703,20 @@ def build_project_manager_node():
                         instructions="Call list_tickets(project_id) and determine next agent from DB state.",
                     )
         elif decision.next_agent == "end":
-            fb = await _infer_fallback_route(state.project_id)
+            # The PM wants to stop. A DB heuristic may override that once or
+            # twice — planning genuinely does get missed — but never
+            # indefinitely: a heuristic that cannot be satisfied would otherwise
+            # spin the graph to its recursion limit, burning a model call per
+            # lap. After MAX_END_VETOES consecutive vetoes we let the run end
+            # and surface why.
+            fb = (
+                await _infer_fallback_route(state.project_id)
+                if end_veto_count < MAX_END_VETOES
+                else None
+            )
             if fb is not None:
                 decision = fb
+                end_veto_count += 1
                 events.append(
                     await emit(
                         "project_manager",
@@ -669,10 +724,30 @@ def build_project_manager_node():
                         {
                             "next_agent": decision.next_agent,
                             "rationale": decision.rationale,
+                            "end_veto_count": end_veto_count,
                         },
                         state.project_id,
                     )
                 )
+            elif end_veto_count >= MAX_END_VETOES:
+                events.append(
+                    await emit(
+                        "project_manager",
+                        "end_veto_exhausted",
+                        {
+                            "vetoes": end_veto_count,
+                            "detail": (
+                                "Ending the run: a DB heuristic kept overriding 'end' "
+                                "without the underlying condition ever clearing. "
+                                "Inspect ticket/subtask coverage manually."
+                            ),
+                        },
+                        state.project_id,
+                    )
+                )
+        else:
+            # The model routed somewhere concrete — the veto streak is broken.
+            end_veto_count = 0
 
         decision, strip_event = await _validate_ticket_ids(decision, state.project_id)
         if strip_event is not None:
@@ -706,6 +781,7 @@ def build_project_manager_node():
             "messages": new_msgs,
             "next_agent": decision.next_agent,
             "active_ticket_id": active_ticket,
+            "end_veto_count": end_veto_count,
         }
 
     return project_manager_node

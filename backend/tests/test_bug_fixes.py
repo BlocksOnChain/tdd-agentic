@@ -208,11 +208,14 @@ class TestRegressionNoRegresion:
         assert "list_tickets" in PROJECT_MANAGER_SYSTEM
 
     def test_leads_still_have_rite_contract(self):
-        from backend.agents.prompts import LEAD_PLANNING_APPENDIX
-        assert "RITE TEST-CASE FORMAT" in LEAD_PLANNING_APPENDIX
-        assert "given" in LEAD_PLANNING_APPENDIX
-        assert "should" in LEAD_PLANNING_APPENDIX
-        assert "expected" in LEAD_PLANNING_APPENDIX
+        from backend.agents.prompts import LEAD_SYSTEM
+
+        # The RITE contract must be in the prompt the Lead is actually given,
+        # not in a separate appendix nothing assembles.
+        assert "RITE TEST-CASE FORMAT" in LEAD_SYSTEM
+        assert "given" in LEAD_SYSTEM
+        assert "should" in LEAD_SYSTEM
+        assert "expected" in LEAD_SYSTEM
 
     def test_lead_has_scope_definition(self):
         from backend.agents.prompts import LEAD_SYSTEM

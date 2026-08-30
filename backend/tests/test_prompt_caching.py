@@ -1,7 +1,7 @@
 """Tests for prompt caching utility."""
 from __future__ import annotations
 
-from backend.agents.prompts import get_cached_role_base, get_cached_lead_appendix, LEAD_SYSTEM
+from backend.agents.prompts import get_cached_role_base, LEAD_SYSTEM
 
 
 def test_cached_role_base_returns_correct_prompt() -> None:
@@ -24,11 +24,17 @@ def test_cached_role_base_unknown_role_raises() -> None:
         assert "unknown_role_xyz" in str(e)
 
 
-def test_cached_lead_appendix_not_empty() -> None:
-    """The lead appendix contains RITE contract and tool contract."""
-    appendix = get_cached_lead_appendix()
-    assert "RITE" in appendix
-    assert "tools you control" in appendix.lower() or "list_tickets" in appendix
+def test_lead_prompt_carries_the_rite_contract() -> None:
+    """The Lead is cognitive-only, so its prompt must be self-contained."""
+    assert "RITE" in LEAD_SYSTEM
+    assert "execution_plan" in LEAD_SYSTEM
+
+
+def test_lead_prompt_does_not_describe_tools_it_lacks() -> None:
+    """The Lead has tools=[]. Instructing it to call create_subtask/list_tickets
+    wasted prompt budget and contradicted its actual instructions."""
+    for phantom in ("create_subtask(", "list_tickets(", "delete_subtask("):
+        assert phantom not in LEAD_SYSTEM, f"LEAD_SYSTEM still references {phantom}"
 
 
 def test_cached_returns_same_object() -> None:

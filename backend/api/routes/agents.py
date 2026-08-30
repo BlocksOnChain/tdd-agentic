@@ -82,11 +82,15 @@ async def cancel_all_running_tasks(timeout: float = _STOP_GRACE_SECONDS) -> None
 def _spawn(project_id: str, coro) -> None:
     """Schedule a graph run, cancelling any previous one for the same project."""
     prior = RUNNING_TASKS.get(project_id)
-    if prior is not None and not prior.done():
-        prior.cancel()
 
     async def _wrapper() -> None:
         try:
+            # Wait for the previous run to actually stop before touching the
+            # same thread_id. Cancelling without awaiting let the old task keep
+            # writing checkpoints while the new one started, racing two writers
+            # on one thread.
+            if prior is not None and not prior.done():
+                await _cancel_task(project_id, prior)
             await coro
         except asyncio.CancelledError:
             await bus.publish(
@@ -148,6 +152,26 @@ def _checkpoint_id(snapshot: Any) -> str | None:
     return cfg.get("checkpoint_id")
 
 
+def _checkpoint_id_from_stream(data: Any) -> str | None:
+    """Pull the checkpoint id out of a ``stream_mode="checkpoints"`` payload.
+
+    LangGraph has emitted this as a StateSnapshot and, in other versions, as a
+    plain dict; accept either rather than pinning to one shape.
+    """
+    if data is None:
+        return None
+    if isinstance(data, dict):
+        cfg = data.get("config") or {}
+        configurable = cfg.get("configurable") if isinstance(cfg, dict) else None
+        if isinstance(configurable, dict) and configurable.get("checkpoint_id"):
+            return str(configurable["checkpoint_id"])
+        checkpoint = data.get("checkpoint")
+        if isinstance(checkpoint, dict) and checkpoint.get("id"):
+            return str(checkpoint["id"])
+        return None
+    return _checkpoint_id(data)
+
+
 async def _stream_once(graph, project_id: str, payload: Any, config: dict) -> None:
     """Drive the graph until it yields or completes; raises on error.
 
@@ -155,12 +179,23 @@ async def _stream_once(graph, project_id: str, payload: Any, config: dict) -> No
     the UI can offer a "Resume from here" action per log entry.
     """
     last_checkpoint_id: str | None = None
-    async for chunk in graph.astream(payload, config=config, stream_mode="updates"):
-        snapshot = await graph.aget_state(config)
-        checkpoint_id = _checkpoint_id(snapshot)
-        if checkpoint_id and checkpoint_id != last_checkpoint_id:
-            invalidate_checkpoint_list_cache(project_id)
-            last_checkpoint_id = checkpoint_id
+    # ``stream_mode=["updates", "checkpoints"]`` yields (mode, data) tuples and
+    # carries the checkpoint id in-band. Reading it from the stream replaces a
+    # full ``aget_state`` — a Postgres read plus a complete msgpack
+    # deserialization of SystemState — after every single node transition, on
+    # the critical path of the run.
+    async for mode, data in graph.astream(
+        payload, config=config, stream_mode=["updates", "checkpoints"]
+    ):
+        if mode == "checkpoints":
+            checkpoint_id = _checkpoint_id_from_stream(data)
+            if checkpoint_id and checkpoint_id != last_checkpoint_id:
+                invalidate_checkpoint_list_cache(project_id)
+                last_checkpoint_id = checkpoint_id
+            continue
+
+        chunk = data
+        checkpoint_id = last_checkpoint_id
         for node_name, update in chunk.items():
             if node_name == "__interrupt__":
                 await _broadcast_interrupts(project_id, update)
@@ -225,8 +260,12 @@ async def _run_graph(project_id: str, initial_payload: Any) -> None:
                     return
                 await asyncio.sleep(delay)
                 delay *= 2
-                # After the first failure, resume from the checkpoint with None
-                payload = None
+                # Resume from the checkpoint on retry — but never discard a
+                # pending HITL answer. Dropping a Command(resume=...) here would
+                # leave the graph parked at the interrupt with the human's reply
+                # lost, looking like the answer was ignored.
+                if not isinstance(payload, Command):
+                    payload = None
 
 
 async def _broadcast_interrupts(project_id: str, update: Any) -> None:
@@ -522,33 +561,45 @@ async def list_interrupts(project_id: str) -> dict:
         return {"interrupts": all_interrupts}
 
 
+def _workspace_for(project_id: str) -> Path:
+    workspace = (get_settings().workspace_root / project_id).resolve()
+    if not workspace.exists():
+        raise HTTPException(status_code=404, detail="Workspace not found")
+    return workspace
+
+
+def _contained_path(workspace: Path, path: str) -> Path:
+    """Resolve ``path`` inside ``workspace``, refusing anything that escapes it.
+
+    Without this, ``?path=../../etc/passwd`` reads outside the project tree.
+    The tool layer has always enforced containment (``code_tools._resolve``);
+    these HTTP endpoints did not.
+    """
+    candidate = (workspace / path).resolve()
+    if candidate != workspace and workspace not in candidate.parents:
+        raise HTTPException(status_code=400, detail="path escapes project workspace")
+    return candidate
+
+
 @router.get("/files/{project_id}")
 async def list_project_files(project_id: str, path: str = "") -> dict:
     """List files in the project's workspace directory recursively."""
-    settings = get_settings()
-    workspace = settings.workspace_root / project_id
-    if not workspace.exists():
-        raise HTTPException(status_code=404, detail="Workspace not found")
-    rel_path = Path(path)
-    target = workspace / rel_path
+    workspace = _workspace_for(project_id)
+    target = _contained_path(workspace, path)
     if not target.exists() or not target.is_dir():
         raise HTTPException(status_code=400, detail=f"Path is not a directory: {path}")
     files: list[str] = []
     for item in sorted(target.rglob("*")):
         if item.is_file():
-            rel = item.relative_to(workspace)
-            files.append(str(rel))
+            files.append(str(item.relative_to(workspace)))
     return {"files": files}
 
 
 @router.get("/files/{project_id}/content")
 async def get_file_content(project_id: str, path: str = "") -> dict:
     """Return the content of a file in the project's workspace."""
-    settings = get_settings()
-    workspace = settings.workspace_root / project_id
-    if not workspace.exists():
-        raise HTTPException(status_code=404, detail="Workspace not found")
-    target = workspace / path
+    workspace = _workspace_for(project_id)
+    target = _contained_path(workspace, path)
     if not target.exists() or not target.is_file():
         raise HTTPException(status_code=404, detail=f"File not found: {path}")
     if target.stat().st_size > 512_000:
