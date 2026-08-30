@@ -89,9 +89,9 @@ async def test_validate_ticket_ids_strips_hallucinated_uuids() -> None:
             return_value=mock_session,
         ),
         patch(
-            "backend.agents.project_manager.supervisor.service.list_tickets",
+            "backend.agents.project_manager.supervisor.service.list_ticket_ids",
             new_callable=AsyncMock,
-            return_value=[mock_ticket],
+            return_value={mock_ticket.id},
         ),
         patch(
             "backend.agents.project_manager.supervisor.emit",
@@ -128,9 +128,9 @@ async def test_validate_ticket_ids_falls_back_to_instructions_uuids() -> None:
             return_value=mock_session,
         ),
         patch(
-            "backend.agents.project_manager.supervisor.service.list_tickets",
+            "backend.agents.project_manager.supervisor.service.list_ticket_ids",
             new_callable=AsyncMock,
-            return_value=[mock_ticket],
+            return_value={mock_ticket.id},
         ),
         patch(
             "backend.agents.project_manager.supervisor.emit",
@@ -158,3 +158,50 @@ async def test_validate_ticket_ids_noop_without_project_id() -> None:
     validated, event = await _validate_ticket_ids(decision, None)
     assert validated.ticket_ids == ["any-id"]
     assert event is None
+
+
+@pytest.mark.asyncio
+async def test_resolve_routing_skips_second_llm_call_when_response_parses() -> None:
+    """The model's own response IS the routing JSON — don't pay for a second call.
+
+    Regression: _resolve_routing_decision always issued a structured-output call,
+    re-sending the whole transcript, even though ai.content already held a valid
+    decision. That doubled PM latency and input tokens on every routing hop.
+    """
+    mock_structured = MagicMock()
+    mock_structured.ainvoke = AsyncMock()
+    mock_model = MagicMock()
+    mock_model.with_structured_output.return_value = mock_structured
+    pm_model_spy = MagicMock(return_value=mock_model)
+
+    with (
+        patch("backend.agents.project_manager.supervisor.pm_model", pm_model_spy),
+        patch(
+            "backend.agents.project_manager.supervisor.with_retry",
+            side_effect=lambda r: r,
+        ),
+    ):
+        text = '{"next_agent": "lead", "rationale": "plan", "phase": "planning"}'
+        decision = await _resolve_routing_decision([SystemMessage(content="sys")], text)
+
+    assert decision is not None
+    assert decision.next_agent == "lead"
+    mock_structured.ainvoke.assert_not_awaited()
+    pm_model_spy.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_resolve_routing_accepts_fenced_and_curly_quoted_json() -> None:
+    """Local chat templates fence and prettify output; both must still parse."""
+    with (
+        patch("backend.agents.project_manager.supervisor.pm_model", MagicMock()),
+        patch(
+            "backend.agents.project_manager.supervisor.with_retry",
+            side_effect=lambda r: r,
+        ),
+    ):
+        fenced = '```json\n{"next_agent": "qa", "phase": "qa"}\n```'
+        curly = '{“next_agent”: “devops”, “phase”: “infrastructure”}'
+
+        assert (await _resolve_routing_decision([], fenced)).next_agent == "qa"
+        assert (await _resolve_routing_decision([], curly)).next_agent == "devops"

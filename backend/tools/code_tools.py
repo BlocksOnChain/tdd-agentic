@@ -8,7 +8,8 @@ from __future__ import annotations
 
 import asyncio
 import json
-import shlex
+import os
+import signal
 from pathlib import Path
 
 from langchain_core.tools import tool
@@ -127,6 +128,40 @@ async def fs_delete(project_id: str, path: str) -> str:
     return json.dumps({"ok": True})
 
 
+async def _kill_process_tree(proc: asyncio.subprocess.Process) -> None:
+    """Terminate a timed-out command and everything it spawned, then reap it.
+
+    SIGTERM to the group first so a well-behaved child can clean up, then
+    SIGKILL if it is still alive. The final ``wait()`` matters: without it the
+    process stays a zombie and its pipes are never closed.
+    """
+    if proc.returncode is not None:
+        return
+    try:
+        pgid = os.getpgid(proc.pid)
+    except (ProcessLookupError, PermissionError, AttributeError):
+        pgid = None
+
+    def _signal(sig: int) -> None:
+        if pgid is None:
+            raise ProcessLookupError
+        os.killpg(pgid, sig)
+
+    for sig, grace in ((signal.SIGTERM, 5.0), (signal.SIGKILL, 5.0)):
+        try:
+            _signal(sig)
+        except (ProcessLookupError, PermissionError, AttributeError):
+            try:
+                proc.kill()
+            except ProcessLookupError:
+                return
+        try:
+            await asyncio.wait_for(proc.wait(), timeout=grace)
+            return
+        except asyncio.TimeoutError:
+            continue
+
+
 @tool
 async def shell_run(project_id: str, command: str, timeout_seconds: int = 120) -> str:
     """Run a shell command with cwd set to the project workspace.
@@ -148,11 +183,16 @@ async def shell_run(project_id: str, command: str, timeout_seconds: int = 120) -
             cwd=str(cwd),
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
+            # Own process group, so a timeout can kill the whole tree. Without
+            # it we only kill the `/bin/sh -c` wrapper and its children —
+            # `npm install`, a dev server, a hung test runner — survive as
+            # orphans holding the workspace and their ports.
+            start_new_session=True,
         )
         try:
             stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout_seconds)
         except asyncio.TimeoutError:
-            proc.kill()
+            await _kill_process_tree(proc)
             return json.dumps(
                 {"ok": False, "error": f"timeout after {timeout_seconds}s", "command": command}
             )

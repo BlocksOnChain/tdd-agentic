@@ -175,6 +175,18 @@ async def list_tickets(db: AsyncSession, project_id: str | None = None) -> list[
     return list(result.scalars().unique().all())
 
 
+async def list_ticket_ids(db: AsyncSession, project_id: str) -> set[str]:
+    """Return just the ticket ids in a project.
+
+    ``list_tickets`` eager-loads every subtask and every todo, which is the
+    right shape for planning decisions and the wrong shape for an existence
+    check. Callers that only need "does this id belong to this project?" — such
+    as stripping hallucinated UUIDs out of a routing decision — use this.
+    """
+    result = await db.execute(select(Ticket.id).where(Ticket.project_id == project_id))
+    return {row[0] for row in result.all()}
+
+
 async def list_subtasks(
     db: AsyncSession,
     *,
@@ -243,8 +255,27 @@ async def update_ticket(
 
 
 async def add_question(db: AsyncSession, ticket_id: str, question: str, asked_by: str) -> Ticket:
+    """Append a clarification question, idempotently.
+
+    Re-asking a question that is already open is a no-op. This matters for more
+    than tidiness: ``ask_human`` raises ``GraphInterrupt``, and LangGraph resumes
+    a node from the top, so every tool the PM called earlier in that turn runs
+    again on resume. Without this guard a single human answer could leave the
+    ticket carrying the same unanswered question two or three times over.
+    """
     ticket = await get_ticket(db, ticket_id)
     qlist = list(ticket.questions or [])
+
+    normalised = question.strip()
+    for existing in qlist:
+        if not isinstance(existing, dict):
+            continue
+        if (
+            str(existing.get("question", "")).strip() == normalised
+            and existing.get("answer") in (None, "")
+        ):
+            return ticket
+
     qlist.append(
         {"question": question, "answer": None, "asked_by": asked_by, "answered_by": None,
          "ts": time.time()}

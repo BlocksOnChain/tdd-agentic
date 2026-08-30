@@ -134,5 +134,5 @@ class HandoffV2(Handoff):
     def to_message(self) -> str:
         base = super().to_message()
         if self.context_refs:
-            return f"{base}\nContext refs: {', '.join('ctx_{i}' for i in self.context_refs)}"
+            return f"{base}\nContext refs: {', '.join(self.context_refs)}"
         return base

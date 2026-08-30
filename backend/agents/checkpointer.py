@@ -11,6 +11,7 @@ strict-mode (``LANGGRAPH_STRICT_MSGPACK=true``) keeps working.
 """
 from __future__ import annotations
 
+import asyncio
 from contextlib import asynccontextmanager
 
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
@@ -41,6 +42,8 @@ def _build_serde() -> JsonPlusSerializer:
 
 
 _pool: AsyncConnectionPool | None = None
+_saver: AsyncPostgresSaver | None = None
+_saver_lock = asyncio.Lock()
 
 
 async def get_pool() -> AsyncConnectionPool:
@@ -59,20 +62,32 @@ async def get_pool() -> AsyncConnectionPool:
 
 
 async def close_pool() -> None:
-    global _pool
+    global _pool, _saver
+    _saver = None
     if _pool is not None:
         await _pool.close()
         _pool = None
 
 
+async def get_saver() -> AsyncPostgresSaver:
+    """Return the process-wide saver, running ``setup()`` exactly once.
+
+    ``setup()`` issues the checkpoint-table migration DDL. It is safe to repeat,
+    but it is not free, and it used to run on every graph access — including
+    every ``/state``, ``/interrupts``, and ``/checkpoints`` poll from the UI.
+    """
+    global _saver
+    if _saver is None:
+        async with _saver_lock:
+            if _saver is None:
+                pool = await get_pool()
+                saver = AsyncPostgresSaver(pool, serde=_build_serde())
+                await saver.setup()
+                _saver = saver
+    return _saver
+
+
 @asynccontextmanager
 async def get_checkpointer():
-    """Async context manager that yields an initialized AsyncPostgresSaver.
-
-    On first use this also runs ``setup()`` which creates the checkpoint
-    tables if missing — safe to call repeatedly.
-    """
-    pool = await get_pool()
-    saver = AsyncPostgresSaver(pool, serde=_build_serde())
-    await saver.setup()
-    yield saver
+    """Async context manager yielding the shared, initialized AsyncPostgresSaver."""
+    yield await get_saver()

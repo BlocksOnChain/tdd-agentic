@@ -27,10 +27,12 @@ import logging
 import random
 import threading
 import time
+from functools import lru_cache
 from typing import Any
 
 from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.messages import SystemMessage
 from langchain_core.rate_limiters import InMemoryRateLimiter
 from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
@@ -71,7 +73,10 @@ def _limiter_for(provider: str) -> InMemoryRateLimiter:
 
 
 # Exception classes considered transient (provider 429s, server errors,
-# overload signals, network blips). Imported lazily to avoid hard deps.
+# overload signals, network blips). Imported lazily to avoid hard deps, then
+# cached — this is called from the retry hot path on every failed request, and
+# re-running the import guards per exception is pure overhead.
+@lru_cache(maxsize=1)
 def _transient_exceptions() -> tuple[type[BaseException], ...]:
     excs: list[type[BaseException]] = [TimeoutError, ConnectionError]
     try:
@@ -110,11 +115,27 @@ def _status_code_from_exc(exc: BaseException) -> int | None:
     return None
 
 
+# A 400 normally means "your request is malformed" — retrying is pointless and
+# the 60s sleep below is pure waste. The one exception is an upstream-gateway
+# 400 (OpenRouter reporting that the *downstream* provider failed), which does
+# clear on its own. These markers identify that case narrowly; a bare
+# "provider" + "error" substring test matched ordinary schema-validation 400s
+# and parked the run for a minute before failing anyway.
+_PROVIDER_400_MARKERS: tuple[str, ...] = (
+    "provider returned error",
+    "provider error",
+    "upstream error",
+    "no allowed providers",
+    "provider_error",
+)
+
+
 def _is_provider_400_error(exc: BaseException) -> bool:
+    """True for an upstream-provider 400 that is worth one delayed retry."""
     if _status_code_from_exc(exc) != 400:
         return False
     msg = str(exc).lower()
-    return "provider" in msg and "error" in msg
+    return any(marker in msg for marker in _PROVIDER_400_MARKERS)
 
 
 def _should_retry_transient(exc: BaseException) -> bool:
@@ -275,6 +296,8 @@ def log_resolved_llm_routing() -> None:
         ("dev_model", settings.dev_model),
         ("backend_dev_model", settings.backend_dev_model or settings.dev_model),
         ("frontend_dev_model", settings.frontend_dev_model or settings.dev_model),
+        ("devops_model", settings.devops_model or settings.dev_model),
+        ("qa_model", settings.qa_model or settings.dev_model),
         ("grader_model", settings.grader_model),
     ]
     base = (settings.openai_base_url or "").strip()
@@ -304,11 +327,33 @@ def log_resolved_llm_routing() -> None:
 def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> BaseChatModel:
     """Resolve a ``provider/model`` slug to a rate-limited chat model.
 
+    Instances are memoized per ``(slug, temperature)``: constructing a client
+    builds a fresh httpx connection pool, and every specialist turn calls its
+    ``llm_factory``, so without this each turn paid a new TLS handshake and
+    leaked a pool. Chat models are stateless with respect to invocation —
+    ``bind_tools`` returns a new Runnable rather than mutating the model — so
+    sharing one instance across turns and projects is safe.
+
     Inline retry is *not* applied here so that callers can still call
     ``.bind_tools(...)`` (which only exists on ``BaseChatModel``). Use
-    :func:`get_chat_model_with_retry` if you want the retry-wrapped
-    variant after binding tools.
+    :func:`with_retry` on the tool-bound Runnable instead.
     """
+    if not kwargs:
+        return _get_chat_model_cached(model_slug, temperature)
+    return _build_chat_model(model_slug, temperature=temperature, **kwargs)
+
+
+@lru_cache(maxsize=64)
+def _get_chat_model_cached(model_slug: str, temperature: float) -> BaseChatModel:
+    return _build_chat_model(model_slug, temperature=temperature)
+
+
+def reset_chat_model_cache() -> None:
+    """Drop memoized clients (tests, or after a settings change)."""
+    _get_chat_model_cached.cache_clear()
+
+
+def _build_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> BaseChatModel:
     settings = get_settings()
     provider, name = _split_slug(model_slug)
 
@@ -320,7 +365,6 @@ def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> Ba
     }
 
     if provider in ("openai", "openrouter"):
-        common.pop("max_tokens", None)  # ChatOpenAI uses ``max_tokens`` differently
         kwargs_openai: dict = {
             "model": name,
             "max_retries": settings.llm_max_retries,
@@ -354,6 +398,39 @@ def get_chat_model(model_slug: str, *, temperature: float = 0.0, **kwargs) -> Ba
         "For OpenRouter catalog models (e.g. nex-agi/...), set OPENROUTER_API_KEY "
         "or use openrouter/nex-agi/...."
     )
+
+
+def supports_prompt_caching(model: BaseChatModel) -> bool:
+    """True when the provider honours explicit ``cache_control`` breakpoints.
+
+    Only Anthropic uses in-band breakpoints. OpenAI-compatible servers cache
+    automatically (or not at all) and reject the unknown key, so we must not
+    send it to them.
+    """
+    return isinstance(model, ChatAnthropic)
+
+
+def cacheable_system_message(text: str, model: BaseChatModel) -> SystemMessage:
+    """Build the system message, marking it cacheable where the provider allows.
+
+    Every agent re-sends a large, byte-identical system prompt on every turn —
+    role prompt, stack policy, runtime facts, skill index — plus the tool
+    schemas. Anthropic's cache prefix covers tools *and* system, so a single
+    breakpoint at the end of the system block turns almost the whole fixed
+    prefix into cache reads on the second and later turns of a run. That is the
+    same input-token pressure the per-provider rate limiter exists to relieve.
+
+    The prompt must be byte-identical across turns to hit, which is why the
+    volatile parts (project context, active ticket/subtask ids) sit at the end
+    of the block and everything above them is stable for the run.
+    """
+    if supports_prompt_caching(model):
+        return SystemMessage(
+            content=[
+                {"type": "text", "text": text, "cache_control": {"type": "ephemeral"}}
+            ]
+        )
+    return SystemMessage(content=text)
 
 
 def with_retry(runnable: Runnable) -> Runnable:
@@ -402,12 +479,14 @@ def frontend_dev_model() -> BaseChatModel:
 
 def devops_model() -> BaseChatModel:
     s = get_settings()
-    return get_chat_model(s.devops_model, temperature=s.devops_temperature)
+    slug = s.devops_model or s.dev_model
+    return get_chat_model(slug, temperature=s.devops_temperature)
 
 
 def qa_model() -> BaseChatModel:
     s = get_settings()
-    return get_chat_model(s.qa_model, temperature=s.qa_temperature)
+    slug = s.qa_model or s.dev_model
+    return get_chat_model(slug, temperature=s.qa_temperature)
 
 
 def coordinator_model() -> BaseChatModel:

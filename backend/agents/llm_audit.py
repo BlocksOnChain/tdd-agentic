@@ -17,8 +17,8 @@ _slug_for_node: dict[str, Callable[["object"], str]] = {
     "coordinator": lambda s: s.coordinator_model or s.dev_model,
     "backend_dev": lambda s: s.backend_dev_model or s.dev_model,
     "frontend_dev": lambda s: s.frontend_dev_model or s.dev_model,
-    "devops": lambda s: s.dev_model,
-    "qa": lambda s: s.dev_model,
+    "devops": lambda s: s.devops_model or s.dev_model,
+    "qa": lambda s: s.qa_model or s.dev_model,
 }
 
 

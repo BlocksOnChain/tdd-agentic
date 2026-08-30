@@ -71,6 +71,11 @@ class SystemState(BaseModel):
 
     next_agent: str | None = None  # supervisor routing decision
 
+    # How many consecutive times the PM asked to end and a DB heuristic overrode
+    # it. Bounded so a heuristic that can never be satisfied cannot spin the
+    # graph to its recursion limit; reset whenever the PM routes anywhere else.
+    end_veto_count: int = 0
+
     # Streamed via WS and stored in agent_logs; not duplicated in checkpoints.
     events: Annotated[list[AgentEvent], lambda _a, _b: []] = Field(default_factory=list)
 

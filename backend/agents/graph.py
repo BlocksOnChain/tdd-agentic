@@ -6,6 +6,8 @@ conditional edges from this root graph.
 """
 from __future__ import annotations
 
+from typing import Any
+
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 
@@ -45,8 +47,35 @@ def _route_from_pm(state: SystemState) -> str:
     return "project_manager"  # default: keep planning
 
 
+# Compiled graphs, keyed by the identity of the checkpointer they were built
+# with. Building one compiles seven specialist subgraphs and re-reads settings;
+# the API layer did that on every /state, /interrupts and /checkpoints poll.
+#
+# Caching is only safe because specialist subgraphs hold no per-run mutable
+# state — see the note in ``runner.build_specialist_subgraph``. If you add
+# closure state there, this cache will leak it across projects.
+_GRAPH_CACHE: dict[int, Any] = {}
+
+
 def build_root_graph(checkpointer: BaseCheckpointSaver | None = None):
-    """Compile the full multi-agent orchestration graph."""
+    """Compile the full multi-agent orchestration graph (memoized)."""
+    key = id(checkpointer)
+    cached = _GRAPH_CACHE.get(key)
+    if cached is not None:
+        return cached
+    compiled = _compile_root_graph(checkpointer)
+    # Bound: one entry per distinct saver, and there is normally exactly one.
+    if len(_GRAPH_CACHE) > 8:
+        _GRAPH_CACHE.clear()
+    _GRAPH_CACHE[key] = compiled
+    return compiled
+
+
+def clear_graph_cache() -> None:
+    _GRAPH_CACHE.clear()
+
+
+def _compile_root_graph(checkpointer: BaseCheckpointSaver | None = None):
     graph = StateGraph(SystemState)
 
     # Supervisor
@@ -85,4 +114,4 @@ def build_root_graph(checkpointer: BaseCheckpointSaver | None = None):
     return graph.compile(checkpointer=checkpointer)
 
 
-__all__ = ["build_root_graph"]
+__all__ = ["build_root_graph", "clear_graph_cache"]

@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     lead_model: str = "anthropic/claude-sonnet-4-6"
     dev_model: str = "anthropic/claude-sonnet-4-6"
     # Optional overrides for product devs (default to dev_model when unset in env).
+    # Every one of these is read as ``s.<name> or s.dev_model``, so leaving one
+    # unset is supported — but the field itself must exist here or the read
+    # raises AttributeError at call time.
+    backend_dev_model: str | None = None  # Optional; defaults to dev_model
+    frontend_dev_model: str | None = None  # Optional; defaults to dev_model
     coordinator_model: str | None = None  # Optional; defaults to dev_model
     devops_model: str | None = None  # Optional; defaults to dev_model
     qa_model: str | None = None  # Optional; defaults to dev_model

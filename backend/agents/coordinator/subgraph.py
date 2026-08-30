@@ -27,4 +27,7 @@ def build_coordinator_subgraph():
         tools=[*PERSISTENCE_TOOLS, rag_query],
         base_system_prompt=COORDINATOR_SYSTEM,
         max_steps=8,
+        # Renders state.execution_plan into the Coordinator's input (it cannot
+        # see graph state otherwise) and clears it once persisted.
+        inject_execution_plan=True,
     )

@@ -39,10 +39,12 @@ from backend.agents.skills.seed import seed_builtin_skills
 from backend.api.routes import agents as agents_routes
 from backend.api.routes import projects as projects_routes
 from backend.api.routes import tickets as tickets_routes
+from backend.api.events import bus
 from backend.api.routes.agents import cancel_all_running_tasks
 from backend.api.websocket import router as ws_router
 from backend.config import get_settings
 from backend.db.session import init_db
+from backend.rag.retrieval import close_qdrant_client
 
 
 @asynccontextmanager
@@ -62,6 +64,10 @@ async def lifespan(app: FastAPI):
     # Shutdown: cancel in-flight agent runs FIRST so uvicorn's drain
     # phase doesn't sit forever waiting on orphan LLM calls / retries.
     await cancel_all_running_tasks()
+    # Drain queued agent logs before tearing down the DB pool, or the tail of
+    # the run is lost from the Logs panel.
+    await bus.close()
+    await close_qdrant_client()
     await close_pool()
 
 

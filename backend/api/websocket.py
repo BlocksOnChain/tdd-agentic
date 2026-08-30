@@ -12,12 +12,19 @@ router = APIRouter()
 
 
 @router.websocket("/ws")
-async def ws_endpoint(websocket: WebSocket) -> None:
+async def ws_endpoint(websocket: WebSocket, project_id: str | None = None) -> None:
+    """Stream events. Pass ``?project_id=...`` to receive only that project's.
+
+    Without the filter a client watching one project receives every concurrent
+    run's traffic and has to discard it client-side.
+    """
     await websocket.accept()
     try:
         # Send hello so the client knows the channel is live
-        await websocket.send_text(json.dumps({"type": "hello", "payload": {"ok": True}}))
-        async for event in bus.subscribe():
+        await websocket.send_text(
+            json.dumps({"type": "hello", "payload": {"ok": True, "project_id": project_id}})
+        )
+        async for event in bus.subscribe(project_id=project_id):
             try:
                 await websocket.send_text(json.dumps(event.to_json()))
             except (WebSocketDisconnect, asyncio.CancelledError):

@@ -30,12 +30,12 @@ from langchain_core.messages import (
 from langchain_core.tools import BaseTool
 from langgraph.graph import END, START, StateGraph
 
-from backend.agents.common import emit, run_tool_calls
+from backend.agents.common import emit, normalise_json_text, run_tool_calls
 from backend.agents.llm_audit import (
     log_llm_invoke_exception_context,
     log_llm_invoke_start,
 )
-from backend.agents.llm import with_retry
+from backend.agents.llm import cacheable_system_message, with_retry
 from backend.agents.runtime_env import get_agent_runtime_prompt_section
 from backend.agents.skills.loader import inject_skills
 from backend.agents.state import ExecutionPlan, SubtaskPlan, SystemState
@@ -46,6 +46,10 @@ MAX_TOOL_RESULT_CHARS = 4000
 MAX_PROJECT_CONTEXT_CHARS = 1500
 MAX_HANDOFF_INSTRUCTION_CHARS = 12000
 MAX_SUMMARY_CHARS = 2000
+# The Lead's plan is the Coordinator's payload, not background context, so it
+# gets a much larger budget. Bounded by the Lead's own max_output_tokens in
+# practice; this cap only guards against a pathological plan.
+MAX_EXECUTION_PLAN_CHARS = 20000
 
 
 def _last_text(messages: list[BaseMessage]) -> str:
@@ -73,9 +77,71 @@ def _truncate(s: str, limit: int) -> str:
     return s[:limit] + f"\n…[truncated {len(s) - limit} chars]"
 
 
+def _truncate_tool_result(content: str, limit: int) -> str:
+    """Bound a tool result without handing the model malformed JSON.
+
+    Tool results are JSON. Cutting at a character index leaves an unterminated
+    object, so the model sees something it cannot parse and has no way to tell
+    truncation from corruption. When the payload is a JSON object or array we
+    drop whole elements from the end and say how many went, which keeps the
+    result valid and the loss explicit.
+    """
+    if len(content) <= limit:
+        return content
+
+    stripped = content.lstrip()
+    if stripped[:1] in ("{", "["):
+        try:
+            data = json.loads(content)
+        except (json.JSONDecodeError, TypeError):
+            data = None
+        if data is not None:
+            shrunk = _shrink_json(data, limit)
+            if shrunk is not None:
+                return shrunk
+
+    return _truncate(content, limit)
+
+
+def _shrink_json(data: Any, limit: int) -> str | None:
+    """Drop trailing items from the largest list in ``data`` until it fits."""
+
+    def _dump(obj: Any) -> str:
+        return json.dumps(obj, separators=(",", ":"), default=str)
+
+    if isinstance(data, list):
+        kept = list(data)
+        while kept and len(_dump(kept)) > limit:
+            kept.pop()
+        if not kept:
+            return None
+        dropped = len(data) - len(kept)
+        return _dump({"items": kept, "_truncated_items": dropped}) if dropped else _dump(kept)
+
+    if isinstance(data, dict):
+        # Shrink the longest list-valued field — for ticket payloads that is
+        # subtasks or test_cases, which is exactly where the bulk lives.
+        list_keys = [k for k, v in data.items() if isinstance(v, list) and v]
+        if not list_keys:
+            return None
+        target = max(list_keys, key=lambda k: len(_dump(data[k])))
+        kept = list(data[target])
+        while kept and len(_dump({**data, target: kept})) > limit:
+            kept.pop()
+        if not kept:
+            return None
+        dropped = len(data[target]) - len(kept)
+        out = {**data, target: kept}
+        if dropped:
+            out["_truncated"] = f"{dropped} more item(s) in '{target}' omitted"
+        return _dump(out)
+
+    return None
+
+
 def _strip_json_fence(text: str) -> str:
-    """Remove optional markdown fences from LLM JSON output."""
-    text = text.strip()
+    """Remove optional markdown fences and typographic quotes from LLM JSON output."""
+    text = normalise_json_text(text).strip()
     if text.startswith("```"):
         text = text.strip("`")
         if text.startswith("json\n"):
@@ -118,6 +184,55 @@ def _parse_execution_plan(text: str) -> ExecutionPlan | None:
         )
     except Exception:
         return None
+
+
+def _render_execution_plan_message(plan: ExecutionPlan | None) -> HumanMessage:
+    """Render ``state.execution_plan`` as the Coordinator's actual input.
+
+    The Coordinator is a non-cognitive agent: its whole job is to take the plan
+    the Lead produced and write it to the database. That plan lives in graph
+    state, which no LLM can see — so unless it is rendered into the message list
+    the Coordinator has nothing to persist but the PM's one-line intent, and it
+    will invent subtasks instead, silently discarding every RITE spec the Lead
+    wrote. This function is the bridge.
+    """
+    if plan is None or not plan.subtasks:
+        return HumanMessage(
+            content=(
+                "[execution_plan] MISSING — there is no plan in graph state.\n"
+                "Do NOT invent subtasks. Do not call save_execution_plan. "
+                "Report back that the plan is missing so the PM can route the "
+                "lead agent to produce one."
+            )
+        )
+
+    payload = plan.model_dump(mode="json", exclude_none=True)
+    body = json.dumps(payload, separators=(",", ":"))
+    note = ""
+    if len(body) > MAX_EXECUTION_PLAN_CHARS:
+        # Never truncate a plan into invalid JSON — drop trailing subtasks whole
+        # so what the Coordinator persists is always a well-formed subset.
+        kept = list(payload.get("subtasks") or [])
+        while kept and len(json.dumps({**payload, "subtasks": kept}, separators=(",", ":"))) > MAX_EXECUTION_PLAN_CHARS:
+            kept.pop()
+        dropped = len(payload.get("subtasks") or []) - len(kept)
+        payload["subtasks"] = kept
+        body = json.dumps(payload, separators=(",", ":"))
+        note = (
+            f"\n\nNOTE: {dropped} subtask(s) were omitted because the plan exceeded "
+            "the input budget. Persist what is here; the PM will re-dispatch the "
+            "lead for the remainder."
+        )
+
+    return HumanMessage(
+        content=(
+            "[execution_plan] The Lead produced the plan below and it is the ONLY "
+            "source of subtasks for this turn. Pass these subtasks to "
+            "save_execution_plan verbatim — do not rename, reorder, merge, drop, "
+            "or invent any of them, and do not alter test_cases.\n\n"
+            f"{body}{note}"
+        )
+    )
 
 
 def _parse_structured_summary(text: str) -> dict[str, Any] | None:
@@ -311,6 +426,24 @@ def _subtask_status_updates(tool_msgs: list[ToolMessage]) -> dict[str, list[str]
     return by_status
 
 
+def _execution_plan_persisted(tool_msgs: list[ToolMessage]) -> bool:
+    """True when ``save_execution_plan`` wrote at least one subtask this turn.
+
+    Used to clear ``state.execution_plan`` afterwards. A plan left in state
+    outlives the ticket it was written for, so the next Coordinator dispatch
+    would re-persist stale subtasks against whatever ticket is active then.
+    """
+    for tm in tool_msgs:
+        if getattr(tm, "name", None) != "save_execution_plan":
+            continue
+        data = _parse_next_pending_tool_result(str(tm.content))
+        if data is None or data.get("error"):
+            continue
+        if int(data.get("subtask_count") or 0) > 0:
+            return True
+    return False
+
+
 def _subtasks_marked_done(tool_msgs: list[ToolMessage]) -> list[str]:
     """IDs of subtasks the agent flipped to ``done`` via update_subtask_status."""
     return _subtask_status_updates(tool_msgs).get("done", [])
@@ -381,6 +514,7 @@ def build_specialist_subgraph(
     code_tools: list[BaseTool] | None = None,
     phased_code_tools: bool = False,
     parse_execution_plan: bool = False,
+    inject_execution_plan: bool = False,
     structured_summary: bool = False,
 ):
     """Build and compile a tool-using specialist subgraph.
@@ -395,26 +529,47 @@ def build_specialist_subgraph(
     ``next_pending*`` and received a subtask MUST mark it ``done`` or ``blocked``
     before the turn ends. Otherwise the hand-off is rewritten as INCOMPLETE so
     the PM re-dispatches instead of treating the turn as finished work.
-    """
-    tools_by_name: dict[str, BaseTool] = {t.name: t for t in tools}
-    phase2_tools = code_tools or []
-    code_phase_active = not phased_code_tools
 
-    def _current_tool_list() -> list[BaseTool]:
-        if phased_code_tools and not code_phase_active:
-            return tools
-        if phased_code_tools and code_phase_active:
-            seen: dict[str, BaseTool] = {}
-            for t in [*tools, *phase2_tools]:
-                seen[t.name] = t
-            return list(seen.values())
-        return list(tools_by_name.values())
+    ``parse_execution_plan`` and ``inject_execution_plan`` are the two halves of
+    the Lead → Coordinator hand-off: the Lead parses its JSON output into
+    ``state.execution_plan``, and the Coordinator receives that plan rendered
+    into its input and clears it once persisted.
+    """
+    # Immutable per-build definitions. Anything that changes DURING a turn must
+    # live inside ``specialist`` — the compiled subgraph is a long-lived,
+    # potentially shared object, so mutating a closure variable here leaks state
+    # across turns, across runs, and across concurrently running projects.
+    base_tools: tuple[BaseTool, ...] = tuple(tools)
+    phase2_tools: tuple[BaseTool, ...] = tuple(code_tools or [])
+
+    def _tool_list(code_phase_active: bool) -> list[BaseTool]:
+        """Tools visible to the model right now.
+
+        With ``phased_code_tools``, a dev agent only gets filesystem/shell tools
+        after it has actually picked up a subtask — so it can't start writing
+        code before it knows what it was asked to build.
+        """
+        chosen = list(base_tools)
+        if code_phase_active:
+            chosen.extend(phase2_tools)
+        seen: dict[str, BaseTool] = {}
+        for t in chosen:
+            seen[t.name] = t
+        return list(seen.values())
 
     async def specialist(state: SystemState) -> dict[str, Any]:
-        nonlocal code_phase_active
         await emit(name, "turn_start", {}, state.project_id)
         base = llm_factory()
-        bound = base.bind_tools(_current_tool_list()) if tools or phase2_tools else base
+
+        # Per-invocation, never shared: every turn re-enters phase 1.
+        code_phase_active = not phased_code_tools
+        tools_by_name: dict[str, BaseTool] = {t.name: t for t in _tool_list(code_phase_active)}
+
+        bound = (
+            base.bind_tools(_tool_list(code_phase_active))
+            if base_tools or phase2_tools
+            else base
+        )
         llm = with_retry(bound)
 
         system = inject_skills(base_system_prompt, role=role)
@@ -430,6 +585,13 @@ def build_specialist_subgraph(
                 "Produce ONLY the execution_plan JSON described in your role prompt. "
                 "Do not call tools."
             )
+        elif inject_execution_plan:
+            instructions = (
+                "The [execution_plan] message below holds the subtasks to persist. "
+                "Call save_execution_plan with those subtasks exactly as given, then "
+                "summarize what you wrote. Never author subtasks yourself — if the "
+                "plan is missing, say so and stop."
+            )
         else:
             instructions = (
                 "Use tools as needed. When done, respond with a short summary of what you accomplished."
@@ -443,7 +605,14 @@ def build_specialist_subgraph(
         )
 
         focused_history = _build_specialist_input(state, agent_name=name)
-        messages: list[BaseMessage] = [SystemMessage(content=prefix), *focused_history]
+        if inject_execution_plan:
+            # The plan is the payload, so it goes last — closest to the model's
+            # turn — after the PM's routing instruction.
+            focused_history.append(_render_execution_plan_message(state.execution_plan))
+        messages: list[BaseMessage] = [
+            cacheable_system_message(prefix, base),
+            *focused_history,
+        ]
 
         local_ai_msgs: list[AIMessage] = []
         local_tool_msgs: list[ToolMessage] = []
@@ -481,25 +650,25 @@ def build_specialist_subgraph(
                         "preview": str(tm.content)[:300],
                         # Store a bounded full tool result for the Logs "Full payload" modal.
                         # (The list view stays fast by reading only payload.preview.)
-                        "result": _truncate(str(tm.content), MAX_TOOL_RESULT_CHARS),
+                        "result": _truncate_tool_result(str(tm.content), MAX_TOOL_RESULT_CHARS),
                     },
                     state.project_id,
                 )
                 truncated = ToolMessage(
-                    content=_truncate(str(tm.content), MAX_TOOL_RESULT_CHARS),
+                    content=_truncate_tool_result(str(tm.content), MAX_TOOL_RESULT_CHARS),
                     name=tm.name,
                     tool_call_id=tm.tool_call_id,
                 )
                 messages.append(truncated)
                 local_tool_msgs.append(truncated)
 
-            if phased_code_tools and not code_phase_active:
-                if _engaged_subtask_id_from_tools(tool_msgs):
-                    for t in phase2_tools:
-                        tools_by_name[t.name] = t
-                    code_phase_active = True
-                    bound = base.bind_tools(_current_tool_list())
-                    llm = with_retry(bound)
+            if not code_phase_active and _engaged_subtask_id_from_tools(tool_msgs):
+                # The agent has a subtask in hand — unlock the code tools for
+                # the rest of THIS turn only.
+                code_phase_active = True
+                for t in phase2_tools:
+                    tools_by_name[t.name] = t
+                llm = with_retry(base.bind_tools(_tool_list(code_phase_active)))
         else:
             step_exhausted = bool(local_ai_msgs and local_ai_msgs[-1].tool_calls)
 
@@ -587,6 +756,16 @@ def build_specialist_subgraph(
             update["active_subtask_id"] = subtask_id
         if execution_plan is not None:
             update["execution_plan"] = execution_plan
+        if inject_execution_plan and _execution_plan_persisted(local_tool_msgs):
+            # Consumed — clear it so a later Coordinator turn can't re-persist a
+            # stale plan against a different ticket.
+            update["execution_plan"] = None
+            await emit(
+                name,
+                "execution_plan_consumed",
+                {"subtasks": len(state.execution_plan.subtasks) if state.execution_plan else 0},
+                state.project_id,
+            )
         return update
 
     g = StateGraph(SystemState)

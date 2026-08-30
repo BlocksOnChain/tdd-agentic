@@ -25,9 +25,16 @@ from backend.ticket_system.models import (
 
 
 def _dump(obj: Any) -> str:
+    """Serialize a tool result compactly.
+
+    Tool results are the highest-frequency payload in the system and every byte
+    is billed as input tokens on the next model call. ``indent=2`` added 20-40%
+    pure whitespace and ate into MAX_TOOL_RESULT_CHARS, so a large get_ticket
+    lost real RITE specs to indentation.
+    """
     if hasattr(obj, "model_dump"):
-        return json.dumps(obj.model_dump(mode="json"), default=str, indent=2)
-    return json.dumps(obj, default=str, indent=2)
+        obj = obj.model_dump(mode="json")
+    return json.dumps(obj, default=str, separators=(",", ":"))
 
 
 _DEV_ROLES = {
@@ -623,20 +630,15 @@ PM_TICKET_TOOLS = [
     add_question_to_ticket,
 ]
 
-LEAD_TICKET_TOOLS = [
-    list_tickets,
-    get_ticket,
-    create_subtask,
-    update_subtask,
-    delete_subtask,
-    update_subtask_status,
-    add_todo_to_subtask,
-    update_ticket_status,
-]
+# NOTE: the Lead is cognitive-only (``tools=[]``) — it emits an execution_plan
+# and the Coordinator persists it. There is deliberately no LEAD_TICKET_TOOLS.
 
+# ``next_pending_subtask`` (ticket-scoped) is intentionally NOT bound here.
+# The dev prompt only ever sanctions ``next_pending_subtask_in_project``, which
+# takes an optional ticket_id and covers both cases. Binding both cost schema
+# tokens on every dev call and gave the model a second, unprompted way in.
 DEV_TICKET_TOOLS = [
     get_ticket,
-    next_pending_subtask,
     next_pending_subtask_in_project,
     update_subtask_status,
     mark_todo_done,
